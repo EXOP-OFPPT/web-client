@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* --------------------------------- */
+
+.cards {
+  display: flex;
+  align-items: center;
+}
+.container {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.parent {
+  height: 400px;
+  width: 325px;
+  perspective: 1000px;
+}
+
+.card {
+  padding-top: 120px;
+  transform-style: preserve-3d;
+  background-position: center center;
+  background-size: cover;
+  width: 100%;
+  transition: all 0.5s ease-in-out;
+  border-radius: 10px;
+  box-shadow: #d8d530 0px 0px 20px -5px;
+}
+.card:hover {
+  background-position: 80% 20%;
+  transform: rotate3d(0.5, 1, 0, 20deg);
+}
+
+.content-box {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.811);
+  border-radius: 0px 0px 10px 10px;
+  transition: all 0.5s ease-in-out;
+  padding: 50px 25px 25px 25px;
+  transform-style: preserve-3d;
+  opacity: 0;
+}
+.card:hover .content-box {
+  opacity: 1;
+}
+.content-box .card-title {
+  color: white;
+  font-size: 25px;
+  font-weight: 700;
+  transition: all 1.5s ease-in-out;
+  opacity: 0;
+}
+.content-box .card-title:hover {
+  transform: translate3d(0px, 0px, 25px);
+}
+.card:hover .content-box .card-title {
+  opacity: 1;
+}
+.content-box .card-content {
+  padding-top: 20px;
+  font-size: 12px;
+  color: #b9b9b9;
+  transition: all 1.5s ease-in-out;
+  opacity: 0;
+}
+.content-box .card-content:hover {
+  transform: translate3d(0px, 0px, 25px);
+}
+
+.card:hover .content-box .card-content {
+  opacity: 1;
+}
+
+/* .content-box .see-more {
+    margin-top: 18px;
+    display: block;
+    width: 100px;
+    height: 26px;
+    font-weight: 700;
+    font-size: 15px;
+    text-transform: uppercase;
+    color: #ffffff;
+    transition: all 0.5s ease-in-out;
+    transform: translate3d(0px, 0px, 10px);
+    border: #f0ec04 solid 1px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: #f0ec04 0px 0px 5px;
+    
+}
+.content-box .see-more:hover {
+    transform: translate3d(0px, 0px, 50px);
+} */
+
+/* --------------------------Hidden Password Code------------------------------ */
+.hidden-password {
+  font-family: text-security-disc;
+  -webkit-text-security: disc;
+}
