@@ -30,7 +30,7 @@ const PrivateRoutes = () => {
   return (
     <Routes>
       <Route path="/app" element={<RootLayout />}>
-      <Route path="" element={<App />} />
+      <Route path="m" element={<App />} />
       {/* <Route path="*" element={<ExopPagesLayout />}>
           <Route path="" element={<App />} />
         </Route> */}
