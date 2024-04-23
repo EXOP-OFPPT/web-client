@@ -1,19 +1,31 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+
+// ------------- Redux import --------------
 import { Provider, useSelector } from "react-redux";
 import { AppDispatch, RootState, store } from "./state/store";
-import { ThemeProvider } from "./components/theme-provider";
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import RootLayout from "./layouts/RootLayout";
-import { onAuthStateChanged } from "firebase/auth";
 import { loginSuccess, logoutUser } from "./state/auth/AuthSlice";
-import { auth } from "./firebase/firebase";
 import { useDispatch } from "react-redux";
+
+// ------------- Router import --------------
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
+// ------------- Layout & Theme import --------------
+import { ThemeProvider } from "./components/theme-provider";
+import RootLayout from "./layouts/RootLayout";
+
+// ------------- Firebase import --------------
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase/firebase";
+
+// ------------- Components import --------------
+import App from "./App";
 import Login from "./components/Auth/Login";
 
 
+
+// ------------- This is Private Routes --------------
 const PrivateRoutes = () => {
   return (
     <Routes>
@@ -28,6 +40,7 @@ const PrivateRoutes = () => {
   );
 };
 
+// ------------- This is Public Routes --------------
 const PublicRoutes = () => {
   return (
     <Routes>
@@ -37,6 +50,8 @@ const PublicRoutes = () => {
   );
 };
 
+
+// ------------- This is Handle Routes --------------
 const HandleRoutes = () => {
   // Call useSelector at the top level of your component
   const isAuthenticated = useSelector((state: RootState) => state.auth.isLogin);
@@ -69,6 +84,7 @@ const HandleRoutes = () => {
   );
 }
 
+// ------------- This is Main Render --------------
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
