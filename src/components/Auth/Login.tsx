@@ -22,9 +22,8 @@ import { Input } from "@/components/ui/input";
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
-import "./Login.css";
+import "./LoginStyle.css";
 import icon from "@/assets/fingerprint.svg";
-// import arrow from "@/assets/arrow.svg";
 import arrow from "@/assets/arrow.svg";
 
 const formSchema = z.object({
