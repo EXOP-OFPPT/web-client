@@ -6,12 +6,12 @@ import { Provider, useSelector } from "react-redux";
 import { AppDispatch, RootState, store } from "./state/store";
 import { ThemeProvider } from "./components/theme-provider";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import LoginPage from "./components/Auth/LoginPage";
 import RootLayout from "./layouts/RootLayout";
 import { onAuthStateChanged } from "firebase/auth";
 import { loginSuccess, logoutUser } from "./state/auth/AuthSlice";
 import { auth } from "./firebase/firebase";
 import { useDispatch } from "react-redux";
+import Login from "./components/Auth/Login";
 
 
 const PrivateRoutes = () => {
@@ -31,7 +31,7 @@ const PrivateRoutes = () => {
 const PublicRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={<Login />} />
       <Route path='*' element={<Navigate to='/login' replace />} />
     </Routes>
   );
