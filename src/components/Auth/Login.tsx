@@ -1,11 +1,8 @@
 "use client";
-import { Toaster } from "@/components/ui/toaster";
-import { Card } from "../ui/card";
-import { ModeToggle } from "../mode-toggle";
-import { Button } from "../ui/button";
 import { login } from "@/state/auth/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
+import { useNavigate } from "react-router-dom";
 // ----------------------------------------------------
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,10 +18,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { Card } from "../ui/card";
+import { ModeToggle } from "../mode-toggle";
+import { Button } from "../ui/button";
 
 import "./LoginStyle.css";
 import icon from "@/assets/fingerprint.svg";
 import arrow from "@/assets/arrow.svg";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 const formSchema = z.object({
   email: z.string().email({
@@ -37,6 +40,9 @@ const formSchema = z.object({
 
 function Login() {
   const error = useSelector((state: RootState) => state.auth.error);
+  const cookieIsLogin = cookies.get("isLoggedIn");
+  const reduxIsLogin = useSelector((state: RootState) => state.auth.isLogin);
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
 
@@ -48,6 +54,12 @@ function Login() {
       password: "Abdo123456789",
     },
   });
+
+  useEffect(() => {
+    if (cookieIsLogin || reduxIsLogin) {
+      navigate("/app", { replace: true });
+    }
+  }, [navigate, cookieIsLogin, reduxIsLogin]);
 
   useEffect(() => {
     if (error) {

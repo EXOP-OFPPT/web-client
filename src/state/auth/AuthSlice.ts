@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from '../store'; // Import this from your store file
+import { AppThunk } from '../store';
 import { auth } from '@/firebase/firebase';
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut} from "firebase/auth";
+import Cookies from 'universal-cookie';
 
+const cookies = new Cookies(null, { path: '/' });
 
 
 // Interface for login action payload
@@ -23,6 +25,7 @@ interface AuthState {
   user: any;
   error: Error | null;
 }
+
 
 // Initial state
 const initialState: AuthState = {
@@ -56,24 +59,42 @@ export const { loginSuccess, loginFailed, logout } = Auth.actions;
 
 export default Auth.reducer;
 
+//! Async action creator
+// export const observeAuthState = (): AppThunk => dispatch => {
+//   onAuthStateChanged(auth, user => {
+//     console.log("User: ", user)
+//     if (user) {
+//       dispatch(loginSuccess(user.providerData[0]));
+//     } else {
+//       dispatch(logout());
+//     }
+//   });
+// };
+
 // Async action creator
 export const login = ({ email, password }: LoginPayload): AppThunk => async dispatch => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user.providerData[0];
-    dispatch(loginSuccess(user));
+    await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      cookies.set('isLoggedIn', 'true', { path: '/' });
+      dispatch(loginSuccess(user.providerData[0]));
+    })
+    .catch((error: any) => {
+      dispatch(loginFailed({ code: error.code, message: error.message }));
+    });
   } catch (error: any) {
     dispatch(loginFailed({ code: error.code, message: error.message }));
   }
 };
 
-
 // Async action creator
 export const logoutUser = (): AppThunk => async dispatch => {
   try {
     await signOut(auth);
+    cookies.remove('isLoggedIn', { path: '/' });
     dispatch(logout());
   } catch (error: any) {
-    console.error("Error signing out: ", error);
+    dispatch(loginFailed({ code: error.code, message: error.message }));
   }
 };
