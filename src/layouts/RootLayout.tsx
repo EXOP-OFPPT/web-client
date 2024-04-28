@@ -1,38 +1,36 @@
-import { logoutUser } from "@/state/auth/AuthSlice";
-import { AppDispatch } from "@/state/store";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-// --------------------------------------------------------
-import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
+import NavBar from "@/components/Dashboard/NavBar";
+import Sidebar from "@/components/Dashboard/Sidebar";
+import Settings from "@/components/Dashboard/Settings";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { RootState } from "@/state/store";
+import { useSelector } from "react-redux";
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    setTimeout(() => {
-      navigate("/login");
-    }, 500);
-  };
+  const isActive = useSelector((state: RootState) => state.sideBar.isActive);
 
   return (
     <div className="min-h-[100vh] w-full overflow-hidden">
-      <div className="absolute right-8 top-4">
-        <ModeToggle />
+      <div className="flex">
+        {/*//! Display Sidebar */}
+        {isActive && <Sidebar />}
+
+        <div className="flex-1">
+          {/*//! Display Nav */}
+          <NavBar />
+          {/*//! Display Children */}
+          <ScrollArea className="h-[calc(100vh-4rem)] mt-[4rem]">
+            {children}
+          </ScrollArea>
+          {/*//! Settings Toggle */}
+          <div className="absolute bottom-4 right-5">
+            <Settings />
+          </div>
+        </div>
       </div>
-      <Button
-        className="bg-red-500 hover:bg-red-600 text-white mt-4 ml-8"
-        onClick={handleLogout}
-      >
-        Logout
-      </Button>
-      {children}
     </div>
   );
 };
