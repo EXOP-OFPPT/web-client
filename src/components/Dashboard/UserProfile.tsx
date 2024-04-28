@@ -1,4 +1,4 @@
-import CustomButton from "@/components/Dashboard/Button";
+import CustomButton from "@/components/global/CustomButton";
 import {
   BookCheck,
   CircleUserRound,

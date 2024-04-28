@@ -11,7 +11,7 @@ type ButtonProps = {
   width?: string;
 };
 
-const Button = ({
+const CustomButton = ({
   onClick,
   icon,
   bgColor,
@@ -40,4 +40,4 @@ const Button = ({
   );
 };
 
-export default Button;
+export default CustomButton;

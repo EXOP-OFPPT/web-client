@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
-import "./index.css";
+import "./style/index.css";
 
 // ------------- Cookies import --------------
 import Cookies from "universal-cookie";
@@ -22,14 +22,15 @@ import {
 } from "react-router-dom";
 
 // ------------- Layout & Theme import --------------
-import { ThemeProvider } from "./components/theme-provider";
+import { ThemeProvider } from "./components/global/theme-provider";
 import RootLayout from "./layouts/RootLayout";
 
 // ------------- Components import --------------
-import ProtectedRoute from "./components/PrivateRoutes";
+import ProtectedRoute from "./components/global/PrivateRoutes";
 import Login from "./components/Auth/Login";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import Employees from "./pages/Employees";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
         <RootLayout>
           <Routes>
             <Route index path="/" element={<Home />} />
+            <Route index path="employees" element={<Employees />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>
@@ -59,6 +61,25 @@ const router = createBrowserRouter([
 // ------------- Router Provider --------------
 const AppRouter = () => {
   // const isLogin = cookies.get("isLoggedIn"); // true | false
+  // const pickedTheme = useSelector(
+  //   (state: RootState) => state.navBar.pickedTheme
+  // );
+
+  // useEffect(() => {
+  //   console.log("Theme" , pickedTheme);
+  //   // Create a new link element
+  //   const linkElement = document.createElement("link");
+  //   linkElement.rel = "stylesheet";
+  //   linkElement.href = `./src/style/Themes/${pickedTheme}.css`;
+
+  //   // Insert the link element into the head tag
+  //   document.head.appendChild(linkElement);
+
+  //   // Return a cleanup function to remove the link element when the component unmounts
+  //   // return () => {
+  //   //   document.head.removeChild(linkElement);
+  //   // };
+  // }, [pickedTheme]);
 
   return (
     <>

@@ -1,10 +1,9 @@
-import { logoutUser } from "@/state/auth/AuthSlice";
-import { AppDispatch, RootState } from "@/state/store";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-// --------------------------------------------------------
+import NavBar from "@/components/Dashboard/NavBar";
 import Sidebar from "@/components/Dashboard/Sidebar";
-import Nav from "@/pages/Nav";
+import Settings from "@/components/Dashboard/Settings";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { RootState } from "@/state/store";
+import { useSelector } from "react-redux";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -13,16 +12,23 @@ interface RootLayoutProps {
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const isActive = useSelector((state: RootState) => state.sideBar.isActive);
 
-
   return (
     <div className="min-h-[100vh] w-full overflow-hidden">
       <div className="flex">
+        {/*//! Display Sidebar */}
         {isActive && <Sidebar />}
 
-        {/*//! Display Children */}
         <div className="flex-1">
-          <Nav />
-          {children}
+          {/*//! Display Nav */}
+          <NavBar />
+          {/*//! Display Children */}
+          <ScrollArea className="h-[calc(100vh-4rem)] mt-[4rem]">
+            {children}
+          </ScrollArea>
+          {/*//! Settings Toggle */}
+          <div className="absolute bottom-4 right-5">
+            <Settings />
+          </div>
         </div>
       </div>
     </div>

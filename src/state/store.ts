@@ -4,10 +4,12 @@ import { ThunkAction } from 'redux-thunk';
 import authSlice from "./auth/AuthSlice";
 import sideBarSlice from "./SideBar/SideBarSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
+import employeesSlice from "./Employees/EmployeesSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authSlice,
+    employees: employeesSlice,
     sideBar: sideBarSlice,
     navBar: navBarSlice,
   },

@@ -1,6 +1,6 @@
 import React from "react";
 
-import CustomButton from "@/components/Dashboard/Button";
+import CustomButton from "@/components/global/CustomButton";
 import { CircleX } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useDispatch } from "react-redux";

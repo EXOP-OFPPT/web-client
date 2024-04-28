@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Card } from "../ui/card";
-import { ModeToggle } from "../mode-toggle";
+import { ModeToggle } from "../global/mode-toggle";
 import { Button } from "../ui/button";
 
 import "./LoginStyle.css";
