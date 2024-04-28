@@ -1,12 +1,8 @@
 import { ModeToggle } from "@/components/global/mode-toggle";
-import ThemeSwitcher from "@/components/global/ThemeSwitcher";
-import TooltipComponent from "@/components/global/Tooltip";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
