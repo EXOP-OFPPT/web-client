@@ -1,4 +1,4 @@
-import NavBar from "@/components/Dashboard/NavBar";
+import NavBar from "@/components/Dashboard/Navbar";
 import Sidebar from "@/components/Dashboard/Sidebar";
 import Settings from "@/components/Dashboard/Settings";
 import { ScrollArea } from "@/components/ui/scroll-area";
