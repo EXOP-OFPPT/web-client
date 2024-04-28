@@ -23,6 +23,7 @@ interface Error {
 interface AuthState {
   isLogin: boolean;
   user: any;
+  isLoading: boolean;
   error: Error | null;
 }
 
@@ -31,6 +32,7 @@ interface AuthState {
 const initialState: AuthState = {
   isLogin: false,
   user: null,
+  isLoading:false,
   error: null,
 };
 
@@ -43,10 +45,14 @@ const Auth = createSlice({
       console.log(action.payload);
       state.isLogin = true;
       state.user = action.payload;
+      // state.isLoading = false;
       state.error = null;
     },
     loginFailed: (state, action: PayloadAction<Error>) => {
       state.error = action.payload;
+    },
+    setLoading:(state) => {
+      state.isLoading = true;
     },
     logout: (state) => {
       state.isLogin = false;
@@ -55,7 +61,7 @@ const Auth = createSlice({
   },
 });
 
-export const { loginSuccess, loginFailed, logout } = Auth.actions;
+export const { loginSuccess, setLoading, loginFailed, logout } = Auth.actions;
 
 export default Auth.reducer;
 
@@ -74,10 +80,12 @@ export default Auth.reducer;
 // Async action creator
 export const login = ({ email, password }: LoginPayload): AppThunk => async dispatch => {
   try {
+    console.log("gg")
+    dispatch(setLoading);
     await signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-      cookies.set('isLoggedIn', 'true', { path: '/' });
+      
       dispatch(loginSuccess(user.providerData[0]));
     })
     .catch((error: any) => {

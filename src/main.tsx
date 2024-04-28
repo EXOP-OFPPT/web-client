@@ -3,11 +3,11 @@ import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
 import "./index.css";
-import { Loader2 } from "lucide-react";
 
 // ------------- Cookies import --------------
-// import Cookies from "universal-cookie";
-// const cookies = new Cookies(null, { path: "/" });
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
+cookies.set("isLoggedIn", "true", { path: "/" });
 
 // ------------- Redux import --------------
 import { Provider } from "react-redux";
@@ -27,11 +27,9 @@ import RootLayout from "./layouts/RootLayout";
 
 // ------------- Components import --------------
 import ProtectedRoute from "./components/PrivateRoutes";
-import App from "./App";
 import Login from "./components/Auth/Login";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -42,7 +40,6 @@ const router = createBrowserRouter([
         <RootLayout>
           <Routes>
             <Route index path="/" element={<Home />} />
-            <Route path="app" element={<App />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>
@@ -67,7 +64,6 @@ const AppRouter = () => {
     <>
       {/* {isLogin ? <Button>Sign Out</Button> : <Button>Sign In</Button>} */}
       <RouterProvider router={router} />
-      <Loader2 />
     </>
   );
 };

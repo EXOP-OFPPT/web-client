@@ -27,6 +27,7 @@ import "./LoginStyle.css";
 import icon from "@/assets/fingerprint.svg";
 import arrow from "@/assets/arrow.svg";
 import Cookies from "universal-cookie";
+import { Loader2 } from "lucide-react";
 const cookies = new Cookies(null, { path: "/" });
 
 const formSchema = z.object({
@@ -42,6 +43,7 @@ function Login() {
   const error = useSelector((state: RootState) => state.auth.error);
   const cookieIsLogin = cookies.get("isLoggedIn");
   const reduxIsLogin = useSelector((state: RootState) => state.auth.isLogin);
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
@@ -84,9 +86,9 @@ function Login() {
     <div className="h-[100vh] flex flex-col items-center justify-center">
       <Toaster />
       {/* <Card className="h-[50vh] w-[380px] sm:w-[500px] md:w-[660px] 2xl:w-[660px] flex flex-col items-center gap-11 justify-center"> */}
-      <div className="absolute right-8 top-4">
+      <section className="absolute right-8 top-4">
         <ModeToggle />
-      </div>
+      </section>
       <Card className="container">
         <img className="arrow bg-primary" src={arrow} />
         <div className="form-container sign-in border-none">
@@ -139,7 +141,14 @@ function Login() {
                 )}
               />
               <small>Mot de Passe Oublier?</small>
-              <Button type="submit">Connectez-vous</Button>
+              {isLoading ? (
+                <Button disabled>
+                  <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button type="submit">Connectez-vous</Button>
+              )}
             </form>
           </Form>
         </div>

@@ -4,6 +4,7 @@
 
 
 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -61,7 +62,14 @@
   }
 }
 
+
+
 /* ---------------------------------------------------------------- */
+/* body > div:nth-child(4),body > div:nth-child(3){
+  display: none !important;
+} */
+
+
 
 .cards {
   display: flex;
