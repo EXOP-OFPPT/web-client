@@ -42,6 +42,7 @@ const Auth = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action: PayloadAction<any>) => {
+      cookies.set('isLoggedIn', 'true', { path: '/' });
       console.log(action.payload);
       state.isLogin = true;
       state.user = action.payload;
@@ -81,7 +82,7 @@ export default Auth.reducer;
 export const login = ({ email, password }: LoginPayload): AppThunk => async dispatch => {
   try {
     console.log("gg")
-    dispatch(setLoading);
+    dispatch(setLoading());
     await signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
