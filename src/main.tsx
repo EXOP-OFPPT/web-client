@@ -5,8 +5,8 @@ import ReactDOM from "react-dom/client";
 import "./style/index.css";
 
 // ------------- Cookies import --------------
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+// import Cookies from "universal-cookie";
+// const cookies = new Cookies(null, { path: "/" });
 // cookies.set("isLoggedIn", "true", { path: "/" });
 
 // ------------- Redux import --------------
