@@ -58,12 +58,16 @@ function Login() {
   });
 
   useEffect(() => {
-    if (cookieIsLogin || reduxIsLogin) {
-      navigate("/app", { replace: true });
-    }
-  }, [navigate, cookieIsLogin, reduxIsLogin]);
-
-  useEffect(() => {
+    // if (!reduxIsLogin) {
+    //   toast({
+    //     variant: "default",
+    //     title: "Action dispatched",
+    //     description: "User logged out successfully!",
+    //     style: {
+    //       backgroundColor: "#666",
+    //     },
+    //   });
+    // }
     if (error) {
       toast({
         variant: "destructive",
@@ -74,7 +78,13 @@ function Login() {
         },
       });
     }
-  }, [error]);
+  }, [error, reduxIsLogin]);
+
+  useEffect(() => {
+    if (cookieIsLogin || reduxIsLogin) {
+      navigate("/app", { replace: true });
+    }
+  }, [navigate, cookieIsLogin, reduxIsLogin]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -83,88 +93,92 @@ function Login() {
   }
 
   return (
-    <div className="h-[100vh] flex flex-col items-center justify-center">
-      <Toaster />
-      {/* <Card className="h-[50vh] w-[380px] sm:w-[500px] md:w-[660px] 2xl:w-[660px] flex flex-col items-center gap-11 justify-center"> */}
-      <section className="absolute right-8 top-4">
-        <ModeToggle />
-      </section>
-      <Card className="container">
-        <img className="arrow bg-primary" src={arrow} />
-        <div className="form-container sign-in border-none">
-          <Form {...form}>
-            <form
-              className="w-full space-y-3"
-              onSubmit={form.handleSubmit(onSubmit)}
-            >
-              <div className="social-icons">
-                <img
-                  className="fingerprint fill-current text-green-600"
-                  src={icon}
+    <>
+      <div style={{ position: "relative", zIndex: 9999 }}>
+        <Toaster />
+      </div>
+      <div className="h-[100vh] flex flex-col items-center justify-center">
+        {/* <Card className="h-[50vh] w-[380px] sm:w-[500px] md:w-[660px] 2xl:w-[660px] flex flex-col items-center gap-11 justify-center"> */}
+        <section className="absolute right-8 top-4">
+          <ModeToggle />
+        </section>
+        <Card className="container">
+          <img className="arrow bg-primary" src={arrow} />
+          <div className="form-container sign-in border-none">
+            <Form {...form}>
+              <form
+                className="w-full space-y-3"
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
+                <div className="social-icons">
+                  <img
+                    className="fingerprint fill-current text-green-600"
+                    src={icon}
+                  />
+                </div>
+                <h1>Connectez-vous</h1>
+                <small>Utilisez votre email & mot de passe</small>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="h-9"
+                          placeholder="Enter your email address..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          className="h-9"
+                          placeholder="Enter your password..."
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <small>Mot de Passe Oublier?</small>
+                {isLoading ? (
+                  <Button disabled>
+                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                    Please wait
+                  </Button>
+                ) : (
+                  <Button type="submit">Connectez-vous</Button>
+                )}
+              </form>
+            </Form>
+          </div>
+          <div className="toggle-container">
+            <div className="toggle">
+              <div className="toggle-panel toggle-right">
+                <h1>Mission!</h1>
+                <p>
+                  permettre à tout unn chacun de révéler son plein potenntiel et
+                  d'aquerir un métier pour aspirer à un meilleur avenir.
+                </p>
               </div>
-              <h1>Connectez-vous</h1>
-              <small>Utilisez votre email & mot de passe</small>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="h-9"
-                        placeholder="Enter your email address..."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="h-9"
-                        placeholder="Enter your password..."
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <small>Mot de Passe Oublier?</small>
-              {isLoading ? (
-                <Button disabled>
-                  <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                  Please wait
-                </Button>
-              ) : (
-                <Button type="submit">Connectez-vous</Button>
-              )}
-            </form>
-          </Form>
-        </div>
-        <div className="toggle-container">
-          <div className="toggle">
-            <div className="toggle-panel toggle-right">
-              <h1>Mission!</h1>
-              <p>
-                permettre à tout unn chacun de révéler son plein potenntiel et
-                d'aquerir un métier pour aspirer à un meilleur avenir.
-              </p>
             </div>
           </div>
-        </div>
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </>
   );
 }
 
