@@ -48,6 +48,7 @@ const UserProfile: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    dispatch(setMenu(""));
     setTimeout(() => {
       navigate("/login");
     }, 500);
