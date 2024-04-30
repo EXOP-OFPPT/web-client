@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from '../store';
-import { auth } from '@/firebase/firebase';
-import { signInWithEmailAndPassword, signOut} from "firebase/auth";
+import { AppThunk, store } from '../store';
+import { auth, db } from '@/firebase/firebase';
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import Cookies from 'universal-cookie';
+import { doc, getDoc } from "firebase/firestore";
 
 const cookies = new Cookies(null, { path: '/' });
 
@@ -21,8 +22,8 @@ interface Error {
 
 // Interface for AuthState
 interface AuthState {
-  isLogin: boolean;
   user: any;
+  isLogin: boolean;
   isLoading: boolean;
   error: Error | null;
 }
@@ -30,9 +31,9 @@ interface AuthState {
 
 // Initial state
 const initialState: AuthState = {
-  isLogin: false,
   user: null,
-  isLoading:false,
+  isLogin: false,
+  isLoading: false,
   error: null,
 };
 
@@ -41,19 +42,20 @@ const Auth = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginSuccess: (state, action: PayloadAction<any>) => {
+    loginSuccess: (state) => {
       cookies.set('isLoggedIn', 'true', { path: '/' });
-      console.log(action.payload);
       state.isLogin = true;
-      state.user = action.payload;
-      // state.isLoading = false;
+      state.isLoading = false;
       state.error = null;
     },
     loginFailed: (state, action: PayloadAction<Error>) => {
       state.error = action.payload;
     },
-    setLoading:(state) => {
-      state.isLoading = true;
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
+    setUserExists: (state, action: PayloadAction<any>) => {
+      state.user = action.payload;
     },
     logout: (state) => {
       state.isLogin = false;
@@ -62,7 +64,7 @@ const Auth = createSlice({
   },
 });
 
-export const { loginSuccess, setLoading, loginFailed, logout } = Auth.actions;
+export const { loginSuccess, loginFailed, setUserExists, setLoading, logout } = Auth.actions;
 
 export default Auth.reducer;
 
@@ -78,22 +80,41 @@ export default Auth.reducer;
 //   });
 // };
 
+
+export const checkUserExist = (docId: string): AppThunk => async dispatch => {
+  try {
+    const docRef = doc(db, "employees", docId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      dispatch(setUserExists(docSnap.data()));
+      console.log("Document data:", docSnap.data());
+    } else {
+      // docSnap.data() will be undefined in this case
+      dispatch(setUserExists(null));
+    }
+  } catch (error: any) {
+    dispatch(setUserExists(null));;
+  }
+}
+
 // Async action creator
 export const login = ({ email, password }: LoginPayload): AppThunk => async dispatch => {
-  try {
-    console.log("gg")
-    dispatch(setLoading());
+  dispatch(setLoading(true));
+  await dispatch(checkUserExist(email));
+  if (store.getState().auth.user) {
     await signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      
-      dispatch(loginSuccess(user.providerData[0]));
-    })
-    .catch((error: any) => {
-      dispatch(loginFailed({ code: error.code, message: error.message }));
-    });
-  } catch (error: any) {
-    dispatch(loginFailed({ code: error.code, message: error.message }));
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user.uid);
+        dispatch(loginSuccess());
+      })
+      .catch((error: any) => {
+        dispatch(setLoading(false));
+        dispatch(loginFailed({ code: error.code, message: error.message }));
+      });
+  } else {
+    dispatch(setLoading(false));
+    dispatch(loginFailed({ code: "500", message: "User Credential is not valid" }));
   }
 };
 
@@ -102,6 +123,7 @@ export const logoutUser = (): AppThunk => async dispatch => {
   try {
     await signOut(auth);
     cookies.remove('isLoggedIn', { path: '/' });
+    dispatch(setLoading(false));
     dispatch(logout());
   } catch (error: any) {
     dispatch(loginFailed({ code: error.code, message: error.message }));

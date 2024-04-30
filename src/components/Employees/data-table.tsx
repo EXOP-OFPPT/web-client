@@ -61,29 +61,33 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
       rowSelection,
     },
   });
-//   const deleteSelectedCards = () => {
-//     const selectedRows = table.getFilteredSelectedRowModel().rows;
-//     if (selectedRows.length === 0) {
-//       alert("No Cards Selected. Please select the cards first.");
-//       return;
-//     }
-//     const selectedCards = selectedRows.map((row) =>
-//       JSON.stringify(row.original)
-//     );
-//     console.log(selectedCards);
+  //   const deleteSelectedCards = () => {
+  //     const selectedRows = table.getFilteredSelectedRowModel().rows;
+  //     if (selectedRows.length === 0) {
+  //       alert("No Cards Selected. Please select the cards first.");
+  //       return;
+  //     }
+  //     const selectedCards = selectedRows.map((row) =>
+  //       JSON.stringify(row.original)
+  //     );
+  //     console.log(selectedCards);
 
-//     table.toggleAllPageRowsSelected(false);
-//     toast({ title: "Selected Cards Deleted Successfully" });
-//   };
+  //     table.toggleAllPageRowsSelected(false);
+  //     toast({ title: "Selected Cards Deleted Successfully" });
+  //   };
 
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter FirstName..."
-          value={(table.getColumn("firstName")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter by Last Name..."
+          value={
+            (table.getColumn("lastName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) => {
-            return table.getColumn("lastName")?.setFilterValue(event.target.value);
+            return table
+              .getColumn("lastName")
+              ?.setFilterValue(event.target.value);
           }}
           className="max-w-xs"
         />

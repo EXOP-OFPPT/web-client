@@ -18,13 +18,19 @@ const NavBar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+    // [First Render] Ckeck if the window is less than 1000px and the sidebar is active in First Render
+    if (window.innerWidth <= 1000 && isActive) {
+      dispatch(setIsActive(false));
+    }
+
+    // [Resize] Check if the window is less than 1000px and the sidebar is active in Resize
     const handleResize = debounce(() => {
-      if (window.innerWidth <= 900 && isActive) {
+      if (window.innerWidth <= 1000 && isActive) {
         dispatch(setIsActive(false));
-      } else if (window.innerWidth > 900 && !isActive) {
+      } else if (window.innerWidth > 1000 && !isActive) {
         dispatch(setIsActive(true));
       }
-    }, 80); // delay in milliseconds
+    }, 200); // delay in milliseconds
 
     window.addEventListener("resize", handleResize);
 
