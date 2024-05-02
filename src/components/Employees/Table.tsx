@@ -4,7 +4,7 @@ import { DataTable } from "./data-table";
 import { RootState } from "@/state/store";
 
 export default function EmployeesTable() {
-  const data = useSelector((state: RootState) => state.employees.employees);
+  const data = useSelector((state: RootState) => state.getEmployees.employees);
 
   return (
     <div className="w-full xlg:w-4/5 md:w-11/12">

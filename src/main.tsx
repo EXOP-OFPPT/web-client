@@ -31,7 +31,8 @@ import Login from "./components/Auth/Login";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Employees from "./pages/Employees";
-
+import ResetPassword from "./components/Auth/ResetPassword";
+import Profile from "./pages/Profile";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -50,8 +51,22 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: "/profile",
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/login/*",
+    element: (
+      <Routes>
+        <Route index element={<Login />} />
+        <Route path="resetPassword" element={<ResetPassword />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    ),
   },
   {
     path: "*",

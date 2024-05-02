@@ -6,7 +6,7 @@ import {
   Inbox,
   LogOut,
 } from "lucide-react";
-import userProfileImage from "/EXOP.jpg";
+import userProfileImage from "/01.jpg";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
@@ -26,7 +26,7 @@ const UserProfile: React.FC = () => {
       desc: "Account Settings",
       iconColor: "#03C9D7",
       iconBg: "#E5FAFB",
-      path: "profile",
+      path: "/profile",
     },
     {
       icon: <Inbox />,
@@ -34,7 +34,7 @@ const UserProfile: React.FC = () => {
       desc: "Messages & Emails",
       iconColor: "rgb(0, 194, 146)",
       iconBg: "rgb(235, 250, 242)",
-      path: "inbox",
+      path: "/app/inbox",
     },
     {
       icon: <BookCheck />,
@@ -42,7 +42,7 @@ const UserProfile: React.FC = () => {
       desc: "To-do and Daily Tasks",
       iconBg: "rgb(255, 244, 229)",
       iconColor: "rgb(254, 201, 15)",
-      path: "tasks",
+      path: "/app/tasks",
     },
   ];
 
@@ -55,7 +55,7 @@ const UserProfile: React.FC = () => {
   };
 
   const handleNavigateButton = (path: string) => {
-    navigate(`/app/${path}`);
+    navigate(path);
     dispatch(setMenu(""));
   };
 

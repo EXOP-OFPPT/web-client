@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { CheckCircle2 } from "lucide-react";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -23,9 +24,8 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         variant: "default",
         title: "Action dispatched",
         description: "User logged in successfully!",
-        style: {
-          backgroundColor: "#4caf50",
-        },
+        className: "text-primary border-2 border-primary text-start",
+        icon: <CheckCircle2 size={40} className="mr-2" />,
       });
     }
   }, [isLogin]);
