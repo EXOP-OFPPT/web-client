@@ -1,23 +1,23 @@
-import AddEmployee from "@/components/Employees/AddEmployee";
-import EmployeesTable from "@/components/Employees/EmployeesTable";
+import AddEmployee from "@/components/Employees/Create";
+import DisplayEmployees from "@/components/Employees/Display";
 import { Card } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { getEmployees } from "@/state/Employees/EmployeesSlice";
+import { clearMessageAndError, getEmployees } from "@/state/Employees/GetSlice";
 import { AppDispatch, RootState } from "@/state/store";
-import { Loader2 } from "lucide-react";
+import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Employees: React.FC = () => {
   const employees = useSelector(
-    (state: RootState) => state.employees.employees
+    (state: RootState) => state.getEmployees.employees
   );
   const isloading = useSelector(
-    (state: RootState) => state.employees.isLoading
+    (state: RootState) => state.getEmployees.loading
   );
-  const message = useSelector((state: RootState) => state.employees.message);
-  const error = useSelector((state: RootState) => state.employees.error);
+  const message = useSelector((state: RootState) => state.getEmployees.message);
+  const error = useSelector((state: RootState) => state.getEmployees.error);
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
 
@@ -33,23 +33,19 @@ const Employees: React.FC = () => {
         variant: "default",
         title: "Action dispatched",
         description: message,
-        style: {
-          backgroundColor: "#4caf50",
-          border: "2px solid #4caf50",
-          // color: "#4caf50",
-        },
+        className: "text-primary border-2 border-primary text-start",
+        icon: <CheckCircle2 size={40} className="mr-2" />,
       });
+      dispatch(clearMessageAndError());
     } else if (error) {
       toast({
         variant: "default",
         title: "Action Failed",
         description: error?.message,
-        style: {
-          backgroundColor: "#ff4d4f",
-          border: "2px solid #ff4d4f",
-          // color: "#ff4d4f",
-        },
+        className: "text-error border-2 border-error text-start",
+        icon: <CircleX size={40} className="mr-2" />,
       });
+      dispatch(clearMessageAndError());
     }
   }, [message, error]);
 
@@ -71,7 +67,7 @@ const Employees: React.FC = () => {
         {isloading ? (
           <Loader2 className="h-10 w-10 mt-10 text-primary animate-spin" />
         ) : (
-          <EmployeesTable />
+          <DisplayEmployees />
         )}
       </div>
     </>

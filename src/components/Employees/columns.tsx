@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Edit, Trash2 } from "lucide-react";
-import { EmployeeType } from "@/state/Employees/EmployeesSlice";
+import { ArrowUpDown } from "lucide-react";
+import { EmployeeType } from "@/state/Employees/GetSlice";
+import Delete from "./Delete";
+import Update from "./Update";
 
 export const columns: ColumnDef<EmployeeType>[] = [
   {
@@ -65,18 +67,14 @@ export const columns: ColumnDef<EmployeeType>[] = [
     header: "Role",
   },
   {
-    id: "acion",
+    id: "action",
     accessorKey: "action",
     header: "Action",
-    cell: () => {
+    cell: ({ row }) => {
       return (
         <div className="flex justify-center items-center gap-2">
-          <Button className="hover:text-yellow-500" variant="outline" size="icon">
-            <Edit className="scale-[80%]" />
-          </Button>
-          <Button className="hover:text-red-500" variant="outline" size="icon">
-            <Trash2 className="scale-[80%]" />
-          </Button>
+          <Update mode="icon" info={row.original} />
+          <Delete mode="icon" docId={row.original.email} />
         </div>
       );
     },

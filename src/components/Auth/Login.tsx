@@ -1,5 +1,9 @@
 "use client";
-import { login } from "@/state/auth/AuthSlice";
+import {
+  clearMessageAndError,
+  login,
+  resetPassword,
+} from "@/state/auth/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +31,7 @@ import "./LoginStyle.css";
 import icon from "@/assets/fingerprint.svg";
 import arrow from "@/assets/arrow.svg";
 import Cookies from "universal-cookie";
-import { Loader2 } from "lucide-react";
+import { CircleX, Loader2 } from "lucide-react";
 const cookies = new Cookies(null, { path: "/" });
 
 const formSchema = z.object({
@@ -53,7 +57,7 @@ function Login() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "abdonsila222@gmail.com",
-      password: "Abdo123456789",
+      password: "123456",
     },
   });
 
@@ -70,13 +74,13 @@ function Login() {
     // }
     if (error) {
       toast({
-        variant: "destructive",
+        variant: "default",
         title: "Connection error",
         description: error?.message,
-        style: {
-          backgroundColor: "#ff4d4f",
-        },
+        className: "text-error border-2 border-error text-start",
+        icon: <CircleX size={40} className="mr-2" />,
       });
+      dispatch(clearMessageAndError());
     }
   }, [error, reduxIsLogin]);
 
@@ -153,7 +157,11 @@ function Login() {
                     </FormItem>
                   )}
                 />
-                <small>Mot de Passe Oublier?</small>
+                <small
+onClick={() => navigate("resetPassword", { state: { from: 'login' } })}                  className="cursor-pointer hover:text-sky-500"
+                >
+                  Mot de Passe Oublier?
+                </small>
                 {isLoading ? (
                   <Button disabled>
                     <Loader2 className="mr-2 h-6 w-6 animate-spin" />

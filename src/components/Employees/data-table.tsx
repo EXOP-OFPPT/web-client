@@ -30,7 +30,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { EmployeeType } from "@/state/Employees/EmployeesSlice";
+import { EmployeeType } from "@/state/Employees/GetSlice";
 
 interface DataTableProps {
   columns: ColumnDef<EmployeeType>[];

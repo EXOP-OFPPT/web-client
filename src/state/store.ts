@@ -4,12 +4,19 @@ import { ThunkAction } from 'redux-thunk';
 import authSlice from "./auth/AuthSlice";
 import sideBarSlice from "./SideBar/SideBarSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
-import employeesSlice from "./Employees/EmployeesSlice";
+// --------------- Employees Slices ----------------
+import getSlice from "./Employees/GetSlice";
+import CreateSlice from "./Employees/CreateSlice";
+import DeleteSlice from "./Employees/DeleteSlice";
+import UpdateSlice from "./Employees/UpdateSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authSlice,
-    employees: employeesSlice,
+    getEmployees: getSlice,
+    createEmployee: CreateSlice,
+    updatemployee: UpdateSlice,
+    deleteEmployee: DeleteSlice,
     sideBar: sideBarSlice,
     navBar: navBarSlice,
   },

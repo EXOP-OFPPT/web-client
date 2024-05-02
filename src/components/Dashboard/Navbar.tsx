@@ -5,7 +5,7 @@ import { Bell, ChevronDown, ChevronUp, PanelLeftOpen } from "lucide-react";
 import React, { useEffect } from "react";
 import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
-import userProfileImage from "/EXOP.jpg";
+import userProfileImage from "/01.jpg";
 import UserProfile from "./UserProfile";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
 import Notification from "./Notification";
