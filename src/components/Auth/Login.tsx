@@ -1,9 +1,5 @@
 "use client";
-import {
-  clearMessageAndError,
-  login,
-  resetPassword,
-} from "@/state/auth/AuthSlice";
+import { clearMessageAndError, login } from "@/state/auth/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { useNavigate } from "react-router-dom";
@@ -158,7 +154,10 @@ function Login() {
                   )}
                 />
                 <small
-onClick={() => navigate("resetPassword", { state: { from: 'login' } })}                  className="cursor-pointer hover:text-sky-500"
+                  onClick={() =>
+                    navigate("resetPassword", { state: { from: "login" } })
+                  }
+                  className="cursor-pointer hover:text-sky-500"
                 >
                   Mot de Passe Oublier?
                 </small>
