@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getEmployees } from "./GetSlice";
 
@@ -75,16 +75,16 @@ export default deleteSlice.reducer;
 // Thunk to delete employee
 export const deleteEmployee =
   (docId: string): AppThunk =>
-  async (dispatch) => {
-    // Reset message and error
-    dispatch(setLoading(true));
-    dispatch(clearMessageAndError());
-    try {
-      // Delete employee document
-      await deleteDoc(doc(db, "employees", docId));
-      dispatch(actionSuccess("Employee deleted successfully"));
-      dispatch(getEmployees());
-    } catch (error: any) {
-      dispatch(actionFailed({ code: error.code, message: error.message }));
-    }
-  };
+    async (dispatch) => {
+      // Reset message and error
+      dispatch(setLoading(true));
+      dispatch(clearMessageAndError());
+      try {
+        // Delete employee document
+        await deleteDoc(doc(db, "employees", docId));
+        dispatch(actionSuccess("Employee deleted successfully"));
+        dispatch(getEmployees());
+      } catch (error: any) {
+        dispatch(actionFailed({ code: error.code, message: error.message }));
+      }
+    };
