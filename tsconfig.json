@@ -13,7 +13,7 @@
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowJs": true, // Add this line
+    "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
