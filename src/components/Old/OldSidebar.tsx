@@ -1,14 +1,14 @@
 import { Link, NavLink } from "react-router-dom";
 import { CircleUserRound, LineChart, PanelLeftClose } from "lucide-react";
 import { Card } from "../ui/card";
-import { setIsActive } from "@/state/SideBar/SideBarSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/state/store";
+// import { setIsActive } from "@/state/SideBar/SideBarSlice";
+// import { useDispatch } from "react-redux";
+// import { AppDispatch } from "@/state/store";
 import EXOP from "../../../public/EXOP-Make-crop.png";
 import TooltipComponent from "../global/TooltipComponent";
 
 const Sidebar = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
 
   const activeLink =
     "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-red bg-primary";
@@ -44,7 +44,9 @@ const Sidebar = () => {
           </Link>
           <Card className="p-1 mr-2 flex justify-center items-center">
             <TooltipComponent title="Menu">
-              <div onClick={() => dispatch(setIsActive(false))}>
+              <div 
+              // onClick={() => dispatch(setIsActive(false))}
+              >
                 <PanelLeftClose className="text-neutral-500" />
               </div>
             </TooltipComponent>
