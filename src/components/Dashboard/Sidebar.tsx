@@ -6,15 +6,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  CircleUserRound,
-  LineChart,
-  PanelLeftOpen,
-} from "lucide-react";
+import { CircleUserRound, LineChart, PanelLeftOpen } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import EXOP from "../../../public/EXOP-Make-crop.png";
+import React from "react";
 
-const SideBar = () => {
+const SideBar: React.FC = () => {
   const activeLink =
     "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-red bg-primary";
   const normalLink =
