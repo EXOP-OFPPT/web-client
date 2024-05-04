@@ -52,9 +52,14 @@ const formSchema = z.object({
   role: z.string().min(2, {
     message: "Role must be at least 2 characters.",
   }),
-  phone: z.string().min(10, {
-    message: "Phone number must be at least 10 characters.",
-  }),
+  phone: z
+    .string()
+    .min(10, {
+      message: "Phone number must be at least 10 characters.",
+    })
+    .max(10, {
+      message: "Phone number must be at most 10 characters.",
+    }),
 });
 
 type infoProps = {
@@ -66,22 +71,21 @@ type infoProps = {
 };
 
 type UpdateProps = {
-  mode: "text" | "icon";
+  mode: "ghost" | "outline";
   info: infoProps;
 };
 
 const Update = ({ mode, info }: UpdateProps) => {
   const isLoading = useSelector(
-    (state: RootState) => state.createEmployee.loading
+    (state: RootState) => state.updateEmployee.loading
   );
   const message = useSelector(
-    (state: RootState) => state.createEmployee.message
+    (state: RootState) => state.updateEmployee.message
   );
-  const error = useSelector((state: RootState) => state.createEmployee.error);
+  const error = useSelector((state: RootState) => state.updateEmployee.error);
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
 
-  // Then, in your component
   useEffect(() => {
     if (message) {
       toast({
@@ -129,17 +133,13 @@ const Update = ({ mode, info }: UpdateProps) => {
       <Toaster />
       <Dialog>
         <DialogTrigger className="w-full cursor-pointer" asChild>
-          {mode === "text" ? (
-            <div className="h-10 w-10 text-yellow-500">Update</div>
-          ) : (
-            <Button
-              className="h-10 w-10 hover:text-yellow-500"
-              variant="outline"
-              size="icon"
-            >
-              <Edit className="scale-[80%]" />
-            </Button>
-          )}
+          <Button
+            className="h-8 w-8 hover:text-yellow-500"
+            variant={mode}
+            size="icon"
+          >
+            <Edit size={16} />
+          </Button>
         </DialogTrigger>
         <DialogContent className="h-[650px] sm:max-w-[700px] px-1">
           <ScrollArea className="h-full w-full p-4">

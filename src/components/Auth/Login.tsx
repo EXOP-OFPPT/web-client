@@ -41,7 +41,7 @@ const formSchema = z.object({
 
 function Login() {
   const error = useSelector((state: RootState) => state.auth.error);
-  const cookieIsLogin = cookies.get("isLoggedIn");
+  const cookieIsLogin = cookies.get("user");
   const reduxIsLogin = useSelector((state: RootState) => state.auth.isLogin);
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ function Login() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "abdonsila222@gmail.com",
-      password: "123456",
+      password: "123456789",
     },
   });
 
@@ -88,7 +88,6 @@ function Login() {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     dispatch(login(values));
   }
 

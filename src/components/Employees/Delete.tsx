@@ -23,7 +23,7 @@ import {
 } from "@/state/Employees/DeleteSlice";
 
 interface DeleteProps {
-  mode: "text" | "icon";
+  mode: "ghost" | "outline";
   docId: string;
 }
 
@@ -43,7 +43,7 @@ function Delete({ mode, docId }: DeleteProps) {
     if (message) {
       toast({
         variant: "default",
-        title: "Action dispatched successfully",
+        title: "Action dispatched",
         description: message,
         className: "text-primary border-2 border-primary text-start",
         icon: <CheckCircle2 size={40} className="mr-2" />,
@@ -69,13 +69,19 @@ function Delete({ mode, docId }: DeleteProps) {
     <>
       <Toaster />
       <AlertDialog>
-        {mode === "text" ? (
-          <AlertDialogTrigger className="w-full text-red-500 hover:text-red-600 text-start cursor-pointer">
-            Delete
+        {/* <Button
+            className="h-8 w-8 hover:text-yellow-500"
+            variant={mode}
+            size="icon"
+          >
+            <Edit size={16} /> */}
+        {mode === "ghost" ? (
+          <AlertDialogTrigger className="h-8 w-8 flex justify-center items-center cursor-pointer rounded-md hover:bg-secondary dark:hover:bg-accent hover:text-red-500">
+            <Trash2 size={16} />
           </AlertDialogTrigger>
         ) : (
-          <AlertDialogTrigger className="h-10 w-10 border-[1.5px] flex justify-center items-center cursor-pointer rounded-md hover:bg-secondary dark:bg-black dark:hover:bg-accent dark:border-accent hover:text-red-500">
-            <Trash2 className="scale-[80%]" />
+          <AlertDialogTrigger className="h-8 w-8 border-[1.5px] flex justify-center items-center cursor-pointer rounded-md bg-white hover:bg-secondary dark:bg-black dark:hover:bg-accent dark:border-accent hover:text-red-500">
+            <Trash2 size={16} />
           </AlertDialogTrigger>
         )}
         <AlertDialogContent className="bor4der-2 bord5er-red-500">

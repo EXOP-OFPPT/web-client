@@ -1,62 +1,26 @@
 import { Card } from "@/components/ui/card";
-import { setIsActive } from "@/state/SideBar/SideBarSlice";
 import { AppDispatch, RootState } from "@/state/store";
-import { Bell, ChevronDown, ChevronUp, PanelLeftOpen } from "lucide-react";
-import React, { useEffect } from "react";
-import { debounce } from "lodash";
+import { Bell, ChevronDown, ChevronUp } from "lucide-react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import userProfileImage from "/01.jpg";
 import UserProfile from "./UserProfile";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
 import Notification from "./Notification";
 import NavButton from "../global/NavButton";
-import TooltipComponent from "../global/Tooltip";
+import TooltipComponent from "../global/TooltipComponent";
+import Nav from "./SideBar";
 
 const NavBar: React.FC = () => {
   const menu = useSelector((state: RootState) => state.navBar.menu);
-  const isActive = useSelector((state: RootState) => state.sideBar.isActive);
   const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    // [First Render] Ckeck if the window is less than 1000px and the sidebar is active in First Render
-    if (window.innerWidth <= 1000 && isActive) {
-      dispatch(setIsActive(false));
-    }
-
-    // [Resize] Check if the window is less than 1000px and the sidebar is active in Resize
-    const handleResize = debounce(() => {
-      if (window.innerWidth <= 1000 && isActive) {
-        dispatch(setIsActive(false));
-      } else if (window.innerWidth > 1000 && !isActive) {
-        dispatch(setIsActive(true));
-      }
-    }, 200); // delay in milliseconds
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, [isActive, dispatch]);
-
   return (
-    <Card className="fixed flex justify-end items-center rounded-none border-l-0 h-16 w-full z-50">
+    <Card className="fixed flex justify-between items-center rounded-none border-l-0 h-16 px-2 w-full z-50">
       {/*//! Handle display Side Bar */}
-      <div>
-        {!isActive && (
-          <Card className="absolute left-3 top-4 p-1 mr-2 text-white flex justify-center items-center">
-            <TooltipComponent title="Menu">
-              <div onClick={() => dispatch(setIsActive(true))}>
-                <PanelLeftOpen className="text-neutral-500" />
-              </div>
-            </TooltipComponent>
-          </Card>
-        )}
-      </div>
+        <Nav />
       {/*//! NavBar items */}
-      <div
-        className={`absolute h-full mr-2 flex justify-center items-center gap-2 ${
-          isActive ? "right-72" : "right-0"
-        }`}
-      >
+      <div className="h-full flex justify-center items-center gap-2">
         {/* Notification */}
         <TooltipComponent title="Notification">
           <NavButton

@@ -1,101 +1,32 @@
 import { EmployeeType } from "@/state/Employees/GetSlice";
 import { Card } from "../ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+
 import Update from "./Update";
 import Delete from "./Delete";
 
-// function classNames(...classes) {
-//   return classes.filter(Boolean).join(" ");
-// }
 type ProfileCardProps = {
   data: EmployeeType;
 };
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
   return (
-    <Card className="flex flex-col gap-5 justify-between sm:min-w-36 py-3">
-      <div className="flex flex-col items-end px-3">
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Badge className="rounded-md" variant="secondary">
-              Actions
-            </Badge>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Update mode={"text"} info={data} />
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Delete mode={"text"} docId={data.email} />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+    <Card className="flex flex-col gap-1 justify-between sm:min-w-36 py-2">
+      <div className="flex justify-end items-center gap-1 px-3">
+        {/*//! I coment the TooltipComponent beacause it due an instead button error */}
+        {/* <TooltipComponent title="Edit"> */}
+        <Update mode={"ghost"} info={data} />
+        {/* </TooltipComponent> */}
+        {/* <TooltipComponent title="Delete"> */}
+        <Delete mode={"ghost"} docId={data.email} />
+        {/* </TooltipComponent> */}
       </div>
-      {/* <div className="flex flex-col items-end px-7">
-        <Menu as="div" className="relative inline-block text-left">
-          <div>
-            <Menu.Button>
-              <EllipsisVerticalIcon
-                className="-mr-1 h-5 w-5 text-gray-400"
-                aria-hidden="true"
-              />
-            </Menu.Button>
-          </div>
-
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={classNames(
-                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block px-4 py-2 text-sm"
-                      )}
-                    >
-                      Edit
-                    </a>
-                  )}
-                </Menu.Item>
-
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      type="submit"
-                      className={classNames(
-                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                        "block w-full px-4 py-2 text-left text-sm"
-                      )}
-                    >
-                      Delete
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-            </Menu.Items>
-          </Transition>
-        </Menu>
-      </div> */}
+      <Separator orientation="horizontal" className="" />
 
       <div className="p-4 flex flex-col items-center">
         <img
+        loading="lazy"
           src={
             "https://firebasestorage.googleapis.com/v0/b/exop-d02fc.appspot.com/o/EXOP.jpg?alt=media&token=1a450e62-54b9-4792-bc66-852653aac8ed"
           }
