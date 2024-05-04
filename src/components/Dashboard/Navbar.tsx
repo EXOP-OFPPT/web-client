@@ -9,7 +9,7 @@ import { setMenu } from "@/state/NavBar/NavBarSlice";
 import Notification from "./Notification";
 import NavButton from "../global/NavButton";
 import TooltipComponent from "../global/TooltipComponent";
-import Nav from "./SideBar";
+import SideBar from "./SideBar";
 
 const NavBar: React.FC = () => {
   const menu = useSelector((state: RootState) => state.navBar.menu);
@@ -18,7 +18,7 @@ const NavBar: React.FC = () => {
   return (
     <Card className="fixed flex justify-between items-center rounded-none border-l-0 h-16 px-2 w-full z-50">
       {/*//! Handle display Side Bar */}
-        <Nav />
+      <SideBar />
       {/*//! NavBar items */}
       <div className="h-full flex justify-center items-center gap-2">
         {/* Notification */}
