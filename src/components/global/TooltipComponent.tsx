@@ -12,7 +12,7 @@ interface TooltipProps {
 
 const TooltipComponent: React.FC<TooltipProps> = ({ children, title }) => {
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger>{children}</TooltipTrigger>
         <TooltipContent>

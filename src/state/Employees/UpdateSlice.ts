@@ -113,10 +113,11 @@ export const updateEmployee =
             // Check if user already exist
             await dispatch(checkUserExist(email, setEmployeesExist));
             if (!store.getState().createEmployee.employeesExist) {
-                console.log("Creating employee");
+                console.log("Updating employee");
                 //! Update a new document with account id.
                 const ref = doc(db, "employees", email);
                 await updateDoc(ref, updatedData);
+                dispatch(actionSuccess("Employee updated successfully"));
                 dispatch(getEmployees());
             } else {
                 dispatch(

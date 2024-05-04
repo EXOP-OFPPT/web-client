@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import authSlice from "./auth/AuthSlice";
-import sideBarSlice from "./SideBar/SideBarSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
 // --------------- Employees Slices ----------------
 import getSlice from "./Employees/GetSlice";
@@ -15,9 +14,8 @@ export const store = configureStore({
     auth: authSlice,
     getEmployees: getSlice,
     createEmployee: CreateSlice,
-    updatemployee: UpdateSlice,
+    updateEmployee: UpdateSlice,
     deleteEmployee: DeleteSlice,
-    sideBar: sideBarSlice,
     navBar: navBarSlice,
   },
 });

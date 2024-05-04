@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import { EmployeeType } from "@/state/Employees/GetSlice";
 import Delete from "./Delete";
 import Update from "./Update";
@@ -41,7 +41,7 @@ export const columns: ColumnDef<EmployeeType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           First Name
-          <ArrowUpDown className="ml-2 h-4 w-4 scale-[70%]" />
+          <ChevronsUpDown size={12} className="ml-2" />
         </Button>
       );
     },
@@ -49,22 +49,62 @@ export const columns: ColumnDef<EmployeeType>[] = [
   {
     id: "lastName",
     accessorKey: "lastName",
-    header: "Last Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Last Name
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
   },
   {
     id: "phone",
     accessorKey: "phone",
-    header: "Phone",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Phone
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
   },
   {
     id: "email",
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
   },
   {
     id: "role",
     accessorKey: "role",
-    header: "Role",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Role
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
   },
   {
     id: "action",
@@ -73,8 +113,8 @@ export const columns: ColumnDef<EmployeeType>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex justify-center items-center gap-2">
-          <Update mode="icon" info={row.original} />
-          <Delete mode="icon" docId={row.original.email} />
+          <Update mode="outline" info={row.original} />
+          <Delete mode="outline" docId={row.original.email} />
         </div>
       );
     },

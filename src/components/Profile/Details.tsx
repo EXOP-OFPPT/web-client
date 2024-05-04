@@ -4,14 +4,24 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import { Input } from "../ui/input";
 import { useToast } from "../ui/use-toast";
 import { Toaster } from "../ui/toaster";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 type DetailsProps = {};
 
 const Details: React.FC<DetailsProps> = () => {
+  const { firstName, lastName, email, phone, role } = cookies.get("user");
+  const fields = [
+    { value: firstName, editable: true },
+    { value: lastName, editable: true },
+    { value: email, editable: false },
+    { value: phone, editable: true },
+    { value: role, editable: true },
+  ];
+  const inputRefs = Object.keys(fields).map(() =>
+    useRef<HTMLInputElement>(null)
+  );
   const { toast } = useToast();
-  const inputRefs = Array(4)
-    .fill(0)
-    .map(() => useRef<HTMLInputElement>(null));
 
   const copyToClipboard = (index: number) => {
     const inputRef = inputRefs[index];
@@ -35,15 +45,16 @@ const Details: React.FC<DetailsProps> = () => {
         <div className="font-bold pb-7 px-7 uppercase">Detail de Profil</div>
 
         <div className="flex flex-col items-start px-7">
-          {inputRefs.map((inputRef, index) => (
+          {fields.map((field, index) => (
             <div key={index} className="relative w-full mb-5">
               <Input
-                disabled={index % 2 === 0 ? true : false}
-                ref={inputRef}
+                disabled={!field.editable}
+                ref={inputRefs[index]}
                 type="text"
                 id={`voice-search-${index}`}
-                className="text-sm rounded-lg  block w-full p-3 outline-none  "
-                placeholder="Search "
+                className="text-sm rounded-lg  block w-full p-3 outline-none"
+                placeholder="Not available"
+                defaultValue={field.value}
               />
               <button
                 onClick={() => copyToClipboard(index)}

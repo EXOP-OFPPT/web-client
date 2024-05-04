@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const isLogin = cookies.get("isLoggedIn"); // true | false
+  const isLogin = cookies.get("user"); // true | false
   const reduxIsLoading = useSelector((state: RootState) => state.auth.isLoading);
 
   return isLogin || reduxIsLoading ? children : <Navigate to="/login" />;
