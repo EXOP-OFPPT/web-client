@@ -6,7 +6,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { CircleUserRound, LineChart, PanelLeftOpen } from "lucide-react";
+import { CircleUserRound, LineChart, ListTodoIcon, PanelLeftOpen } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import EXOP from "../../../public/EXOP-Make-crop.png";
 import React from "react";
@@ -28,6 +28,10 @@ const SideBar: React.FC = () => {
         {
           path: "employees",
           icon: <CircleUserRound className="scale-75" />,
+        },
+        {
+          path: "kpi",
+          icon: <ListTodoIcon className="scale-75" />,
         },
       ],
     },
