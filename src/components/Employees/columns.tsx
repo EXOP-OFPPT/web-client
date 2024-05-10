@@ -5,6 +5,10 @@ import { ChevronsUpDown } from "lucide-react";
 import { EmployeeType } from "@/state/Employees/GetSlice";
 import Delete from "./Delete";
 import Update from "./Update";
+import Cookies from "universal-cookie";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+const cookie = new Cookies(null, { path: "/" });
+
 
 export const columns: ColumnDef<EmployeeType>[] = [
   {
@@ -30,6 +34,23 @@ export const columns: ColumnDef<EmployeeType>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    id: "avatar",
+    accessorKey: "avatar",
+    header: "Avatar",
+    cell: ({ row }) => {
+
+      return (
+        <Avatar className="h-8 w-8 flex items-center justify-center">
+          <AvatarImage loading="lazy" src={row.original.avatar} className="object-cover" />
+          <AvatarFallback className="text-xs">
+            {row.original.firstName?.charAt(0).toUpperCase()}
+            {row.original.lastName?.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      );
+    },
   },
   {
     id: "firstName",
@@ -111,12 +132,14 @@ export const columns: ColumnDef<EmployeeType>[] = [
     accessorKey: "action",
     header: "Action",
     cell: ({ row }) => {
-      return (
-        <div className="flex justify-center items-center gap-2">
-          <Update mode="outline" info={row.original} />
-          <Delete mode="outline" docId={row.original.email} />
-        </div>
-      );
+      if (cookie.get("user").role == "admin") {
+        return (
+          <div className="flex justify-center items-center gap-2">
+            <Update mode="outline" info={row.original} />
+            <Delete mode="outline" docId={row.original.email} />
+          </div>
+        );
+      }
     },
   },
   //   {
