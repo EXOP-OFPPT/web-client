@@ -43,8 +43,8 @@ const initialState: CreateState = {
 };
 
 // Create slice
-const update = createSlice({
-    name: "update",
+const updateEmplyeeSlice = createSlice({
+    name: "updateEmplyeeSlice",
     initialState,
     reducers: {
         actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -82,9 +82,9 @@ export const {
     setError,
     clearMessageAndError,
     setEmployeesExist,
-} = update.actions;
+} = updateEmplyeeSlice.actions;
 
-export default update.reducer;
+export default updateEmplyeeSlice.reducer;
 
 // Thunk to check if user exist
 export const checkUserExist =
