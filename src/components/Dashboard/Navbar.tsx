@@ -3,15 +3,18 @@ import { AppDispatch, RootState } from "@/state/store";
 import { Bell, ChevronDown, ChevronUp } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import userProfileImage from "/01.jpg";
 import UserProfile from "./UserProfile";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
 import Notification from "./Notification";
 import NavButton from "../global/NavButton";
 import TooltipComponent from "../global/TooltipComponent";
 import SideBar from "./SideBar";
+import Cookies from "universal-cookie";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+const cookies = new Cookies(null, { path: "/" });
 
 const NavBar: React.FC = () => {
+  const user = cookies.get("user");
   const menu = useSelector((state: RootState) => state.navBar.menu);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -45,15 +48,17 @@ const NavBar: React.FC = () => {
                 : () => dispatch(setMenu("userProfile"))
             }
           >
-            <img
-              className="rounded-full w-8 h-8"
-              src={userProfileImage}
-              alt="user-profile"
-            />
+            <Avatar className="w-8 h-8 flex items-center justify-center">
+              <AvatarImage loading="lazy" src={user?.avatar} className="object-cover" />
+              <AvatarFallback className="text-xs">
+                {user?.firstName?.charAt(0).toUpperCase()}
+                {user?.lastName?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
             <p>
               <span className="text-gray-400 text-14">Hi,</span>{" "}
               <span className="text-gray-400 font-bold ml-1 text-14">
-                Michael
+                {user?.firstName}
               </span>
             </p>
             {menu == "userProfile" ? (

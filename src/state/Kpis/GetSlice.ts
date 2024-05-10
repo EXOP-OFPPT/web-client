@@ -10,47 +10,46 @@ interface Error {
     message: string;
 }
 
-export type EmployeeType = {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    role: string;
-    photoURL?: string;
-    avatar?: string;
+export type KpiType = {
+    code: string;
+    title: string;
+    description: string;
+    minTaux: number;
+    currentTaux: number;
+    type: string;
 };
 
 
 // Interface for AuthState
-interface EmployeesState {
-    employees: EmployeeType[] | [];
+interface KpisState {
+    kpis: KpiType[] | [];
     loading: boolean;
     error: Error | null;
     message: string | null;
-    employeesExist: any;
+    kpiExist: any;
 }
 
 
 // Initial state
-const initialState: EmployeesState = {
-    employees: [],
+const initialState: KpisState = {
+    kpis: [],
     loading: false,
     error: null,
     message: null,
-    employeesExist: null,
+    kpiExist: null,
 };
 
 
 
 
 // Create slice
-const getEmployeesSlice = createSlice({
-    name: "getEmployeesSlice",
+const getKpisSlice = createSlice({
+    name: "getKpisSlice",
     initialState,
     reducers: {
         actionSuccess: (state, action: PayloadAction<any>) => {
             state.loading = false;
-            state.employees = action.payload;
+            state.kpis = action.payload;
             state.error = null;
         },
         actionFailed: (state, action: PayloadAction<Error | null>) => {
@@ -67,15 +66,15 @@ const getEmployeesSlice = createSlice({
             state.message = null;
             state.error = null;
         },
-        setEmployeesExist: (state, action: PayloadAction<any>) => {
-            state.employeesExist = action.payload;
+        setKpiExist: (state, action: PayloadAction<any>) => {
+            state.kpiExist = action.payload;
         }
     },
 });
 
-export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError, setEmployeesExist } = getEmployeesSlice.actions;
+export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError, setKpiExist } = getKpisSlice.actions;
 
-export default getEmployeesSlice.reducer;
+export default getKpisSlice.reducer;
 
 //! Async action creator
 // export const observeAuthState = (): AppThunk => dispatch => {
@@ -92,18 +91,18 @@ export default getEmployeesSlice.reducer;
 
 
 // Async action creator
-export const getEmployees = (): AppThunk => async dispatch => {
+export const getKpis = (): AppThunk => async dispatch => {
     dispatch(setLoading(true));
     dispatch(clearMessageAndError());
     try {
-        // Get all employees
-        const querySnapshot = await getDocs(collection(db, "employees"));
-        const employees: DocumentData = [];
+        // Get all kpis
+        const querySnapshot = await getDocs(collection(db, "kpi"));
+        const kpis: DocumentData = [];
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            employees.push(doc.data());
+            kpis.push(doc.data());
         });
-        dispatch(actionSuccess(employees));
+        dispatch(actionSuccess(kpis));
     } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
     } finally {

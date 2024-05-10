@@ -13,13 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 
 import {
   Dialog,
@@ -31,55 +31,59 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { AppDispatch, RootState } from "@/state/store";
-import {
-  Loader2,
-  UserRoundPlus,
-  CheckCircle2,
-  CircleX,
-} from "lucide-react";
+import { Loader2, CheckCircle2, CircleX, Edit } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
-import {
-  clearMessageAndError,
-  createEmployee,
-} from "@/state/Employees/CreateSlice";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
 import { Toaster } from "../ui/toaster";
+import {
+  clearMessageAndError,
+  updateKpi
+} from "@/state/Kpis/UpdateSlice";
 
 const formSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email address.",
+  code: z.string().min(2, {
+    message: "Code must be at least 2 characters.",
   }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
+  title: z.string().min(2, {
+    message: "Title must be at least 2 characters.",
   }),
-  role: z.string().min(2, {
-    message: "Role must be at least 2 characters.",
+  description: z.string().min(2, {
+    message: "Description must be at least 2 characters.",
   }),
-  phone: z.string().min(10, {
-    message: "Phone number must be at least 10 characters.",
+  minTaux: z.number(),
+  currentTaux: z.number().min(0, {
+    message: "Current Taux must be at least 0.",
   }),
-  firstName: z.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: z.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
+  type: z.string(),
 });
 
-function Create() {
+type infoProps = {
+  code: string;
+  title: string;
+  description: string;
+  type: string;
+  minTaux: number;
+  currentTaux: number;
+};
+
+type UpdateProps = {
+  mode: "ghost" | "outline";
+  info: infoProps;
+};
+
+const Update = ({ mode, info }: UpdateProps) => {
   const isLoading = useSelector(
-    (state: RootState) => state.createEmployee.loading
+    (state: RootState) => state.updateKpi.loading
   );
   const message = useSelector(
-    (state: RootState) => state.createEmployee.message
+    (state: RootState) => state.updateKpi.message
   );
-  const error = useSelector((state: RootState) => state.createEmployee.error);
+  const error = useSelector((state: RootState) => state.updateKpi.error);
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
 
-  // Then, in your component
   useEffect(() => {
     if (message) {
       toast({
@@ -106,12 +110,12 @@ function Create() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "abdonsila222@gmail.com",
-      password: "123456",
-      role: "admin",
-      phone: "0606443022",
-      firstName: "Abdellah",
-      lastName: "Nsila",
+      code: info.code,
+      title: info.title,
+      description: info.description,
+      minTaux: info.minTaux,
+      currentTaux: info.currentTaux,
+      type: info.type,
     },
   });
 
@@ -120,29 +124,30 @@ function Create() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    const { email, password, ...rest } = values;
-    const userData = { email, ...rest };
-    dispatch(createEmployee({ email, password, userData }));
+    dispatch(updateKpi({ code: info.code, updatedData: values }));
   }
 
   return (
     <>
       <Toaster />
       <Dialog>
-        <DialogTrigger asChild>
-          <Button>
-            <UserRoundPlus size={20} className="mr-2" />
-            <span>Add Employee</span>
+        <DialogTrigger className="w-full cursor-pointer" asChild>
+          <Button
+            className="h-8 w-8 hover:text-yellow-500"
+            variant={mode}
+            size="icon"
+          >
+            <Edit size={16} />
           </Button>
         </DialogTrigger>
         <DialogContent className="h-[650px] sm:max-w-[700px] px-1">
           <ScrollArea className="h-full w-full p-4">
             <DialogHeader className="mb-4">
               <DialogTitle className="text-primary text-2xl">
-                Create Employee
+                Update Kpi
               </DialogTitle>
               <DialogDescription>
-                Fill in the form below to create a new employee.
+                Fill in the form below to update kpi.
               </DialogDescription>
             </DialogHeader>
             {/* <div className="grid gap-4 py-4">
@@ -154,12 +159,12 @@ function Create() {
               >
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="code"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>code</FormLabel>
                       <FormControl>
-                        <Input placeholder="Email" {...field} />
+                        <Input disabled placeholder="Code" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -167,16 +172,12 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Password"
-                          type="password"
-                          {...field}
-                        />
+                        <Input placeholder="Title" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -184,12 +185,12 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="firstName"
+                  name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Input placeholder="First Name" {...field} />
+                        <Input placeholder="Description" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,12 +198,12 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="minTaux"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>Min Taux</FormLabel>
                       <FormControl>
-                        <Input placeholder="Last Name" {...field} />
+                        <Input disabled placeholder="Min Taux" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -210,12 +211,12 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="currentTaux"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone</FormLabel>
+                      <FormLabel>Current Taux</FormLabel>
                       <FormControl>
-                        <Input placeholder="Phone" {...field} />
+                        <Input placeholder="Current Taux" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -223,32 +224,45 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="role"
+                  name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Role</FormLabel>
+                      <FormLabel>Type</FormLabel>
+                      <FormControl>
+                        <Input disabled placeholder="Type" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* <FormField
+                  control={form.control}
+                  name="value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Value</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Role" />
+                            <SelectValue placeholder="Select Value" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="admin">admin</SelectItem>
-                          <SelectItem value="user">user</SelectItem>
+                          <SelectItem value="C">C</SelectItem>
+                          <SelectItem value="E">E</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
                 {isLoading ? (
                   <Button disabled>
                     <Loader2 size={20} className="mr-2 animate-spin" />
-                    <span>Creating Employee...</span>
+                    <span>Updating Kpi...</span>
                   </Button>
                 ) : (
                   <Button type="submit">Submit</Button>
@@ -263,6 +277,6 @@ function Create() {
       </Dialog>
     </>
   );
-}
+};
 
-export default Create;
+export default Update;

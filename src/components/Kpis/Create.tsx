@@ -33,49 +33,41 @@ import { Input } from "@/components/ui/input";
 import { AppDispatch, RootState } from "@/state/store";
 import {
   Loader2,
-  UserRoundPlus,
   CheckCircle2,
   CircleX,
+  ListPlusIcon,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
-import {
-  clearMessageAndError,
-  createEmployee,
-} from "@/state/Employees/CreateSlice";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
 import { Toaster } from "../ui/toaster";
+import { createKpi, clearMessageAndError } from "@/state/Kpis/CreateSlice";
 
 const formSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email address.",
+  code: z.string().min(2, {
+    message: "Code must be at least 2 characters.",
   }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
+  title: z.string().min(2, {
+    message: "Title must be at least 2 characters.",
   }),
-  role: z.string().min(2, {
-    message: "Role must be at least 2 characters.",
+  description: z.string().min(2, {
+    message: "Description must be at least 2 characters.",
   }),
-  phone: z.string().min(10, {
-    message: "Phone number must be at least 10 characters.",
-  }),
-  firstName: z.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: z.string().min(2, {
-    message: "Last name must be at least 2 characters.",
+  value: z.string().min(1, {
+    message: "Value must be C | E.",
   }),
 });
 
+
 function Create() {
   const isLoading = useSelector(
-    (state: RootState) => state.createEmployee.loading
+    (state: RootState) => state.createKpi.loading
   );
   const message = useSelector(
-    (state: RootState) => state.createEmployee.message
+    (state: RootState) => state.createKpi.message
   );
-  const error = useSelector((state: RootState) => state.createEmployee.error);
+  const error = useSelector((state: RootState) => state.createKpi.error);
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
 
@@ -106,12 +98,10 @@ function Create() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "abdonsila222@gmail.com",
-      password: "123456",
-      role: "admin",
-      phone: "0606443022",
-      firstName: "Abdellah",
-      lastName: "Nsila",
+      code: crypto.randomUUID(),
+      title: "Kpi 5",
+      description: "Description Kpi 5",
+      value: "C",
     },
   });
 
@@ -120,9 +110,7 @@ function Create() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    const { email, password, ...rest } = values;
-    const userData = { email, ...rest };
-    dispatch(createEmployee({ email, password, userData }));
+    dispatch(createKpi({ docId: values.code, kpiData: values }));
   }
 
   return (
@@ -131,18 +119,18 @@ function Create() {
       <Dialog>
         <DialogTrigger asChild>
           <Button>
-            <UserRoundPlus size={20} className="mr-2" />
-            <span>Add Employee</span>
+            <ListPlusIcon size={20} className="mr-2" />
+            <span>Add Kpi</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="h-[650px] sm:max-w-[700px] px-1">
           <ScrollArea className="h-full w-full p-4">
             <DialogHeader className="mb-4">
               <DialogTitle className="text-primary text-2xl">
-                Create Employee
+                Create Kpi
               </DialogTitle>
               <DialogDescription>
-                Fill in the form below to create a new employee.
+                Fill in the form below to create a new Kpi.
               </DialogDescription>
             </DialogHeader>
             {/* <div className="grid gap-4 py-4">
@@ -154,12 +142,12 @@ function Create() {
               >
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="code"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>code</FormLabel>
                       <FormControl>
-                        <Input placeholder="Email" {...field} />
+                        <Input disabled placeholder="Code" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -167,16 +155,12 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Password"
-                          type="password"
-                          {...field}
-                        />
+                        <Input placeholder="Title" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -184,12 +168,12 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="firstName"
+                  name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Input placeholder="First Name" {...field} />
+                        <Input placeholder="Description" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,48 +181,22 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="value"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Last Name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Phone" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
+                      <FormLabel>Value</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Role" />
+                            <SelectValue placeholder="Select Value" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="admin">admin</SelectItem>
-                          <SelectItem value="user">user</SelectItem>
+                          <SelectItem value="C">C</SelectItem>
+                          <SelectItem value="E">E</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -248,7 +206,7 @@ function Create() {
                 {isLoading ? (
                   <Button disabled>
                     <Loader2 size={20} className="mr-2 animate-spin" />
-                    <span>Creating Employee...</span>
+                    <span>Creating kpi...</span>
                   </Button>
                 ) : (
                   <Button type="submit">Submit</Button>

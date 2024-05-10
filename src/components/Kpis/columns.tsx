@@ -2,15 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronsUpDown } from "lucide-react";
-import { EmployeeType } from "@/state/Employees/GetSlice";
 import Delete from "./Delete";
 import Update from "./Update";
 import Cookies from "universal-cookie";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { KpiType } from "@/state/Kpis/GetSlice";
 const cookie = new Cookies(null, { path: "/" });
 
 
-export const columns: ColumnDef<EmployeeType>[] = [
+export const columns: ColumnDef<KpiType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -35,98 +34,153 @@ export const columns: ColumnDef<EmployeeType>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  // {
+  //   id: "code",
+  //   accessorKey: "code",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Code
+  //         <ChevronsUpDown size={12} className="ml-2" />
+  //       </Button>
+  //     );
+  //   },
+  // },
   {
-    id: "avatar",
-    accessorKey: "avatar",
-    header: "Avatar",
+    id: "title",
+    accessorKey: "title",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Title
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
+  },
+  {
+    id: "description",
+    accessorKey: "description",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Description
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
+  },
+  {
+    id: "minTaux",
+    accessorKey: "minTaux",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Min Taux
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
+  },
+  {
+    id: "currentTaux",
+    accessorKey: "currentTaux",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Current Taux
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
+  },
+  {
+    id: "type",
+    accessorKey: "type",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Type
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
+      return (
+        <span>
+          {row.original.type.charAt(0).toUpperCase() + row.original.type.slice(1)}
+        </span>
+      )
+    }
+  },
+  {
+    id: "result",
+    accessorKey: "result",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Result
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      let value;
+      if (row.original.currentTaux < row.original.minTaux && row.original.type == "eliminated") {
+        value = "E";
+      } else if (row.original.currentTaux < row.original.minTaux && row.original.type == "normal") {
+        value = "D";
+      } else if (row.original.currentTaux >= row.original.minTaux) {
+        value = "C";
+      } else {
+        value = "N/A";
+      }
 
       return (
-        <Avatar className="h-8 w-8 flex items-center justify-center">
-          <AvatarImage loading="lazy" src={row.original.avatar} className="object-cover" />
-          <AvatarFallback className="text-xs">
-            {row.original.firstName?.charAt(0).toUpperCase()}
-            {row.original.lastName?.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      );
-    },
-  },
-  {
-    id: "firstName",
-    accessorKey: "firstName",
-    header: ({ column }) => {
-      return (
         <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          First Name
-          <ChevronsUpDown size={12} className="ml-2" />
+          className={`${value == "C" ? "bg-primary hover:bg-primary" : value == "D" ? "bg-neutral-500 hover:bg-neutral-500" : "bg-error hover:bg-error"} cursor-default`}
+          onClick={() => console.log(row.original.code)}>
+          {value}
         </Button>
-      );
-    },
+      )
+    }
   },
-  {
-    id: "lastName",
-    accessorKey: "lastName",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Last Name
-          <ChevronsUpDown size={12} className="ml-2" />
-        </Button>
-      );
-    },
-  },
-  {
-    id: "phone",
-    accessorKey: "phone",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Phone
-          <ChevronsUpDown size={12} className="ml-2" />
-        </Button>
-      );
-    },
-  },
-  {
-    id: "email",
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ChevronsUpDown size={12} className="ml-2" />
-        </Button>
-      );
-    },
-  },
-  {
-    id: "role",
-    accessorKey: "role",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Role
-          <ChevronsUpDown size={12} className="ml-2" />
-        </Button>
-      );
-    },
-  },
+  // {
+  //   id: "improve",
+  //   accessorKey: "improve",
+  //   header: "Improve",
+  //   cell: ({ row }) => {
+  //     if (cookie.get("user").role == "admin") {
+
+  //       return (
+  //         <Button onClick={() => console.log(row.original.code)}>
+  //           Improve
+  //         </Button>
+  //       )
+  //     }
+  //   }
+  // },
   {
     id: "action",
     accessorKey: "action",
@@ -135,50 +189,12 @@ export const columns: ColumnDef<EmployeeType>[] = [
       if (cookie.get("user").role == "admin") {
         return (
           <div className="flex justify-center items-center gap-2">
+            {/* <AddTask mode="outline" info={row.original} /> */}
             <Update mode="outline" info={row.original} />
-            <Delete mode="outline" docId={row.original.email} />
+            <Delete mode="outline" docId={row.original.code} />
           </div>
         );
       }
     },
   },
-  //   {
-  //     id: 'phones',
-  //     accessorKey: "info.phones",
-  //     header: () => <div className="">Phones</div>,
-  //     cell: ({ row }) => {
-  //       const phones = row.original.info.phones;
-  //       return <div>
-  //         {Array.isArray(phones) ?
-  //           // make number link tel:number
-  //           <div className="flex flex-col justify-center items-center gap-2">
-  //             <DropdownMenu>
-  //               <DropdownMenuTrigger asChild>
-  //                 <Button variant="outline">
-  //                   <>
-  //                     <span className="font-semibold text-primary">
-  //                       {phones.length}</span>&nbsp;Phone Numbers<ChevronDown style={{ scale: "0.7" }} />
-  //                   </>
-  //                 </Button>
-  //               </DropdownMenuTrigger>
-  //               <DropdownMenuContent className="w-56">
-  //                 {phones.map((phone, index) => {
-  //                   return (
-  //                     <div key={index}>
-  //                       <DropdownMenuSeparator />
-  //                       <DropdownMenuItem>
-  //                         <a href={`tel:${phone}`} className="font-semibold text-primary">
-  //                           {phone}
-  //                         </a>
-  //                       </DropdownMenuItem>
-  //                     </div>
-  //                   )
-  //                 })}
-  //               </DropdownMenuContent>
-  //             </DropdownMenu>
-  //           </div>
-  //           : "_ _ _ _"}
-  //       </div>
-  //     },
-  //   },
 ];

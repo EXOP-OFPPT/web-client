@@ -33,6 +33,7 @@ import NotFound from "./pages/NotFound";
 import Employees from "./pages/Employees";
 import ResetPassword from "./components/Auth/ResetPassword";
 import Profile from "./pages/Profile";
+import Kpi from "./pages/Kpi";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
           <Routes>
             <Route index path="/" element={<Home />} />
             <Route index path="employees" element={<Employees />} />
+            <Route index path="kpi" element={<Kpi />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>
@@ -95,7 +97,10 @@ const AppRouter = () => {
   //   // return () => {
   //   //   document.head.removeChild(linkElement);
   //   // };
+
   // }, [pickedTheme]);
+  // const employees = useSelector((state: RootState) => state.getEmployees.employees);
+  // const kpis = useSelector((state: RootState) => state.getKpis.kpis);
 
   return (
     <>

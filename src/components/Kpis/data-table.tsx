@@ -32,11 +32,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { EmployeeType } from "@/state/Employees/GetSlice";
+import { KpiType } from "@/state/Kpis/GetSlice";
 
 interface DataTableProps {
-  columns: ColumnDef<EmployeeType>[];
-  data: EmployeeType[];
+  columns: ColumnDef<KpiType>[];
+  data: KpiType[];
 }
 
 export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
@@ -82,13 +82,13 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by Last Name..."
+          placeholder="Filter by title..."
           value={
-            (table.getColumn("lastName")?.getFilterValue() as string) ?? ""
+            (table.getColumn("title")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) => {
             return table
-              .getColumn("lastName")
+              .getColumn("title")
               ?.setFilterValue(event.target.value);
           }}
           className="max-w-xs"

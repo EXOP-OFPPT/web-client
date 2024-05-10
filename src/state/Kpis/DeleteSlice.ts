@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getEmployees } from "./GetSlice";
+import { getKpis } from "./GetSlice";
 
 // Interface for error
 interface Error {
@@ -10,12 +10,11 @@ interface Error {
   message: string;
 }
 
-export type EmployeeType = {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  role: string;
+export type KpiType = {
+  code: string;
+  title: string;
+  description: string;
+  value: string;
 };
 
 // Interface for DeleteState
@@ -33,8 +32,8 @@ const initialState: DeleteState = {
 };
 
 // Create slice
-const deleteEmployeeSlice = createSlice({
-  name: "deleteEmployeeSlice",
+const deleteKpiSlice = createSlice({
+  name: "deleteKpiSlice",
   initialState,
   reducers: {
     actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -68,12 +67,12 @@ export const {
   setMessage,
   setError,
   clearMessageAndError,
-} = deleteEmployeeSlice.actions;
+} = deleteKpiSlice.actions;
 
-export default deleteEmployeeSlice.reducer;
+export default deleteKpiSlice.reducer;
 
 // Thunk to delete employee
-export const deleteEmployee =
+export const deleteKpi =
   (docId: string): AppThunk =>
     async (dispatch) => {
       // Reset message and error
@@ -81,9 +80,9 @@ export const deleteEmployee =
       dispatch(clearMessageAndError());
       try {
         // Delete employee document
-        await deleteDoc(doc(db, "employees", docId));
-        dispatch(actionSuccess("Employee deleted successfully"));
-        dispatch(getEmployees());
+        await deleteDoc(doc(db, "kpi", docId));
+        dispatch(actionSuccess("Kpi deleted successfully"));
+        dispatch(getKpis());
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }

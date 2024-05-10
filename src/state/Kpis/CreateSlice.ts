@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, store } from "../store";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/firebase/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getEmployees } from "./GetSlice";
+import { db } from "@/firebase/firebase";
+import { getKpis } from "./GetSlice";
 
 // Interface for error
 interface Error {
@@ -11,42 +10,41 @@ interface Error {
   message: string;
 }
 
-export type EmployeeType = {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  role: string;
+export type KpiType = {
+  code: string;
+  title: string;
+  description: string;
+  value: string;
 };
 
+
 // Interface for User action payload
-interface UserPayload {
-  email: string;
-  password: string;
-  userData: EmployeeType;
+interface kpiPayload {
+  docId: string;
+  kpiData: KpiType;
 }
 
 // Interface for AuthState
 interface CreateState {
-  employee: EmployeeType | {};
+  kpi: KpiType | {};
   loading: boolean;
   error: Error | null;
   message: string | null;
-  employeesExist: any;
+  kpiExist: any;
 }
 
 // Initial state
 const initialState: CreateState = {
-  employee: {},
+  kpi: {},
   loading: false,
   error: null,
   message: null,
-  employeesExist: null,
+  kpiExist: null,
 };
 
 // Create slice
-const createEmployeeSlice = createSlice({
-  name: "createEmployeeSlice",
+const createKpiSlice = createSlice({
+  name: "createKpiSlice",
   initialState,
   reducers: {
     actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -70,8 +68,8 @@ const createEmployeeSlice = createSlice({
       state.message = null;
       state.error = null;
     },
-    setEmployeesExist: (state, action: PayloadAction<any>) => {
-      state.employeesExist = action.payload;
+    setKpiExist: (state, action: PayloadAction<any>) => {
+      state.kpiExist = action.payload;
     },
   },
 });
@@ -83,17 +81,17 @@ export const {
   setMessage,
   setError,
   clearMessageAndError,
-  setEmployeesExist,
-} = createEmployeeSlice.actions;
+  setKpiExist,
+} = createKpiSlice.actions;
 
-export default createEmployeeSlice.reducer;
+export default createKpiSlice.reducer;
 
 // Thunk to check if user exist
-export const checkUserExist =
+export const checkKpiExist =
   (docId: string, setAction: Function): AppThunk =>
     async (dispatch) => {
       try {
-        const docRef = doc(db, "employees", docId);
+        const docRef = doc(db, "kpi", docId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           dispatch(setAction(docSnap.data()));
@@ -106,44 +104,27 @@ export const checkUserExist =
       }
     };
 
-export const createEmployee =
-  ({ email, password, userData }: UserPayload): AppThunk =>
+export const createKpi =
+  ({ docId, kpiData }: kpiPayload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       // Check if user already exist
-      await dispatch(checkUserExist(email, setEmployeesExist));
-      if (!store.getState().createEmployee.employeesExist) {
-        console.log("Creating employee");
-        try {
-          //! Add a new document with account id.
-          await setDoc(doc(db, "employees", email), {
-            ...userData,
-          });
-          //! Create user with email and password
-          createUserWithEmailAndPassword(auth, email, password)
-            .then(async () => {
-              dispatch(actionSuccess("Employee created successfully"));
-            })
-            .catch(() => {
-              dispatch(setLoading(false));
-              dispatch(
-                actionSuccess(
-                  "Employee data saved, but the user account already exists"
-                )
-              );
-            });
-          dispatch(getEmployees());
-        } catch (error) {
+      await dispatch(checkKpiExist(docId, setKpiExist));
+      if (!store.getState().createKpi.kpiExist) {
+        console.log("Creating kpi");
+        //! Add a new document with account id.
+        await setDoc(doc(db, "kpi", docId), {
+          ...kpiData,
+        }).then(() => {
+          dispatch(actionSuccess("Kpi created successfully"));
+          dispatch(getKpis());
           dispatch(setLoading(false));
-          dispatch(
-            actionFailed({ code: "500", message: "Failed to save employee data" })
-          );
-        }
+        })
       } else {
         dispatch(
-          actionFailed({ code: "500", message: "Employee already exists" })
+          actionFailed({ code: "500", message: "Kpi already exists" })
         );
       }
     };

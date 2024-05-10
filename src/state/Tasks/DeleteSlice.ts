@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getEmployees } from "./GetSlice";
+import { getTasks } from "./GetSlice";
 
 // Interface for error
 interface Error {
@@ -10,12 +10,15 @@ interface Error {
   message: string;
 }
 
-export type EmployeeType = {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  role: string;
+export type taskType = {
+  id: string;
+  title: string;
+  description: string;
+  status: "todo" | "inprogress" | "done";
+  createdAt: string;
+  deadLine: string;
+  assignedTo: string;
+  idKpi: string;
 };
 
 // Interface for DeleteState
@@ -33,8 +36,8 @@ const initialState: DeleteState = {
 };
 
 // Create slice
-const deleteEmployeeSlice = createSlice({
-  name: "deleteEmployeeSlice",
+const deleteTaskSlice = createSlice({
+  name: "deleteTaskSlice",
   initialState,
   reducers: {
     actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -68,22 +71,20 @@ export const {
   setMessage,
   setError,
   clearMessageAndError,
-} = deleteEmployeeSlice.actions;
+} = deleteTaskSlice.actions;
 
-export default deleteEmployeeSlice.reducer;
+export default deleteTaskSlice.reducer;
 
-// Thunk to delete employee
-export const deleteEmployee =
+export const deleteKpi =
   (docId: string): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       try {
-        // Delete employee document
-        await deleteDoc(doc(db, "employees", docId));
-        dispatch(actionSuccess("Employee deleted successfully"));
-        dispatch(getEmployees());
+        await deleteDoc(doc(db, "tasks", docId));
+        dispatch(actionSuccess("task deleted successfully"));
+        dispatch(getTasks());
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }

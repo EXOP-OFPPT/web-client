@@ -6,7 +6,6 @@ import {
   Inbox,
   LogOut,
 } from "lucide-react";
-import userProfileImage from "/01.jpg";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
@@ -14,8 +13,12 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "@/state/auth/AuthSlice";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 const UserProfile: React.FC = () => {
+  const user = cookies.get("user");
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -59,6 +62,7 @@ const UserProfile: React.FC = () => {
     dispatch(setMenu(""));
   };
 
+
   return (
     <Card className="nav-item absolute right-1 top-16 bgg-white darkk:bg-[#42464D] p-8 rounded-lg w-96">
       <div className="flex justify-between items-center">
@@ -73,23 +77,22 @@ const UserProfile: React.FC = () => {
         />
       </div>
       <div className="flex gap-5 items-center mt-6 border-color border-b-1 pb-6">
-        <img
-          className="rounded-full h-24 w-24"
-          src={userProfileImage}
-          alt="user-profile"
-        />
+        <Avatar className="h-24 w-24 flex items-center justify-center">
+          <AvatarImage loading="lazy" src={user?.avatar} className="object-cover" />
+          <AvatarFallback className="text-4xl">
+            {user?.firstName?.charAt(0).toUpperCase()}
+            {user?.lastName?.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
         <div>
           <p className="font-semibold text-xl dark:text-gray-200">
-            {" "}
-            Michael Roberts{" "}
+            {user?.firstName} {user?.lastName}
           </p>
           <p className="text-gray-500 text-sm dark:text-gray-400">
-            {" "}
-            Administrator{" "}
+            {user?.role}
           </p>
           <p className="text-gray-500 text-sm font-semibold dark:text-gray-400">
-            {" "}
-            info@shop.com{" "}
+            {user?.email}
           </p>
         </div>
       </div>

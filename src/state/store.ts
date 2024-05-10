@@ -4,19 +4,30 @@ import { ThunkAction } from 'redux-thunk';
 import authSlice from "./auth/AuthSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
 // --------------- Employees Slices ----------------
-import getSlice from "./Employees/GetSlice";
-import CreateSlice from "./Employees/CreateSlice";
-import DeleteSlice from "./Employees/DeleteSlice";
-import UpdateSlice from "./Employees/UpdateSlice";
+import getEmployeesSlice from "./Employees/GetSlice";
+import createEmployeeSlice from "./Employees/CreateSlice";
+import updateEmployeeSlice from "./Employees/UpdateSlice";
+import deleteEmployeeSlice from "./Employees/DeleteSlice";
+// --------------- Kpis Slices ----------------
+import getKpisSlice from "./Kpis/GetSlice";
+import createKpiSlice from "./Kpis/CreateSlice";
+import updateKpiSlice from "./Kpis/UpdateSlice";
+import deleteKpiSlice from "./Kpis/DeleteSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authSlice,
-    getEmployees: getSlice,
-    createEmployee: CreateSlice,
-    updateEmployee: UpdateSlice,
-    deleteEmployee: DeleteSlice,
     navBar: navBarSlice,
+    // ---------------------------------
+    getEmployees: getEmployeesSlice,
+    createEmployee: createEmployeeSlice,
+    updateEmployee: updateEmployeeSlice,
+    deleteEmployee: deleteEmployeeSlice,
+    // ---------------------------------
+    getKpis: getKpisSlice,
+    createKpi: createKpiSlice,
+    updateKpi: updateKpiSlice,
+    deleteKpi: deleteKpiSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

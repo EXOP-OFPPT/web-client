@@ -10,47 +10,46 @@ interface Error {
     message: string;
 }
 
-export type EmployeeType = {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    role: string;
-    photoURL?: string;
-    avatar?: string;
+export type taskType = {
+    id: string;
+    title: string;
+    description: string;
+    status: "todo" | "inprogress" | "done";
+    createdAt: string;
+    deadLine: string;
+    assignedTo: string;
+    idKpi: string;
 };
 
 
 // Interface for AuthState
-interface EmployeesState {
-    employees: EmployeeType[] | [];
+interface tasksState {
+    tasks: taskType[] | [];
     loading: boolean;
     error: Error | null;
     message: string | null;
-    employeesExist: any;
 }
 
 
 // Initial state
-const initialState: EmployeesState = {
-    employees: [],
+const initialState: tasksState = {
+    tasks: [],
     loading: false,
     error: null,
     message: null,
-    employeesExist: null,
 };
 
 
 
 
 // Create slice
-const getEmployeesSlice = createSlice({
-    name: "getEmployeesSlice",
+const getTasksSlice = createSlice({
+    name: "getTasksSlice",
     initialState,
     reducers: {
         actionSuccess: (state, action: PayloadAction<any>) => {
             state.loading = false;
-            state.employees = action.payload;
+            state.tasks = action.payload;
             state.error = null;
         },
         actionFailed: (state, action: PayloadAction<Error | null>) => {
@@ -67,15 +66,12 @@ const getEmployeesSlice = createSlice({
             state.message = null;
             state.error = null;
         },
-        setEmployeesExist: (state, action: PayloadAction<any>) => {
-            state.employeesExist = action.payload;
-        }
     },
 });
 
-export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError, setEmployeesExist } = getEmployeesSlice.actions;
+export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError } = getTasksSlice.actions;
 
-export default getEmployeesSlice.reducer;
+export default getTasksSlice.reducer;
 
 //! Async action creator
 // export const observeAuthState = (): AppThunk => dispatch => {
@@ -92,18 +88,18 @@ export default getEmployeesSlice.reducer;
 
 
 // Async action creator
-export const getEmployees = (): AppThunk => async dispatch => {
+export const getTasks = (): AppThunk => async dispatch => {
     dispatch(setLoading(true));
     dispatch(clearMessageAndError());
     try {
-        // Get all employees
-        const querySnapshot = await getDocs(collection(db, "employees"));
-        const employees: DocumentData = [];
+        // Get all kpis
+        const querySnapshot = await getDocs(collection(db, "kpi"));
+        const kpis: DocumentData = [];
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
-            employees.push(doc.data());
+            kpis.push(doc.data());
         });
-        dispatch(actionSuccess(employees));
+        dispatch(actionSuccess(kpis));
     } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
     } finally {
