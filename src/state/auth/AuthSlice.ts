@@ -3,7 +3,7 @@ import { AppThunk, store } from '../store';
 import { auth, db } from '@/firebase/firebase';
 import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import Cookies from 'universal-cookie';
-import { doc, DocumentData, getDoc } from "firebase/firestore";
+import { doc, DocumentData, getDoc, updateDoc } from "firebase/firestore";
 
 const cookies = new Cookies(null, { path: '/' });
 
@@ -134,27 +134,29 @@ export const getUserProfile = (): AppThunk => async dispatch => {
 
 export const updatePhotoProfile = (photoURL: string, currentEmail: string): AppThunk => async dispatch => {
   try {
-    dispatch(setLoading(true));
     dispatch(clearMessageAndError())
     const user = auth.currentUser;
     if (user !== null) {
       await updateProfile(user, {
         photoURL
       }).then(async () => {
-        dispatch(setLoading(false));
-        // get the updated user profile
-        console.log(currentEmail)
-        await dispatch(checkUserExist(currentEmail));
-        await dispatch(getUserProfile());
-        const state = store.getState();
-        cookies.set('user', JSON.stringify(state.auth.user), { path: '/' });
+        //! Update a new document with account id.
+        const ref = doc(db, "employees", currentEmail);
+        await updateDoc(ref, { avatar: photoURL }).then(async () => {
+          // get the updated user profile
+          console.log(currentEmail)
+          await dispatch(checkUserExist(currentEmail));
+          await dispatch(getUserProfile());
+          const state = store.getState();
+          const expiryDate = new Date();
+          expiryDate.setDate(expiryDate.getDate() + 7); // Set the date to 7 days in the future
+          cookies.set('user', JSON.stringify(state.auth.user), { path: '/', expires: expiryDate });
+        })
       }).catch((error) => {
-        dispatch(setLoading(false));
         dispatch(actionFailed({ code: error.code, message: error.message }));
       });
     }
   } catch (error: any) {
-    dispatch(setLoading(false));
     dispatch(actionFailed({ code: error.code, message: error.message }));
   }
 };
@@ -172,7 +174,9 @@ export const login = ({ email, password }: LoginPayload): AppThunk => async disp
           throw new Error("Failed to get user profile");
         }
         const state = store.getState();
-        cookies.set('user', JSON.stringify(state.auth.user), { path: '/' });
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 7); // Set the date to 7 days in the future
+        cookies.set('user', JSON.stringify(state.auth.user), { path: '/', expires: expiryDate });
         dispatch(actionSuccess());
         dispatch(setMessage("User logged in successfully!"));
       })
@@ -190,10 +194,10 @@ export const login = ({ email, password }: LoginPayload): AppThunk => async disp
 export const logoutUser = (): AppThunk => async dispatch => {
   try {
     dispatch(clearMessageAndError())
-    await signOut(auth);
-    cookies.remove('user', { path: '/' });
-    dispatch(setLoading(false));
-    dispatch(logout());
+    await signOut(auth).then(() => {
+      cookies.remove('user', { path: '/' });
+      dispatch(logout());
+    });
   } catch (error: any) {
     dispatch(actionFailed({ code: error.code, message: error.message }));
   }
