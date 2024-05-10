@@ -16,6 +16,8 @@ export type EmployeeType = {
     phone: string;
     email: string;
     role: string;
+    photoURL?: string;
+    avatar?: string;
 };
 
 
@@ -42,8 +44,8 @@ const initialState: EmployeesState = {
 
 
 // Create slice
-const get = createSlice({
-    name: "get",
+const getEmployeesSlice = createSlice({
+    name: "getEmployeesSlice",
     initialState,
     reducers: {
         actionSuccess: (state, action: PayloadAction<any>) => {
@@ -71,9 +73,9 @@ const get = createSlice({
     },
 });
 
-export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError, setEmployeesExist } = get.actions;
+export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError, setEmployeesExist } = getEmployeesSlice.actions;
 
-export default get.reducer;
+export default getEmployeesSlice.reducer;
 
 //! Async action creator
 // export const observeAuthState = (): AppThunk => dispatch => {
