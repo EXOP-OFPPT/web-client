@@ -12,7 +12,6 @@ type NavBarProps = {};
 const Navbar: React.FC<NavBarProps> = () => {
   const user = cookies.get("user");
   const navigate = useNavigate();
-  console.log(user);
 
   return (
     <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">
