@@ -107,7 +107,7 @@ function Create() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "abdonsila222@gmail.com",
-      password: "6546848",
+      password: "123456",
       role: "admin",
       phone: "0606443022",
       firstName: "Abdellah",
