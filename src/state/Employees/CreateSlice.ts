@@ -45,8 +45,8 @@ const initialState: CreateState = {
 };
 
 // Create slice
-const create = createSlice({
-  name: "create",
+const createEmployeeSlice = createSlice({
+  name: "createEmployeeSlice",
   initialState,
   reducers: {
     actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -84,59 +84,66 @@ export const {
   setError,
   clearMessageAndError,
   setEmployeesExist,
-} = create.actions;
+} = createEmployeeSlice.actions;
 
-export default create.reducer;
+export default createEmployeeSlice.reducer;
 
 // Thunk to check if user exist
 export const checkUserExist =
   (docId: string, setAction: Function): AppThunk =>
-  async (dispatch) => {
-    try {
-      const docRef = doc(db, "employees", docId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        dispatch(setAction(docSnap.data()));
-      } else {
-        // docSnap.data() will be undefined in this case
+    async (dispatch) => {
+      try {
+        const docRef = doc(db, "employees", docId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          dispatch(setAction(docSnap.data()));
+        } else {
+          // docSnap.data() will be undefined in this case
+          dispatch(setAction(null));
+        }
+      } catch (error: any) {
         dispatch(setAction(null));
       }
-    } catch (error: any) {
-      dispatch(setAction(null));
-    }
-  };
+    };
 
 export const createEmployee =
   ({ email, password, userData }: UserPayload): AppThunk =>
-  async (dispatch) => {
-    // Reset message and error
-    dispatch(setLoading(true));
-    dispatch(clearMessageAndError());
-    // Check if user already exist
-    await dispatch(checkUserExist(email, setEmployeesExist));
-    if (!store.getState().createEmployee.employeesExist) {
-      console.log("Creating employee");
-      //! Add a new document with account id.
-      await setDoc(doc(db, "employees", email), {
-        ...userData,
-      });
-      //! Create user with email and password
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(async () => {
-          dispatch(actionSuccess("Employee created successfully"));
-        })
-        .catch(() => {
+    async (dispatch) => {
+      // Reset message and error
+      dispatch(setLoading(true));
+      dispatch(clearMessageAndError());
+      // Check if user already exist
+      await dispatch(checkUserExist(email, setEmployeesExist));
+      if (!store.getState().createEmployee.employeesExist) {
+        console.log("Creating employee");
+        try {
+          //! Add a new document with account id.
+          await setDoc(doc(db, "employees", email), {
+            ...userData,
+          });
+          //! Create user with email and password
+          createUserWithEmailAndPassword(auth, email, password)
+            .then(async () => {
+              dispatch(actionSuccess("Employee created successfully"));
+            })
+            .catch(() => {
+              dispatch(setLoading(false));
+              dispatch(
+                actionSuccess(
+                  "Employee data saved, but the user account already exists"
+                )
+              );
+            });
+          dispatch(getEmployees());
+        } catch (error) {
           dispatch(setLoading(false));
           dispatch(
-            actionSuccess(
-              "Employee created successfully / The User account is already exist"
-            )
+            actionFailed({ code: "500", message: "Failed to save employee data" })
           );
-        });
-      dispatch(getEmployees());
-    } else {
-      dispatch(
-        actionFailed({ code: "500", message: "Employee already exists" })
-      );
-    }
-  };
+        }
+      } else {
+        dispatch(
+          actionFailed({ code: "500", message: "Employee already exists" })
+        );
+      }
+    };
