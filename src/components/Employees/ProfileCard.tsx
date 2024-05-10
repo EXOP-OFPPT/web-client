@@ -5,34 +5,51 @@ import { Separator } from "@/components/ui/separator";
 
 import Update from "./Update";
 import Delete from "./Delete";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 type ProfileCardProps = {
   data: EmployeeType;
 };
 
+
 const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
+  const user = cookies.get("user");
+
   return (
     <Card className="flex flex-col gap-1 justify-between sm:min-w-36 py-2">
       <div className="flex justify-end items-center gap-1 px-3">
-        {/*//! I coment the TooltipComponent beacause it due an instead button error */}
-        {/* <TooltipComponent title="Edit"> */}
-        <Update mode={"ghost"} info={data} />
-        {/* </TooltipComponent> */}
-        {/* <TooltipComponent title="Delete"> */}
-        <Delete mode={"ghost"} docId={data.email} />
-        {/* </TooltipComponent> */}
+        {user.role === "admin" &&
+          <>
+            {/*//! I coment the TooltipComponent beacause it due an instead button error */}
+            {/* <TooltipComponent title="Edit"> */}
+            <Update mode={"ghost"} info={data} />
+            {/* </TooltipComponent> */}
+            {/* <TooltipComponent title="Delete"> */}
+            <Delete mode={"ghost"} docId={data.email} />
+            {/* </TooltipComponent> */}
+          </>
+        }
       </div>
-      <Separator orientation="horizontal" className="" />
+      <Separator orientation="horizontal" />
 
       <div className="p-4 flex flex-col items-center">
-        <img
+        <Avatar className="w-32 h-32 flex items-center justify-center">
+          <AvatarImage loading="lazy" src={data.avatar} className="object-cover" />
+          <AvatarFallback className="text-4xl">
+            {data?.firstName?.charAt(0).toUpperCase()}
+            {data?.lastName?.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        {/* <img
         loading="lazy"
           src={
             "https://firebasestorage.googleapis.com/v0/b/exop-d02fc.appspot.com/o/EXOP.jpg?alt=media&token=1a450e62-54b9-4792-bc66-852653aac8ed"
           }
           alt={data.firstName}
           className="w-24 h-24 mb-3 rounded-full shadow-lg"
-        />
+        /> */}
         <div className="text-center">
           <h2 className="text-xl font-bold capitalize ">
             {data.firstName} {data.lastName}
