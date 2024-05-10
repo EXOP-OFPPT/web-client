@@ -10,8 +10,8 @@ import "./style/index.css";
 // cookies.set("isLoggedIn", "true", { path: "/" });
 
 // ------------- Redux import --------------
-import { Provider, useSelector } from "react-redux";
-import { RootState, store } from "./state/store";
+import { Provider } from "react-redux";
+import { store } from "./state/store";
 
 // ------------- Router import --------------
 import {

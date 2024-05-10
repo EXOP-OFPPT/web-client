@@ -146,7 +146,6 @@ export const columns: ColumnDef<KpiType>[] = [
       );
     },
     cell: ({ row }) => {
-      console.log(row.original.currentTaux < row.original.minTaux)
       let value;
       if (row.original.currentTaux < row.original.minTaux && row.original.type == "eliminated") {
         value = "E";

@@ -7,6 +7,7 @@ import Update from "./Update";
 import Delete from "./Delete";
 import Cookies from "universal-cookie";
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
 const cookies = new Cookies(null, { path: "/" });
 
 type KpiCardProps = {
@@ -16,6 +17,19 @@ type KpiCardProps = {
 
 const KpiCard: React.FC<KpiCardProps> = ({ data }) => {
   const user = cookies.get("user");
+  const [value, setValue] = useState<string>("");
+  useEffect(() => {
+    if (data.currentTaux < data.minTaux && data.type == "eliminated") {
+      setValue("E");
+    } else if (data.currentTaux < data.minTaux && data.type == "normal") {
+      setValue("D");
+    } else if (data.currentTaux >= data.minTaux) {
+      setValue("C");
+    } else {
+      setValue("N/A");
+    }
+  }, []);
+
 
   return (
     <Card className="flex flex-col gap-1 justify-between sm:min-w-36 py-2">
@@ -40,10 +54,10 @@ const KpiCard: React.FC<KpiCardProps> = ({ data }) => {
             {data.title}
           </h2>
           <Badge
-            variant={data.value == "E" ? "destructive" : "default"}
-            className="capitalize"
+            variant={"default"}
+            className={`capitalize ${value == "C" ? "bg-primary hover:bg-primary" : value == "D" ? "bg-neutral-500 hover:bg-neutral-500" : "bg-error hover:bg-error"}`}
           >
-            {data.value}
+            {value}
           </Badge>
           <div className="grid grid-cols-3 gap-4 mt-4">
             <h2 className="text-xl font-bold capitalize ">
