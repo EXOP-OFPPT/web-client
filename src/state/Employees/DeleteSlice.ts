@@ -33,8 +33,8 @@ const initialState: DeleteState = {
 };
 
 // Create slice
-const deleteSlice = createSlice({
-  name: "delete",
+const deleteEmployeeSlice = createSlice({
+  name: "deleteEmployeeSlice",
   initialState,
   reducers: {
     actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -68,9 +68,9 @@ export const {
   setMessage,
   setError,
   clearMessageAndError,
-} = deleteSlice.actions;
+} = deleteEmployeeSlice.actions;
 
-export default deleteSlice.reducer;
+export default deleteEmployeeSlice.reducer;
 
 // Thunk to delete employee
 export const deleteEmployee =
