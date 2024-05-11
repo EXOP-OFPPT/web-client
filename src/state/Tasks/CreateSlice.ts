@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, store } from "../store";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getTasks } from "./GetSlice";
 
@@ -14,17 +14,22 @@ export type taskType = {
   id: string;
   title: string;
   description: string;
-  status: "todo" | "inprogress" | "done";
-  createdAt: string;
-  deadLine: string;
+  status: string;
+  createdAt: Timestamp;
+  deadLine: Timestamp;
+  completedAt?: Timestamp | undefined;
   assignedTo: string;
-  idKpi: string;
+  kpiCode: string;
 };
 
 
 interface taskPayload {
   docId: string;
   taskData: taskType;
+  user: {
+    role: string;
+    email: string;
+  };
 }
 
 interface CreateState {
@@ -70,7 +75,7 @@ const createTaskSlice = createSlice({
       state.message = null;
       state.error = null;
     },
-    setKpiExist: (state, action: PayloadAction<any>) => {
+    setTaskExist: (state, action: PayloadAction<any>) => {
       state.taskExist = action.payload;
     },
   },
@@ -83,12 +88,12 @@ export const {
   setMessage,
   setError,
   clearMessageAndError,
-  setKpiExist,
+  setTaskExist,
 } = createTaskSlice.actions;
 
 export default createTaskSlice.reducer;
 
-export const checkKpiExist =
+export const checkTaskExist =
   (docId: string, setAction: Function): AppThunk =>
     async (dispatch) => {
       try {
@@ -106,13 +111,13 @@ export const checkKpiExist =
     };
 
 export const createTask =
-  ({ docId, taskData }: taskPayload): AppThunk =>
+  ({ docId, taskData, user }: taskPayload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       // Check if kpi already exist
-      await dispatch(checkKpiExist(docId, setKpiExist));
+      await dispatch(checkTaskExist(docId, setTaskExist));
       if (!store.getState().createKpi.kpiExist) {
         console.log("Creating Task");
         //! Add a new document with account id.
@@ -120,7 +125,7 @@ export const createTask =
           ...taskData,
         }).then(() => {
           dispatch(actionSuccess("Task created successfully"));
-          dispatch(getTasks());
+          dispatch(getTasks(user.role, user.email));
           dispatch(setLoading(false));
         })
       } else {
