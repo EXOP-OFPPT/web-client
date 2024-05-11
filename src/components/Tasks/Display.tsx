@@ -1,6 +1,6 @@
 // import { useSelector } from "react-redux";
 // import { RootState } from "@/state/store";
-// import KpiCard from "./KpiCard";
+// import KpiCard from "./TaskCard";
 
 export default function DisplayTasksCards() {
   // const data = useSelector((state: RootState) => state.getKpis.kpis);
