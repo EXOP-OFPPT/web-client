@@ -13,6 +13,11 @@ import getKpisSlice from "./Kpis/GetSlice";
 import createKpiSlice from "./Kpis/CreateSlice";
 import updateKpiSlice from "./Kpis/UpdateSlice";
 import deleteKpiSlice from "./Kpis/DeleteSlice";
+// --------------- Tasks Slices ----------------
+import getTasksSlice from "./Tasks/GetSlice";
+import createTaskSlice from "./Tasks/CreateSlice";
+import updateTaskSlice from "./Tasks/UpdateSlice";
+import deleteTaskSlice from "./Tasks/DeleteSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +33,11 @@ export const store = configureStore({
     createKpi: createKpiSlice,
     updateKpi: updateKpiSlice,
     deleteKpi: deleteKpiSlice,
+    // ---------------------------------
+    getTasks: getTasksSlice,
+    createTask: createTaskSlice,
+    updateTask: updateTaskSlice,
+    deleteTask: deleteTaskSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
