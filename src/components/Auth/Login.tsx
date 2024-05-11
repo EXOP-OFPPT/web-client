@@ -22,9 +22,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Card } from "../ui/card";
 import { ModeToggle } from "../global/mode-toggle";
 import { Button } from "../ui/button";
-
 import "./LoginStyle.css";
-import icon from "@/assets/fingerprint.svg";
+import EXOP from "../../../public/EXOP-Make-crop.png";
+// import icon from "@/assets/fingerprint.svg";
 import arrow from "@/assets/arrow.svg";
 import Cookies from "universal-cookie";
 import { CircleX, Loader2 } from "lucide-react";
@@ -110,10 +110,11 @@ function Login() {
                 onSubmit={form.handleSubmit(onSubmit)}
               >
                 <div className="social-icons">
-                  <img
+                  <img src={EXOP} alt="EXOP Logo" className="w-24 ml-3" />
+                  {/* <img
                     className="fingerprint fill-current text-green-600"
                     src={icon}
-                  />
+                  /> */}
                 </div>
                 <h1>Connectez-vous</h1>
                 <small>Utilisez votre email & mot de passe</small>
