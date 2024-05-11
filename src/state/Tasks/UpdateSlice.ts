@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getTasks } from "./GetSlice";
 
@@ -14,18 +14,23 @@ export type taskType = {
     id: string;
     title: string;
     description: string;
-    status: "todo" | "inprogress" | "done";
-    createdAt: string;
-    deadLine: string;
+    status: string;
+    createdAt: Timestamp;
+    deadLine: Timestamp;
+    completedAt?: Timestamp;
     assignedTo: string;
-    idKpi: string;
+    kpiCode: string;
 };
 
 
 // Interface for User action payload
-interface UpdatedKpiPayload {
-    code: string;
-    updatedData: taskType;
+interface UpdatedTaskPayload {
+    id: string;
+    updatedData: any;
+    user: {
+        role: string;
+        email: string;
+    }
 }
 
 // Interface for AuthState
@@ -85,18 +90,18 @@ export const {
 export default updateTaskSlice.reducer;
 
 
-export const updateKpi =
-    ({ code, updatedData }: UpdatedKpiPayload): AppThunk =>
+export const updateTask =
+    ({ id, updatedData, user }: UpdatedTaskPayload): AppThunk =>
         async (dispatch) => {
             // Reset message and error
             dispatch(setLoading(true));
             dispatch(clearMessageAndError());
             try {
                 console.log("Updating task");
-                const ref = doc(db, "task", code);
+                const ref = doc(db, "tasks", id);
                 await updateDoc(ref, updatedData);
-                dispatch(actionSuccess("task updated successfully"));
-                dispatch(getTasks());
+                dispatch(actionSuccess("Task updated successfully"));
+                dispatch(getTasks(user.role, user.email));
             } catch {
                 dispatch(
                     actionFailed({ code: "500", message: "Update task failed" })
