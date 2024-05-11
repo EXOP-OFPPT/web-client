@@ -17,7 +17,6 @@ export type taskType = {
   status: string;
   createdAt: Timestamp;
   deadLine: Timestamp;
-  completedAt?: Timestamp | undefined;
   assignedTo: string;
   kpiCode: string;
 };

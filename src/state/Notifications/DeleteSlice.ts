@@ -26,7 +26,6 @@ export type taskType = {
   createdAt: string;
   deadLine: string;
   assignedTo: string;
-  completedAt?: string;
   kpiCode: string;
 };
 

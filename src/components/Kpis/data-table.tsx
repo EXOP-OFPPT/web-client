@@ -149,6 +149,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => console.log(row.original.code)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

@@ -32,12 +32,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { EmployeeType } from "@/state/Employees/GetSlice";
-import { RefreshCcw } from "lucide-react";
+import { TaskType } from "@/state/Tasks/GetSlice";
 
 interface DataTableProps {
-  columns: ColumnDef<EmployeeType>[];
-  data: EmployeeType[];
+  columns: ColumnDef<TaskType>[];
+  data: TaskType[];
 }
 
 export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
@@ -82,24 +81,19 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
   return (
     <div>
       <div className="flex items-center py-4">
-        {/* Filter Input */}
         <Input
-          placeholder="Filter by Last Name..."
+          placeholder="Filter by title..."
           value={
-            (table.getColumn("lastName")?.getFilterValue() as string) ?? ""
+            (table.getColumn("title")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) => {
             return table
-              .getColumn("lastName")
+              .getColumn("title")
               ?.setFilterValue(event.target.value);
           }}
           className="max-w-xs"
         />
-        {/* Refresh Buttton */}
-        <Button onClick={() => window.location.reload()} className="ml-2" variant={"outline"} size={"icon"}>
-          <RefreshCcw size={20} />
-        </Button>
-        {/* Drop Menu */}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto flex gap-2">

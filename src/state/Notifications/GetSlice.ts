@@ -15,10 +15,9 @@ export type TaskType = {
     title: string;
     description: string;
     status: "todo" | "inprogress" | "done" | "verified";
-    assignedTo: string;
     createdAt: Timestamp;
     deadLine: Timestamp;
-    completedAt?: Timestamp;
+    assignedTo: string;
     kpiCode: string;
 };
 
@@ -104,7 +103,6 @@ export const getTasks = (role: string, email: string): AppThunk => async dispatc
                     ...data,
                     createdAt: data.createdAt.toDate().toISOString(),
                     deadLine: data.deadLine.toDate().toISOString(),
-                    completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
                 });
             });
             dispatch(actionSuccess(tasks));
@@ -120,7 +118,6 @@ export const getTasks = (role: string, email: string): AppThunk => async dispatc
                     ...data,
                     createdAt: data.createdAt.toDate().toISOString(),
                     deadLine: data.deadLine.toDate().toISOString(),
-                    completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
                 });
             });
             dispatch(actionSuccess(tasks));
@@ -131,5 +128,4 @@ export const getTasks = (role: string, email: string): AppThunk => async dispatc
         dispatch(setLoading(false));
     }
 };
-
 
