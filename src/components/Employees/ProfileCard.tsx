@@ -7,6 +7,10 @@ import Update from "./Update";
 import Delete from "./Delete";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Cookies from "universal-cookie";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/state/store";
+import { getTasks } from "@/state/Tasks/GetSlice";
 const cookies = new Cookies(null, { path: "/" });
 
 type ProfileCardProps = {
@@ -16,6 +20,29 @@ type ProfileCardProps = {
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
   const user = cookies.get("user");
+  const tasks = useSelector((state: RootState) => state.getTasks.tasks);
+  const verified = tasks.filter((task) => task.status === "verified" && task.assignedTo === data.email);
+  const done = tasks.filter((task) => task.status === "done" && task.assignedTo === data.email);
+  const inProgress = tasks.filter((task) => task.status === "inprogress" && task.assignedTo === data.email);
+  const todo = tasks.filter((task) => task.status === "todo" && task.assignedTo === data.email);
+  const [productivity, setProductivity] = useState<number>(0);
+  const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(() => {
+    dispatch(getTasks("admin", ""))
+  }, [dispatch])
+
+  useEffect(() => {
+    const currentProductivity = (
+      (verified.length * 1.0 +
+        done.length * 0.75 +
+        inProgress.length * 0.5 +
+        todo.length * 0.0) /
+      (tasks.length * 1.0)
+    ) * 100;
+    setProductivity(currentProductivity);
+  }, [tasks]);
+
 
   return (
     <Card className="flex flex-col gap-1 justify-between sm:min-w-36 py-2">
@@ -42,14 +69,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
             {data?.lastName?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-        {/* <img
-        loading="lazy"
-          src={
-            "https://firebasestorage.googleapis.com/v0/b/exop-d02fc.appspot.com/o/EXOP.jpg?alt=media&token=1a450e62-54b9-4792-bc66-852653aac8ed"
-          }
-          alt={data.firstName}
-          className="w-24 h-24 mb-3 rounded-full shadow-lg"
-        /> */}
         <div className="text-center">
           <h2 className="text-xl font-bold capitalize ">
             {data.firstName} {data.lastName}
@@ -62,26 +81,29 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
           </Badge>
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="p-1">
-              Finis<div className="text-xl font-bold">{5}</div>
+              Verified<div className="text-xl font-bold">{verified.length}</div>
             </div>
             <div className="p-1">
-              En cours
-              <div className="text-xl font-bold">{2}</div>
+              Done<div className="text-xl font-bold">{done.length}</div>
             </div>
             <div className="p-1">
-              Non-Finis<div className="text-xl font-bold">{1}</div>
+              In Progress
+              <div className="text-xl font-bold">{inProgress.length}</div>
+            </div>
+            <div className="p-1">
+              Todo<div className="text-xl font-bold">{todo.length}</div>
             </div>
           </div>
 
           <div className="mt-5">
             <p className="">Productivite</p>
           </div>
-          {/* <div className="mt-4 w-full bg-gray-200 rounded-lg">
+          <div className="mt-4 w-full bg-gray-200 rounded-lg">
             <div
               className="h-2 bg-blue-500 rounded-lg"
-              style={{ width: `${data.progress * 10}%` }}
+              style={{ width: `${productivity}%` }}
             ></div>
-          </div> */}
+          </div>
         </div>
       </div>
     </Card>
