@@ -10,15 +10,24 @@ interface Error {
   message: string;
 }
 
+interface DeletePyload {
+  docId: string;
+  user: {
+    role: string;
+    email: string;
+  };
+}
+
 export type taskType = {
   id: string;
   title: string;
   description: string;
-  status: "todo" | "inprogress" | "done";
+  status: "todo" | "inprogress" | "done"| "verified";
   createdAt: string;
   deadLine: string;
   assignedTo: string;
-  idKpi: string;
+  completedAt?: string;
+  kpiCode: string;
 };
 
 // Interface for DeleteState
@@ -75,16 +84,16 @@ export const {
 
 export default deleteTaskSlice.reducer;
 
-export const deleteKpi =
-  (docId: string): AppThunk =>
+export const deleteTask =
+  ({ docId, user }: DeletePyload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       try {
         await deleteDoc(doc(db, "tasks", docId));
-        dispatch(actionSuccess("task deleted successfully"));
-        dispatch(getTasks());
+        dispatch(actionSuccess("Task deleted successfully"));
+        dispatch(getTasks(user.role, user.email));
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }
