@@ -6,6 +6,7 @@ import Delete from "./Delete";
 import Update from "./Update";
 import Cookies from "universal-cookie";
 import { KpiType } from "@/state/Kpis/GetSlice";
+import AddTask from "../Tasks/Create";
 const cookie = new Cookies(null, { path: "/" });
 
 
@@ -189,7 +190,7 @@ export const columns: ColumnDef<KpiType>[] = [
       if (cookie.get("user").role == "admin") {
         return (
           <div className="flex justify-center items-center gap-2">
-            {/* <AddTask mode="outline" info={row.original} /> */}
+            <AddTask mode="outline" kpiCode={row.original.code} />
             <Update mode="outline" info={row.original} />
             <Delete mode="outline" docId={row.original.code} />
           </div>
