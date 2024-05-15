@@ -15,6 +15,7 @@ export type taskType = {
   title: string;
   description: string;
   status: string;
+  bonus: number;
   createdAt: Timestamp;
   deadLine: Timestamp;
   completedAt?: Timestamp | undefined;
