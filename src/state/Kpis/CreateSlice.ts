@@ -14,7 +14,8 @@ export type KpiType = {
   code: string;
   title: string;
   description: string;
-  value: string;
+  minTaux: number;
+  currentTaux: number;
 };
 
 
