@@ -54,9 +54,6 @@ const cookie = new Cookies(null, { path: "/" });
 
 
 const formSchema = z.object({
-  id: z.string().min(2, {
-    message: "Code must be at least 2 characters.",
-  }),
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
@@ -75,8 +72,8 @@ const formSchema = z.object({
   deadLine: z.any({
     required_error: "deadLine is required",
   }),
-  kpiCode: z.string({
-    required_error: "kpiCode is required",
+  bonus: z.any({
+    required_error: "Bonus is required",
   }),
 
 });
@@ -90,6 +87,7 @@ type infoProps = {
   deadLine: string | Timestamp;
   assignedTo: string;
   kpiCode: string;
+  bonus: number;
 };
 
 type UpdateProps = {
@@ -153,13 +151,12 @@ const Update = ({ mode, info }: UpdateProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: info.id,
       title: info.title,
       description: info.description,
       status: info.status,
       createdAt: info.createdAt instanceof Timestamp ? formatDate(info.createdAt.toDate().toISOString()) : formatDate(info.createdAt),
       assignedTo: info.assignedTo,
-      kpiCode: info.kpiCode,
+      bonus: info.bonus
     },
   });
 
@@ -171,6 +168,8 @@ const Update = ({ mode, info }: UpdateProps) => {
     const deadLineTimestamp = Timestamp.fromDate(new Date(deadLine));
     const data = {
       ...values,
+      id: info.id,
+      kpiCode: info.kpiCode,
       createdAt: createdAtTimestamp,
       deadLine: deadLineTimestamp
     }
@@ -211,19 +210,6 @@ const Update = ({ mode, info }: UpdateProps) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8 px-2 my-2"
               >
-                <FormField
-                  control={form.control}
-                  name="id"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Id</FormLabel>
-                      <FormControl>
-                        <Input disabled={true} placeholder="Id" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <FormField
                   control={form.control}
                   name="title"
@@ -271,6 +257,19 @@ const Update = ({ mode, info }: UpdateProps) => {
                           <SelectItem value="done">Done</SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bonus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bonus</FormLabel>
+                      <FormControl>
+                        <Input disabled={user.role === "admin" ? false : true} placeholder="Bonus" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -342,21 +341,8 @@ const Update = ({ mode, info }: UpdateProps) => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="kpiCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Kpi Code</FormLabel>
-                      <FormControl>
-                        <Input disabled={true} placeholder="Kpi Code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 {isLoading ? (
-                  <Button disabled={user.role === "admin" ? false : true}>
+                  <Button disabled={true}>
                     <Loader2 size={20} className="mr-2 animate-spin" />
                     <span>Updating Task...</span>
                   </Button>
