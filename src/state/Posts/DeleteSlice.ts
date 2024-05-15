@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getEmployees } from "./GetSlice";
+import { getPosts } from "./GetSlice";
 
 // Interface for error
 interface Error {
@@ -10,14 +10,10 @@ interface Error {
   message: string;
 }
 
-export type EmployeeType = {
-  matricule: number;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  role: string;
-};
+interface DeletePyload {
+  docId: string;
+}
+
 
 // Interface for DeleteState
 interface DeleteState {
@@ -34,8 +30,8 @@ const initialState: DeleteState = {
 };
 
 // Create slice
-const deleteEmployeeSlice = createSlice({
-  name: "deleteEmployeeSlice",
+const deletePostSlice = createSlice({
+  name: "deletePostSlice",
   initialState,
   reducers: {
     actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -69,22 +65,21 @@ export const {
   setMessage,
   setError,
   clearMessageAndError,
-} = deleteEmployeeSlice.actions;
+} = deletePostSlice.actions;
 
-export default deleteEmployeeSlice.reducer;
+export default deletePostSlice.reducer;
 
-// Thunk to delete employee
-export const deleteEmployee =
-  (docId: string): AppThunk =>
+export const deletePost =
+  ({ docId }: DeletePyload): AppThunk =>
     async (dispatch) => {
+      console.log(docId);
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       try {
-        // Delete employee document
-        await deleteDoc(doc(db, "employees", docId));
-        dispatch(actionSuccess("Employee deleted successfully"));
-        dispatch(getEmployees());
+        await deleteDoc(doc(db, "posts", docId));
+        dispatch(actionSuccess("Post deleted successfully"));
+        dispatch(getPosts());
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }

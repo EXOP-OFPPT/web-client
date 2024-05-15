@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronsUpDown } from "lucide-react";
 import Delete from "./Delete";
@@ -7,34 +6,11 @@ import Update from "./Update";
 import Cookies from "universal-cookie";
 import { KpiType } from "@/state/Kpis/GetSlice";
 import AddTask from "../Tasks/Create";
+import { Card } from "../ui/card";
 const cookie = new Cookies(null, { path: "/" });
 
 
 export const columns: ColumnDef<KpiType>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => {
-          table.toggleAllPageRowsSelected(!!value);
-        }}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   // {
   //   id: "code",
   //   accessorKey: "code",
@@ -107,6 +83,41 @@ export const columns: ColumnDef<KpiType>[] = [
           Current Taux
           <ChevronsUpDown size={12} className="ml-2" />
         </Button>
+      );
+    },
+  },
+  {
+    id: "progress",
+    accessorKey: "progress",
+    header: () => {
+      return (
+        <Button variant="ghost">
+          Progress
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const minKpi = row.original.minTaux; // replace with your actual min KPI
+      const currentKpi = row.original.currentTaux; // replace with your actual current KPI
+      const progress = Number(Math.min(100, (currentKpi / minKpi) * 100).toFixed(2));
+      // Calculate hue from progress. 120 is green in HSL, 0 is red.
+      const hue = progress * 1.2;
+
+      return (
+        <Card className="border-neutral-700">
+          <div className="text-center bg-neutral-4000 w-full h-3 p-[1.5px]">
+            <div
+              className={`h-full flex justify-center items-center rounded-full`}
+              style={{
+                width: `${progress}%`,
+                backgroundColor: `hsl(${hue}, 100%, 50%)`
+              }}
+            >
+            </div>
+            <span className="text-[13px]">{progress}%</span>
+          </div>
+        </Card>
       );
     },
   },
@@ -189,8 +200,8 @@ export const columns: ColumnDef<KpiType>[] = [
     cell: ({ row }) => {
       if (cookie.get("user").role == "admin") {
         return (
-          <div className="flex justify-center items-center gap-2">
-            <AddTask mode="outline" kpiCode={row.original.code} />
+          <div onClick={(e) => e.stopPropagation()} className="flex justify-center items-center gap-2">
+            <AddTask from="global" mode="outline" kpiCode={row.original.code} />
             <Update mode="outline" info={row.original} />
             <Delete mode="outline" docId={row.original.code} />
           </div>

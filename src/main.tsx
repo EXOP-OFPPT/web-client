@@ -33,8 +33,10 @@ import NotFound from "./pages/NotFound";
 import Employees from "./pages/Employees";
 import ResetPassword from "./components/Auth/ResetPassword";
 import Profile from "./pages/Profile";
-import Kpi from "./pages/Kpi";
+import Kpi from "./pages/Kpis";
 import Tasks from "./pages/Tasks";
+import Posts from "./pages/Posts";
+import KpiTasks from "./pages/KpiTasks";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -46,8 +48,10 @@ const router = createBrowserRouter([
           <Routes>
             <Route index path="/" element={<Home />} />
             <Route index path="employees" element={<Employees />} />
-            <Route index path="kpi" element={<Kpi />} />
+            <Route index path="kpis" element={<Kpi />} />
+            <Route index path="kpiTasks" element={<KpiTasks />} />
             <Route index path="tasks" element={<Tasks />} />
+            <Route index path="posts" element={<Posts />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>

@@ -8,19 +8,11 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import {
   Dialog,
@@ -36,14 +28,19 @@ import {
   Loader2,
   CheckCircle2,
   CircleX,
-  ListPlusIcon,
+  ImagePlusIcon,
+  UploadCloudIcon,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "../ui/toaster";
-import { createKpi, clearMessageAndError } from "@/state/Kpis/CreateSlice";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import Cookies from "universal-cookie";
+import { clearMessageAndError, createPost } from "@/state/Posts/CreateSlice";
+import { getPosts } from "@/state/Posts/GetSlice";
+const cookies = new Cookies(null, { path: "/" });
 
 
 const formSchema = z.object({
@@ -53,24 +50,18 @@ const formSchema = z.object({
   description: z.string().min(2, {
     message: "Description must be at least 2 characters.",
   }),
-  minTaux: z.string({
-    required_error: "Min Taux is required",
-  }),
-  currentTaux: z.string({
-    required_error: "Current Taux is required",
-  }),
-  type: z.enum(["normal", "eliminated"]),
 });
 
 
-function Create() {
-  const isLoading = useSelector(
-    (state: RootState) => state.createKpi.loading
-  );
+const Create = () => {
+  const user = cookies.get("user");
+  const [loading, setLoading] = useState(false)
   const message = useSelector(
-    (state: RootState) => state.createKpi.message
+    (state: RootState) => state.createPost.message
   );
-  const error = useSelector((state: RootState) => state.createKpi.error);
+  const storage = getStorage();
+  const [file, setFile] = useState<File>({} as File);
+  const error = useSelector((state: RootState) => state.createPost.error);
   const dispatch = useDispatch<AppDispatch>();
   const { toast } = useToast();
 
@@ -97,32 +88,106 @@ function Create() {
     }
   }, [message, error]);
 
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "Kpi 5",
-      description: "Description Kpi 5",
-      minTaux: "0",
-      currentTaux: "0",
-      type: "normal",
+      title: "Post 5",
+      description: "Description Post 5",
     },
   });
+
+
+  //! Upload image to firebase storage
+  const uploadImage = async (imageUpload: File, values: z.infer<typeof formSchema>) => {
+    const imageSize = Number((imageUpload.size / (1024 * 1024)).toFixed(2));
+    const maxSize = 50
+    console.log(imageSize, " MB");
+    if (!imageUpload) return;
+    if (imageSize > maxSize) {
+      return toast({
+        variant: "default",
+        title: `Image size is ${imageSize}MB`,
+        description: `Image size must be less than ${maxSize}MB`,
+        className: "text-error border-2 border-error text-start",
+        icon: <CircleX size={40} className="mr-2" />,
+      });
+    }
+    const storageRef = ref(storage, `Posts/Images/${crypto.randomUUID() + imageUpload.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, imageUpload);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        //! Progress
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        toast({
+          variant: "default",
+          title: "Upload progress",
+          description: "Upload is " + progress.toFixed(2) + "% done",
+          className:
+            "text-secondary-foreground border-2 border-secondary-foreground text-start",
+          icon: <UploadCloudIcon size={40} className="mr-2" />,
+        });
+        switch (snapshot.state) {
+          case "paused":
+            setLoading(false)
+            console.log("Upload is paused");
+            break;
+          case "running":
+            setLoading(true)
+            console.log("Upload is running");
+            break;
+        }
+      },
+      () => {
+        //! Error
+        toast({
+          variant: "default",
+          title: "Upload Failed",
+          description: "Upload failed! Please try again.",
+          className: "text-error border-2 border-error text-start",
+          icon: <CircleX size={40} className="mr-2" />,
+        });
+      },
+      () => {
+        //! Complete
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+          console.log("File available at", downloadURL);
+          const attachement = { url: downloadURL, type: "image" }
+          // Create Post Doc
+          if (attachement.url) {
+            const docId = crypto.randomUUID();
+            const postData = {
+              id: docId,
+              title: values.title,
+              description: values.description,
+              sender: user.email,
+              likes: 0,
+              attachement: attachement,
+            };
+            dispatch(createPost({ ...postData }));
+            dispatch(getPosts());
+            setFile({} as File)
+          }
+          toast({
+            variant: "default",
+            title: "Post Uploaded",
+            description: "Post Attachement Uploaded successfully!",
+            className: "text-primary border-2 border-primary text-start",
+            icon: <CheckCircle2 size={40} className="mr-2" />,
+          });
+          setLoading(false)
+        });
+      }
+    );
+  };
+
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    const docId = crypto.randomUUID();
-    const data = {
-      code: docId,
-      title: values.title,
-      description: values.description,
-      minTaux: parseInt(values.minTaux),
-      currentTaux: parseInt(values.currentTaux),
-      type: values.type,
-    };
-    dispatch(createKpi({ docId: docId, kpiData: data }));
+    uploadImage(file, values)
   }
 
   return (
@@ -131,18 +196,18 @@ function Create() {
       <Dialog>
         <DialogTrigger asChild>
           <Button>
-            <ListPlusIcon size={20} className="mr-2" />
-            <span>Add Kpi</span>
+            <ImagePlusIcon size={20} className="mr-2" />
+            <span>Create Post</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="h-[650px] sm:max-w-[700px] px-1">
           <ScrollArea className="h-full w-full p-4">
             <DialogHeader className="mb-4">
               <DialogTitle className="text-primary text-2xl">
-                Create Kpi
+                Create Post
               </DialogTitle>
               <DialogDescription>
-                Fill in the form below to create a new Kpi.
+                Fill in the form below to create a new Post.
               </DialogDescription>
             </DialogHeader>
             {/* <div className="grid gap-4 py-4">
@@ -178,63 +243,16 @@ function Create() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="minTaux"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Min Taux</FormLabel>
-                      <FormControl>
-                        <Input type="number" min={0} max={100} placeholder="Min Taux" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Be careful this value can't be changed after
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e: any) => setFile(e.target.files[0])}
+                  placeholder="Attachement"
                 />
-                <FormField
-                  control={form.control}
-                  name="currentTaux"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Current Taux</FormLabel>
-                      <FormControl>
-                        <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Type</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="normal">Normal</SelectItem>
-                          <SelectItem value="eliminated">Eliminated</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {isLoading ? (
+                {loading ? (
                   <Button disabled>
                     <Loader2 size={20} className="mr-2 animate-spin" />
-                    <span>Creating kpi...</span>
+                    <span>Creating Post...</span>
                   </Button>
                 ) : (
                   <Button type="submit">Submit</Button>
@@ -246,7 +264,7 @@ function Create() {
         </DialogFooter> */}
           </ScrollArea>
         </DialogContent>
-      </Dialog>
+      </Dialog >
     </>
   );
 }

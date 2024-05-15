@@ -43,6 +43,7 @@ import {
 } from "@/state/Employees/UpdateSlice";
 
 const formSchema = z.object({
+  matricule: z.any(),
   firstName: z.string().min(2, {
     message: "First name must be at least 2 characters.",
   }),
@@ -63,11 +64,14 @@ const formSchema = z.object({
 });
 
 type infoProps = {
+  matricule: number | string;
   firstName: string;
   lastName: string;
+  phone: string;
   email: string;
   role: string;
-  phone: string;
+  photoURL?: string;
+  avatar?: string;
 };
 
 type UpdateProps = {
@@ -112,6 +116,7 @@ const Update = ({ mode, info }: UpdateProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      matricule: info.matricule,
       firstName: info.firstName,
       lastName: info.lastName,
       phone: info.phone,
@@ -124,8 +129,15 @@ const Update = ({ mode, info }: UpdateProps) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+    const updatedData = {
+      matricule: Number(values.matricule),
+      firstName: values.firstName,
+      lastName: values.lastName,
+      phone: values.phone,
+      role: values.role,
+    };
 
-    dispatch(updateEmployee({ email: info.email, updatedData: values }));
+    dispatch(updateEmployee({ email: info.email, updatedData: updatedData }));
   }
 
   return (
@@ -158,6 +170,19 @@ const Update = ({ mode, info }: UpdateProps) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8 px-2 my-2"
               >
+                <FormField
+                  control={form.control}
+                  name="matricule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Matricule</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Matricule" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="firstName"

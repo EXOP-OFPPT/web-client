@@ -48,6 +48,9 @@ import { useEffect } from "react";
 import { Toaster } from "../ui/toaster";
 
 const formSchema = z.object({
+  matricule: z.string().min(2, {
+    message: "Matricule must be at least 2 characters.",
+  }),
   email: z.string().email({
     message: "Invalid email address.",
   }),
@@ -106,6 +109,7 @@ function Create() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      matricule: "1542",
       email: "abdonsila222@gmail.com",
       password: "123456",
       role: "admin",
@@ -118,10 +122,9 @@ function Create() {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
-    const { email, password, ...rest } = values;
-    const userData = { email, ...rest };
+    const { email, password, matricule, ...rest } = values;
+    const userData = { email, matricule: Number(matricule), ...rest };
     dispatch(createEmployee({ email, password, userData }));
   }
 
@@ -152,6 +155,19 @@ function Create() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8 px-2 my-2"
               >
+                <FormField
+                  control={form.control}
+                  name="matricule"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Matricule</FormLabel>
+                      <FormControl>
+                        <Input placeholder="matricule" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="email"

@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import authSlice from "./auth/AuthSlice";
+import authSlice from "./Authe/AuthSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
 // --------------- Employees Slices ----------------
 import getEmployeesSlice from "./Employees/GetSlice";
@@ -18,33 +18,41 @@ import getTasksSlice from "./Tasks/GetSlice";
 import createTaskSlice from "./Tasks/CreateSlice";
 import updateTaskSlice from "./Tasks/UpdateSlice";
 import deleteTaskSlice from "./Tasks/DeleteSlice";
+// --------------- Posts Slices ----------------
+import getPostsSlice from "./Posts/GetSlice";
+import createPostsSlice from "./Posts/CreateSlice";
+import deletePostsSlice from "./Posts/DeleteSlice";
 
 export const store = configureStore({
-  reducer: {
-    auth: authSlice,
-    navBar: navBarSlice,
-    // ---------------------------------
-    getEmployees: getEmployeesSlice,
-    createEmployee: createEmployeeSlice,
-    updateEmployee: updateEmployeeSlice,
-    deleteEmployee: deleteEmployeeSlice,
-    // ---------------------------------
-    getKpis: getKpisSlice,
-    createKpi: createKpiSlice,
-    updateKpi: updateKpiSlice,
-    deleteKpi: deleteKpiSlice,
-    // ---------------------------------
-    getTasks: getTasksSlice,
-    createTask: createTaskSlice,
-    updateTask: updateTaskSlice,
-    deleteTask: deleteTaskSlice,
-  },
+    reducer: {
+        auth: authSlice,
+        navBar: navBarSlice,
+        // ---------------------------------
+        getEmployees: getEmployeesSlice,
+        createEmployee: createEmployeeSlice,
+        updateEmployee: updateEmployeeSlice,
+        deleteEmployee: deleteEmployeeSlice,
+        // ---------------------------------
+        getKpis: getKpisSlice,
+        createKpi: createKpiSlice,
+        updateKpi: updateKpiSlice,
+        deleteKpi: deleteKpiSlice,
+        // ---------------------------------
+        getTasks: getTasksSlice,
+        createTask: createTaskSlice,
+        updateTask: updateTaskSlice,
+        deleteTask: deleteTaskSlice,
+        // ---------------------------------
+        getPosts: getPostsSlice,
+        createPost: createPostsSlice,
+        deletePost: deletePostsSlice,
+    },
 });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
+    ReturnType,
+    RootState,
+    unknown,
+    Action<string>
 >;

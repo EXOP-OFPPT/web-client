@@ -1,5 +1,4 @@
 import DisplayTasksTable from "@/components/Tasks/Table";
-
 import { Card } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,23 +6,24 @@ import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Cookies from "universal-cookie";
-import { clearMessageAndError, getTasks } from "@/state/Tasks/GetSlice";
+import { clearMessageAndError, getKpiTasks } from "@/state/Tasks/GetSlice";
+import { useLocation } from "react-router-dom";
+import AddTask from "@/components/Tasks/Create";
 
-const cookies = new Cookies(null, { path: "/" });
 
 
-const Tasks: React.FC = () => {
-    const user = cookies.get("user");
+const KpiTasks: React.FC = () => {
     const isloading = useSelector((state: RootState) => state.getTasks.loading);
     const message = useSelector((state: RootState) => state.getTasks.message);
     const error = useSelector((state: RootState) => state.getTasks.error);
     const dispatch = useDispatch<AppDispatch>();
     const { toast } = useToast();
+    const location = useLocation()
+    const { kpiCode } = location.state
 
     useEffect(() => {
-        dispatch(getTasks(user.role, user.email));
-    }, [dispatch]);
+        dispatch(getKpiTasks(kpiCode));
+    }, [dispatch, location]);
 
     useEffect(() => {
         if (message) {
@@ -55,10 +55,11 @@ const Tasks: React.FC = () => {
                 <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">
                     <div className="flex flex-col items-start">
                         <h6>Page</h6>
-                        <h3 className="text-4xl font-bold text-primary">Tasks</h3>
+                        <h3 className="text-4xl font-bold text-primary">Kpi Tasks</h3>
                     </div>
                     <div className="h-full flex flex-col justify-center gap-2">
                         {/* Add Task */}
+                        <AddTask from="kpi" mode="outline" kpiCode={kpiCode} />
                     </div>
                 </Card>
 
@@ -75,7 +76,7 @@ const Tasks: React.FC = () => {
     );
 };
 
-export default Tasks;
+export default KpiTasks;
 
 
 

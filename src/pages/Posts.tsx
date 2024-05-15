@@ -1,5 +1,5 @@
-import DisplayTasksTable from "@/components/Tasks/Table";
-
+import DisplayPostsCards from "@/components/Posts/Display";
+import AddPost from "@/components/Posts/Create";
 import { Card } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
@@ -8,22 +8,24 @@ import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "universal-cookie";
-import { clearMessageAndError, getTasks } from "@/state/Tasks/GetSlice";
-
+import { clearMessageAndError, getPosts } from "@/state/Posts/GetSlice";
 const cookies = new Cookies(null, { path: "/" });
 
 
-const Tasks: React.FC = () => {
+const Posts: React.FC = () => {
     const user = cookies.get("user");
-    const isloading = useSelector((state: RootState) => state.getTasks.loading);
-    const message = useSelector((state: RootState) => state.getTasks.message);
-    const error = useSelector((state: RootState) => state.getTasks.error);
+    const posts = useSelector((state: RootState) => state.getPosts.posts);
+    const isloading = useSelector((state: RootState) => state.getPosts.loading);
+    const message = useSelector((state: RootState) => state.getPosts.message);
+    const error = useSelector((state: RootState) => state.getPosts.error);
     const dispatch = useDispatch<AppDispatch>();
     const { toast } = useToast();
 
     useEffect(() => {
-        dispatch(getTasks(user.role, user.email));
-    }, [dispatch]);
+        if (posts.length === 0) {
+            dispatch(getPosts());
+        }
+    }, [dispatch, posts]);
 
     useEffect(() => {
         if (message) {
@@ -50,24 +52,24 @@ const Tasks: React.FC = () => {
     return (
         <>
             <Toaster />
-            <div className="h-[calc(100vh-4rem)] flex flex-col gap-2 items-center py-5">
+            <div className="h-[calc(100vh-4rem)] flex flex-col items-center">
                 {/* Header */}
-                <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">
+                <Card className="fixed bg-background z-10 w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 border-t-0 rounded-tl-none rounded-tr-none">
                     <div className="flex flex-col items-start">
                         <h6>Page</h6>
-                        <h3 className="text-4xl font-bold text-primary">Tasks</h3>
+                        <h3 className="text-4xl font-bold text-primary">Posts</h3>
                     </div>
                     <div className="h-full flex flex-col justify-center gap-2">
-                        {/* Add Task */}
+                        {user.role === "admin" && <AddPost />}
                     </div>
                 </Card>
 
                 {/* Table */}
                 {isloading ? (
-                    <Loader2 className="h-10 w-10 mt-10 text-primary animate-spin" />
+                    <Loader2 className="h-10 w-10 mt-96 text-primary animate-spin" />
                 ) : (
                     <>
-                        <DisplayTasksTable />
+                        <DisplayPostsCards />
                     </>
                 )}
             </div>
@@ -75,7 +77,7 @@ const Tasks: React.FC = () => {
     );
 };
 
-export default Tasks;
+export default Posts;
 
 
 

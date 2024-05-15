@@ -22,7 +22,8 @@ export type taskType = {
   id: string;
   title: string;
   description: string;
-  status: "todo" | "inprogress" | "done"| "verified";
+  status: "todo" | "inprogress" | "done" | "verified";
+  bonus: number;
   createdAt: string;
   deadLine: string;
   assignedTo: string;

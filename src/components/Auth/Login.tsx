@@ -1,5 +1,5 @@
 "use client";
-import { clearMessageAndError, login } from "@/state/auth/AuthSlice";
+import { clearMessageAndError, login } from "@/state/Authe/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { useNavigate } from "react-router-dom";
@@ -102,7 +102,7 @@ function Login() {
           <ModeToggle />
         </section>
         <Card className="container">
-          <img className="arrow bg-primary" src={arrow} />
+          <img onClick={() => navigate("/")} className="arrow bg-primary cursor-pointer" src={arrow} />
           <div className="form-container sign-in border-none">
             <Form {...form}>
               <form
