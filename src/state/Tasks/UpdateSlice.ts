@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { doc, Timestamp, updateDoc } from "firebase/firestore";
+import { doc, increment, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getTasks } from "./GetSlice";
 
@@ -15,6 +15,7 @@ export type taskType = {
     title: string;
     description: string;
     status: string;
+    bonus: number;
     createdAt: Timestamp;
     deadLine: Timestamp;
     completedAt?: Timestamp;
@@ -32,6 +33,7 @@ interface UpdatedTaskPayload {
         email: string;
     }
 }
+
 
 // Interface for AuthState
 interface UpdateState {
@@ -108,3 +110,5 @@ export const updateTask =
                 );
             }
         };
+
+
