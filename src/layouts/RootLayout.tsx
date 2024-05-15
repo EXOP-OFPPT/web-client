@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { CheckCircle2 } from "lucide-react";
-import { clearMessageAndError } from "@/state/Auth/AuthSlice";
+import { clearMessageAndError } from "@/state/Authe/AuthSlice";
 import { getEmployees } from "@/state/Employees/GetSlice";
 import { getTasks } from "@/state/Tasks/GetSlice";
 import Cookies from "universal-cookie";

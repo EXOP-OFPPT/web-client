@@ -1,5 +1,5 @@
 "use client";
-import { clearMessageAndError, login } from "@/state/Auth/AuthSlice";
+import { clearMessageAndError, login } from "@/state/Authe/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { useNavigate } from "react-router-dom";

@@ -15,7 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { useToast } from "../ui/use-toast";
-import { clearMessageAndError, resetPassword } from "@/state/Auth/AuthSlice";
+import { clearMessageAndError, resetPassword } from "@/state/Authe/AuthSlice";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { useLocation, useNavigate } from "react-router-dom";

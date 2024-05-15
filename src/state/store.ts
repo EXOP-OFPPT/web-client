@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import authSlice from "./Auth/AuthSlice";
+import authSlice from "./Authe/AuthSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
 // --------------- Employees Slices ----------------
 import getEmployeesSlice from "./Employees/GetSlice";
