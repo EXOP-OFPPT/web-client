@@ -43,9 +43,6 @@ import {
 } from "@/state/Kpis/UpdateSlice";
 
 const formSchema = z.object({
-  code: z.string().min(2, {
-    message: "Code must be at least 2 characters.",
-  }),
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
@@ -53,8 +50,8 @@ const formSchema = z.object({
     message: "Description must be at least 2 characters.",
   }),
   minTaux: z.number(),
-  currentTaux: z.number().min(0, {
-    message: "Current Taux must be at least 0.",
+  currentTaux: z.string({
+    required_error: "Current Taux is required",
   }),
   type: z.string(),
 });
@@ -110,11 +107,10 @@ const Update = ({ mode, info }: UpdateProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      code: info.code,
       title: info.title,
       description: info.description,
       minTaux: info.minTaux,
-      currentTaux: info.currentTaux,
+      currentTaux: info.currentTaux.toString(),
       type: info.type,
     },
   });
@@ -122,9 +118,15 @@ const Update = ({ mode, info }: UpdateProps) => {
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-    dispatch(updateKpi({ code: info.code, updatedData: values }));
+    const data = {
+      code: info.code,
+      title: values.title,
+      description: values.description,
+      minTaux: values.minTaux,
+      currentTaux: parseInt(values.currentTaux),
+      type: values.type,
+    };
+    dispatch(updateKpi({ code: info.code, updatedData: data }));
   }
 
   return (
@@ -157,19 +159,6 @@ const Update = ({ mode, info }: UpdateProps) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8 px-2 my-2"
               >
-                <FormField
-                  control={form.control}
-                  name="code"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>code</FormLabel>
-                      <FormControl>
-                        <Input disabled placeholder="Code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <FormField
                   control={form.control}
                   name="title"
@@ -216,7 +205,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                     <FormItem>
                       <FormLabel>Current Taux</FormLabel>
                       <FormControl>
-                        <Input placeholder="Current Taux" {...field} />
+                        <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
