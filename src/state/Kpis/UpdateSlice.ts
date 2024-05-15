@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getKpis } from "./GetSlice";
+import { getTasks } from "../Tasks/GetSlice";
 
 // Interface for error
 interface Error {
@@ -17,6 +18,7 @@ export type KpiType = {
     minTaux: number;
     currentTaux: number;
     type: string;
+    bonus: number,
 };
 
 
@@ -24,6 +26,15 @@ export type KpiType = {
 interface UpdatedKpiPayload {
     code: string;
     updatedData: KpiType;
+}
+
+interface UpdatedCurrentTauxKpiPayload {
+    code: string;
+    bonus: number;
+    user: {
+        role: string;
+        email: string;
+    }
 }
 
 // Interface for AuthState
@@ -123,6 +134,31 @@ export const updateKpi =
             } catch {
                 dispatch(
                     actionFailed({ code: "500", message: "Update failed" })
+                );
+            }
+        };
+
+
+
+
+export const updateCurrentTauxTask =
+    ({ code, bonus, user }: UpdatedCurrentTauxKpiPayload): AppThunk =>
+        async (dispatch) => {
+            // Reset message and error
+            dispatch(setLoading(true));
+            dispatch(clearMessageAndError());
+            try {
+                console.log("Updating task");
+                const ref = doc(db, "kpi", code);
+                // Atomically increment the population of the city by 50.
+                await updateDoc(ref, {
+                    currentTaux: increment(bonus || 0)
+                });
+                dispatch(actionSuccess("Task updated successfully"));
+                dispatch(getTasks(user.role, user.email));
+            } catch {
+                dispatch(
+                    actionFailed({ code: "500", message: "Update task failed" })
                 );
             }
         };
