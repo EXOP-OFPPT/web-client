@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { KpiType } from "@/state/Kpis/GetSlice";
+import { useNavigate } from "react-router-dom";
 
 interface DataTableProps {
   columns: ColumnDef<KpiType>[];
@@ -44,6 +45,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const navigate = useNavigate();
 
   const table = useReactTable({
     data,
@@ -147,9 +149,10 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                className="cursor-pointer"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => console.log(row.original.code)}
+                  onClick={() => navigate('/app/kpiTasks', { state: { kpiCode: row.original.code } })}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
