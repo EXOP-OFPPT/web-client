@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronsUpDown } from "lucide-react";
 import { EmployeeType } from "@/state/Employees/GetSlice";
@@ -11,36 +10,12 @@ const cookie = new Cookies(null, { path: "/" });
 
 
 export const columns: ColumnDef<EmployeeType>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => {
-          table.toggleAllPageRowsSelected(!!value);
-        }}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+
   {
     id: "avatar",
     accessorKey: "avatar",
     header: "Avatar",
     cell: ({ row }) => {
-
       return (
         <Avatar className="h-8 w-8 flex items-center justify-center">
           <AvatarImage loading="lazy" src={row.original.avatar} className="object-cover" />
@@ -49,6 +24,21 @@ export const columns: ColumnDef<EmployeeType>[] = [
             {row.original.lastName?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
+      );
+    },
+  },
+  {
+    id: "matricule",
+    accessorKey: "matricule",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Matricule
+          <ChevronsUpDown size={12} className="ml-2" />
+        </Button>
       );
     },
   },
