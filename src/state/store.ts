@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import authSlice from "./auth/AuthSlice";
+import authSlice from "./Auth/AuthSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
 // --------------- Employees Slices ----------------
 import getEmployeesSlice from "./Employees/GetSlice";
@@ -18,6 +18,10 @@ import getTasksSlice from "./Tasks/GetSlice";
 import createTaskSlice from "./Tasks/CreateSlice";
 import updateTaskSlice from "./Tasks/UpdateSlice";
 import deleteTaskSlice from "./Tasks/DeleteSlice";
+// --------------- Posts Slices ----------------
+import getPostsSlice from "./Posts/GetSlice";
+import createPostSlice from "./Posts/CreateSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -38,6 +42,11 @@ export const store = configureStore({
     createTask: createTaskSlice,
     updateTask: updateTaskSlice,
     deleteTask: deleteTaskSlice,
+    // ---------------------------------
+    getPosts: getPostsSlice,
+    createPost: createPostSlice,
+    // updateTask: updateTaskSlice,
+    // deleteTask: deleteTaskSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
