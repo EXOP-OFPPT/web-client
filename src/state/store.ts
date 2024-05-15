@@ -20,40 +20,39 @@ import updateTaskSlice from "./Tasks/UpdateSlice";
 import deleteTaskSlice from "./Tasks/DeleteSlice";
 // --------------- Posts Slices ----------------
 import getPostsSlice from "./Posts/GetSlice";
-import createPostSlice from "./Posts/CreateSlice";
-
+import createPostsSlice from "./Posts/CreateSlice";
+import deletePostsSlice from "./Posts/DeleteSlice";
 
 export const store = configureStore({
-  reducer: {
-    auth: authSlice,
-    navBar: navBarSlice,
-    // ---------------------------------
-    getEmployees: getEmployeesSlice,
-    createEmployee: createEmployeeSlice,
-    updateEmployee: updateEmployeeSlice,
-    deleteEmployee: deleteEmployeeSlice,
-    // ---------------------------------
-    getKpis: getKpisSlice,
-    createKpi: createKpiSlice,
-    updateKpi: updateKpiSlice,
-    deleteKpi: deleteKpiSlice,
-    // ---------------------------------
-    getTasks: getTasksSlice,
-    createTask: createTaskSlice,
-    updateTask: updateTaskSlice,
-    deleteTask: deleteTaskSlice,
-    // ---------------------------------
-    getPosts: getPostsSlice,
-    createPost: createPostSlice,
-    // updateTask: updateTaskSlice,
-    // deleteTask: deleteTaskSlice,
-  },
+    reducer: {
+        auth: authSlice,
+        navBar: navBarSlice,
+        // ---------------------------------
+        getEmployees: getEmployeesSlice,
+        createEmployee: createEmployeeSlice,
+        updateEmployee: updateEmployeeSlice,
+        deleteEmployee: deleteEmployeeSlice,
+        // ---------------------------------
+        getKpis: getKpisSlice,
+        createKpi: createKpiSlice,
+        updateKpi: updateKpiSlice,
+        deleteKpi: deleteKpiSlice,
+        // ---------------------------------
+        getTasks: getTasksSlice,
+        createTask: createTaskSlice,
+        updateTask: updateTaskSlice,
+        deleteTask: deleteTaskSlice,
+        // ---------------------------------
+        getPosts: getPostsSlice,
+        createPosts: createPostsSlice,
+        deletePosts: deletePostsSlice,
+    },
 });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
+    ReturnType,
+    RootState,
+    unknown,
+    Action<string>
 >;

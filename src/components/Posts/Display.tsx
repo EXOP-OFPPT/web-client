@@ -9,7 +9,7 @@ export default function DisplayPostsCards() {
   return (
     <div className="w-full h-auto flex justify-center pb-10 mt-24">
       <Card className="w-auto max-w-[900px] bg-transparent prr-16">
-        {data.map((item, index) => {
+        {data.map((item:any, index:any) => {
           return <PostCard key={index} data={item} />;
         })}
         {/* {data.map((item, index) => {

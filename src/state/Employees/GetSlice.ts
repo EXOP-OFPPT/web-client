@@ -11,7 +11,7 @@ interface Error {
 }
 
 export type EmployeeType = {
-    matricule: number;
+    matricule: number|string;
     firstName: string;
     lastName: string;
     phone: string;

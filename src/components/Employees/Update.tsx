@@ -43,9 +43,7 @@ import {
 } from "@/state/Employees/UpdateSlice";
 
 const formSchema = z.object({
-  matricule: z.string().min(2, {
-    message: "Matricule must be at least 2 characters.",
-  }),
+  matricule: z.any(),
   firstName: z.string().min(2, {
     message: "First name must be at least 2 characters.",
   }),
@@ -66,12 +64,14 @@ const formSchema = z.object({
 });
 
 type infoProps = {
-  matricule: string;
+  matricule: number | string;
   firstName: string;
   lastName: string;
+  phone: string;
   email: string;
   role: string;
-  phone: string;
+  photoURL?: string;
+  avatar?: string;
 };
 
 type UpdateProps = {
