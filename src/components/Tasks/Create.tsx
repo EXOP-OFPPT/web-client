@@ -72,6 +72,9 @@ const formSchema = z.object({
   status: z.string({
     required_error: "Status is required",
   }),
+  bonus: z.string({
+    required_error: "Bonus Number is required",
+  }),
   createdAt: z.string({
     required_error: "createdAt is required",
   }),
@@ -85,11 +88,12 @@ const formSchema = z.object({
 });
 
 type CreateProps = {
+  from: "global" | "kpi";
   mode: "ghost" | "outline";
   kpiCode: string;
 };
 
-function AddTask({ mode, kpiCode }: CreateProps) {
+function AddTask({ from, mode, kpiCode }: CreateProps) {
   const user = cookies.get("user");
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
   const isLoading = useSelector(
@@ -141,6 +145,7 @@ function AddTask({ mode, kpiCode }: CreateProps) {
       title: "Task 5",
       description: "Description Task 5",
       status: "todo",
+      bonus: "0",
       createdAt: format(new Date(), 'yyyy-MM-dd'),
       assignedTo: "",
       kpiCode: kpiCode,
@@ -149,13 +154,22 @@ function AddTask({ mode, kpiCode }: CreateProps) {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const date = deadLine ? new Date(deadLine) : new Date();
-    const formattedDate = format(date, 'yyyy-MM-dd');
-    console.log({ ...values, deadLine: formattedDate });
     // Convert Date to Timestamp
+    const docId = crypto.randomUUID();
     const createdAtTimestamp = Timestamp.fromDate(new Date(values.createdAt));
     const deadLineTimestamp = Timestamp.fromDate(deadLine ? new Date(deadLine) : new Date());
-    dispatch(createTask({ docId: values.id, taskData: { ...values, createdAt: createdAtTimestamp, deadLine: deadLineTimestamp }, user: { role: user.role, email: user.email } }));
+    const data = {
+      id: docId,
+      title: values.title,
+      description: values.description,
+      status: values.status,
+      bonus: parseInt(values.bonus),
+      createdAt: createdAtTimestamp,
+      deadLine: deadLineTimestamp,
+      assignedTo: values.assignedTo,
+      kpiCode: values.kpiCode,
+    };
+    dispatch(createTask({ docId: docId, taskData: data, user: { role: user.role, email: user.email } }));
   }
 
   return (
@@ -163,13 +177,21 @@ function AddTask({ mode, kpiCode }: CreateProps) {
       <Toaster />
       <Dialog>
         <DialogTrigger asChild>
-          <Button
-            className="h-8 w-8 hover:text-primary"
-            variant={mode}
-            size="icon"
-          >
-            <ListPlusIcon size={16} />
-          </Button>
+
+          {from == "kpi" ?
+            <Button>
+              <ListPlusIcon size={20} className="mr-2" />
+              <span>Add Task</span>
+            </Button>
+            :
+            <Button
+              className="h-8 w-8 hover:text-primary"
+              variant={mode}
+              size="icon"
+            >
+              <ListPlusIcon size={16} />
+            </Button>
+          }
         </DialogTrigger>
         <DialogContent className="h-[650px] sm:max-w-[700px] px-1">
           <ScrollArea className="h-full w-full p-4">
@@ -188,19 +210,6 @@ function AddTask({ mode, kpiCode }: CreateProps) {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8 px-2 my-2"
               >
-                <FormField
-                  control={form.control}
-                  name="id"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Id</FormLabel>
-                      <FormControl>
-                        <Input disabled placeholder="Id" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <FormField
                   control={form.control}
                   name="title"
@@ -248,6 +257,19 @@ function AddTask({ mode, kpiCode }: CreateProps) {
                           <SelectItem value="done">Done</SelectItem>
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bonus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bonus</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Bonus" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
