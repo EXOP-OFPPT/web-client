@@ -44,8 +44,8 @@ export const store = configureStore({
         deleteTask: deleteTaskSlice,
         // ---------------------------------
         getPosts: getPostsSlice,
-        createPosts: createPostsSlice,
-        deletePosts: deletePostsSlice,
+        createPost: createPostsSlice,
+        deletePost: deletePostsSlice,
     },
 });
 export type RootState = ReturnType<typeof store.getState>;

@@ -1,5 +1,4 @@
-import { Card } from "../ui/card";
-import Update from "./Update";
+// import Update from "./Update";
 import Delete from "./Delete";
 import Cookies from "universal-cookie";
 import { ReactNode, useState } from "react";

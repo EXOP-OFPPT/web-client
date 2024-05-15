@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from '../store';
-import { collection, doc, DocumentData, getDoc, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { formatDistanceToNow } from "date-fns";
 
