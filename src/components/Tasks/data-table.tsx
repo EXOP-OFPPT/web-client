@@ -130,7 +130,8 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -147,6 +148,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className={row.original.status == "verified" ? "bg-secondary pointer-events-none opacity-50" : ""}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
