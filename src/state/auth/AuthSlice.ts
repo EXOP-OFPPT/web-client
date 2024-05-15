@@ -186,7 +186,7 @@ export const login = ({ email, password }: LoginPayload): AppThunk => async disp
       });
   } else {
     dispatch(setLoading(false));
-    dispatch(actionFailed({ code: "500", message: "User Credential is not valid" }));
+    dispatch(actionFailed({ code: "500", message: "User not found" }));
   }
 };
 
