@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -44,19 +45,21 @@ import { useEffect } from "react";
 import { Toaster } from "../ui/toaster";
 import { createKpi, clearMessageAndError } from "@/state/Kpis/CreateSlice";
 
+
 const formSchema = z.object({
-  code: z.string().min(2, {
-    message: "Code must be at least 2 characters.",
-  }),
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
   description: z.string().min(2, {
     message: "Description must be at least 2 characters.",
   }),
-  value: z.string().min(1, {
-    message: "Value must be C | E.",
+  minTaux: z.string({
+    required_error: "Min Taux is required",
   }),
+  currentTaux: z.string({
+    required_error: "Current Taux is required",
+  }),
+  type: z.enum(["normal", "eliminated"]),
 });
 
 
@@ -98,10 +101,11 @@ function Create() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      code: crypto.randomUUID(),
       title: "Kpi 5",
       description: "Description Kpi 5",
-      value: "C",
+      minTaux: "0",
+      currentTaux: "0",
+      type: "normal",
     },
   });
 
@@ -109,8 +113,16 @@ function Create() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
-    dispatch(createKpi({ docId: values.code, kpiData: values }));
+    const docId = crypto.randomUUID();
+    const data = {
+      code: docId,
+      title: values.title,
+      description: values.description,
+      minTaux: parseInt(values.minTaux),
+      currentTaux: parseInt(values.currentTaux),
+      type: values.type,
+    };
+    dispatch(createKpi({ docId: docId, kpiData: data }));
   }
 
   return (
@@ -142,19 +154,6 @@ function Create() {
               >
                 <FormField
                   control={form.control}
-                  name="code"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>code</FormLabel>
-                      <FormControl>
-                        <Input disabled placeholder="Code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem>
@@ -181,22 +180,51 @@ function Create() {
                 />
                 <FormField
                   control={form.control}
-                  name="value"
+                  name="minTaux"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Value</FormLabel>
+                      <FormLabel>Min Taux</FormLabel>
+                      <FormControl>
+                        <Input type="number" min={0} max={100} placeholder="Min Taux" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Be careful this value can't be changed after
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="currentTaux"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Current Taux</FormLabel>
+                      <FormControl>
+                        <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Value" />
+                            <SelectValue placeholder="Select Type" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="C">C</SelectItem>
-                          <SelectItem value="E">E</SelectItem>
+                          <SelectItem value="normal">Normal</SelectItem>
+                          <SelectItem value="eliminated">Eliminated</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
