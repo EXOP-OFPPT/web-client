@@ -11,12 +11,13 @@ interface Error {
     message: string;
 }
 
-export type KpiType = {
+type KpiType = {
     code: string;
     title: string;
     description: string;
     minTaux: number;
     currentTaux: number;
+    availableBonus?: number;
     type: string;
 };
 
@@ -144,20 +145,37 @@ export const updateCurrentTauxTask =
     ({ code, bonus, user }: UpdatedCurrentTauxKpiPayload): AppThunk =>
         async (dispatch) => {
             // Reset message and error
-            dispatch(setLoading(true));
             dispatch(clearMessageAndError());
             try {
-                console.log("Updating task");
-                const ref = doc(db, "kpi", code);
-                // Atomically increment the population of the city by 50.
+                const ref = doc(db, "kpis", code);
                 await updateDoc(ref, {
                     currentTaux: increment(bonus || 0)
                 });
-                dispatch(actionSuccess("Task updated successfully"));
                 dispatch(getTasks(user.role, user.email));
             } catch {
                 dispatch(
-                    actionFailed({ code: "500", message: "Update task failed" })
+                    actionFailed({ code: "500", message: "Update Kpi failed" })
                 );
+                dispatch(clearMessageAndError());
+            }
+        };
+
+export const updateAvailableBonus =
+    ({ code, bonus, user }: UpdatedCurrentTauxKpiPayload): AppThunk =>
+        async (dispatch) => {
+            console.log(bonus, code);
+            // Reset message and error
+            dispatch(clearMessageAndError());
+            try {
+                const ref = doc(db, "kpis", code);
+                await updateDoc(ref, {
+                    availableBonus: increment(bonus)
+                });
+                dispatch(getTasks(user.role, user.email));
+            } catch {
+                dispatch(
+                    actionFailed({ code: "500", message: "Update Kpi failed" })
+                );
+                dispatch(clearMessageAndError());
             }
         };
