@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import authSlice from "./Authe/AuthSlice";
+import authSlice from "./Auth/AuthSlice";
 import navBarSlice from "./NavBar/NavBarSlice";
 // --------------- Employees Slices ----------------
 import getEmployeesSlice from "./Employees/GetSlice";
@@ -22,6 +22,9 @@ import deleteTaskSlice from "./Tasks/DeleteSlice";
 import getPostsSlice from "./Posts/GetSlice";
 import createPostsSlice from "./Posts/CreateSlice";
 import deletePostsSlice from "./Posts/DeleteSlice";
+// --------------- Comments Slices ----------------
+import getCommentsSlice from "./Comments/GetSlice";
+import createCommentSlice from "./Comments/CreateSlice";
 
 export const store = configureStore({
     reducer: {
@@ -46,6 +49,9 @@ export const store = configureStore({
         getPosts: getPostsSlice,
         createPost: createPostsSlice,
         deletePost: deletePostsSlice,
+        // ---------------------------------
+        getComments: getCommentsSlice,
+        createComment: createCommentSlice,
     },
 });
 export type RootState = ReturnType<typeof store.getState>;
