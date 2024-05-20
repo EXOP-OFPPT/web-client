@@ -11,7 +11,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { updatePhotoProfile } from "@/state/Authe/AuthSlice";
+import { updatePhotoProfile } from "@/state/Auth/AuthSlice";
 import { useToast } from "../ui/use-toast";
 import Cookies from "universal-cookie";
 const cookies = new Cookies(null, { path: "/" });
