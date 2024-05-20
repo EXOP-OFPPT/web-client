@@ -4,11 +4,12 @@ import { Card } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { AppDispatch, RootState } from "@/state/store";
-import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
+import { CheckCircle2, CircleX, ImageOffIcon, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "universal-cookie";
 import { clearMessageAndError, getPosts } from "@/state/Posts/GetSlice";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 const cookies = new Cookies(null, { path: "/" });
 
 
@@ -25,7 +26,7 @@ const Posts: React.FC = () => {
         if (posts.length === 0) {
             dispatch(getPosts());
         }
-    }, [dispatch, posts]);
+    }, [dispatch]);
 
     useEffect(() => {
         if (message) {
@@ -66,10 +67,22 @@ const Posts: React.FC = () => {
 
                 {/* Table */}
                 {isloading ? (
-                    <Loader2 className="h-10 w-10 mt-96 text-primary animate-spin" />
+                    <>
+                        <Loader2 className="h-10 w-10 mt-96 text-primary animate-spin" />
+                    </>
                 ) : (
                     <>
-                        <DisplayPostsCards />
+                        {
+                            posts.length === 0 ?
+                                <Alert className="w-fit px-32 py-16 mt-40 flex flex-col justify-center items-center gap-5">
+                                    <AlertTitle className="text-2xl">No posts yet</AlertTitle>
+                                    <AlertDescription className="flex justify-center items-center">
+                                        <ImageOffIcon className="h-60 w-60 text-muted-foreground" />
+                                    </AlertDescription>
+                                </Alert>
+                                :
+                                <DisplayPostsCards />
+                        }
                     </>
                 )}
             </div>
