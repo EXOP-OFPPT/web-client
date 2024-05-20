@@ -3,6 +3,8 @@ import { AppThunk, store } from "../store";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getTasks } from "./GetSlice";
+import { updateAvailableBonus } from "../Kpis/UpdateSlice";
+import { getKpis } from "../Kpis/GetSlice";
 
 // Interface for error
 interface Error {
@@ -125,8 +127,10 @@ export const createTask =
         await setDoc(doc(db, "tasks", docId), {
           ...taskData,
         }).then(() => {
+          dispatch(updateAvailableBonus({ code: taskData.kpiCode, bonus: (-taskData.bonus), user: user }));
           dispatch(actionSuccess("Task created successfully"));
           dispatch(getTasks(user.role, user.email));
+          dispatch(getKpis());
           dispatch(setLoading(false));
         })
       } else {
