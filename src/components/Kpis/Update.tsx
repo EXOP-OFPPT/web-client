@@ -205,7 +205,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                     <FormItem>
                       <FormLabel>Current Taux</FormLabel>
                       <FormControl>
-                        <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
+                        <Input disabled type="number" min={0} max={100} placeholder="Current Taux" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
