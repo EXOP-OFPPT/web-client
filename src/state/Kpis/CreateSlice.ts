@@ -10,12 +10,13 @@ interface Error {
   message: string;
 }
 
-export type KpiType = {
+type KpiType = {
   code: string;
   title: string;
   description: string;
   minTaux: number;
   currentTaux: number;
+  availableBonus: number;
 };
 
 
@@ -92,7 +93,7 @@ export const checkKpiExist =
   (docId: string, setAction: Function): AppThunk =>
     async (dispatch) => {
       try {
-        const docRef = doc(db, "kpi", docId);
+        const docRef = doc(db, "kpis", docId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           dispatch(setAction(docSnap.data()));
@@ -116,7 +117,7 @@ export const createKpi =
       if (!store.getState().createKpi.kpiExist) {
         console.log("Creating kpi");
         //! Add a new document with account id.
-        await setDoc(doc(db, "kpi", docId), {
+        await setDoc(doc(db, "kpis", docId), {
           ...kpiData,
         }).then(() => {
           dispatch(actionSuccess("Kpi created successfully"));

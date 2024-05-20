@@ -56,6 +56,8 @@ import { useEffect } from "react";
 import { Toaster } from "../ui/toaster";
 import { createTask, clearMessageAndError } from "@/state/Tasks/CreateSlice";
 import { Timestamp } from "firebase/firestore";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+
 import Cookies from "universal-cookie";
 const cookies = new Cookies(null, { path: "/" });
 
@@ -92,10 +94,10 @@ type CreateProps = {
   from: "global" | "kpi";
   mode: "ghost" | "outline";
   kpiCode: string;
-  maxBonus: number;
+  availableBonus: number;
 };
 
-function AddTask({ from, mode, kpiCode, maxBonus }: CreateProps) {
+function AddTask({ from, mode, kpiCode, availableBonus }: CreateProps) {
   const user = cookies.get("user");
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
   const isLoading = useSelector(
@@ -175,11 +177,10 @@ function AddTask({ from, mode, kpiCode, maxBonus }: CreateProps) {
   }
 
   return (
-    <>
+    <div className={availableBonus == 0 ? "bg-secondary pointer-events-none opacity-50" : ""}>
       <Toaster />
       <Dialog>
         <DialogTrigger asChild>
-
           {from == "kpi" ?
             <Button>
               <ListPlusIcon size={20} className="mr-2" />
@@ -270,9 +271,14 @@ function AddTask({ from, mode, kpiCode, maxBonus }: CreateProps) {
                     <FormItem>
                       <FormLabel>Bonus</FormLabel>
                       <FormControl>
-                        <Input min={1} max={maxBonus} type="number" placeholder="Bonus" {...field} />
+                        <Input min={1} max={availableBonus} type="number" placeholder="Bonus" {...field} />
                       </FormControl>
-                      <FormDescription>Max Bonus to assigne to his task is {maxBonus}</FormDescription>
+                      <FormDescription>
+                        Be careful this value can't be changed after
+                      </FormDescription>
+                      <FormDescription>
+                        Max Bonus to assigne to his task is {availableBonus}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -330,7 +336,16 @@ function AddTask({ from, mode, kpiCode, maxBonus }: CreateProps) {
                         <SelectContent>
                           {employees.map((employee) => (
                             <SelectItem key={employee.email} value={employee.email}>
-                              {employee.email}
+                              <div className="w-full h-full flex justify-center items-center gap-2">
+                                <Avatar className="w-6 h-6 my-2 flex items-center justify-center cursor-pointer">
+                                  <AvatarImage loading="lazy" src={employee.avatar} className="object-cover" />
+                                  <AvatarFallback className="text-[10px]">
+                                    {employee.firstName?.charAt(0).toUpperCase()}
+                                    {employee.lastName?.charAt(0).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span>{employee.email}</span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -355,7 +370,7 @@ function AddTask({ from, mode, kpiCode, maxBonus }: CreateProps) {
           </ScrollArea>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
 

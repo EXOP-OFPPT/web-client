@@ -6,6 +6,7 @@ import { updateTask } from "@/state/Tasks/UpdateSlice";
 import { Timestamp } from "firebase/firestore";
 import { BadgeAlertIcon, BadgeCheckIcon, BadgePlusIcon, ClockIcon } from "lucide-react";
 import { updateCurrentTauxTask } from "@/state/Kpis/UpdateSlice";
+import { getKpis } from "@/state/Kpis/GetSlice";
 const cookies = new Cookies(null, { path: "/" });
 
 type infoProps = {
@@ -45,6 +46,7 @@ const Verify = ({ info }: VerifyProps) => {
                 onClick={() => {
                     dispatch(updateTask({ id: info.id, updatedData: { status: "verified", completedAt: Timestamp.fromDate(new Date()) }, user: { role: user.role, email: user.email } }));
                     dispatch(updateCurrentTauxTask({ code: info.kpiCode, bonus: info.bonus, user: { role: user.role, email: user.email } }));
+                    dispatch(getKpis())
                 }}>
                 <BadgePlusIcon size={15} className="mr-1" />
                 To Verify

@@ -24,9 +24,11 @@ const cookies = new Cookies(null, { path: "/" });
 interface DeleteProps {
   mode: "ghost" | "outline";
   docId: string;
+  kpiCode: string;
+  bonus: number;
 }
 
-function Delete({ mode, docId }: DeleteProps) {
+function Delete({ mode, docId, kpiCode, bonus }: DeleteProps) {
   const user = cookies.get("user");
   const isLoading = useSelector(
     (state: RootState) => state.deleteTask.loading
@@ -62,7 +64,8 @@ function Delete({ mode, docId }: DeleteProps) {
   }, [message, error]);
 
   const deleteAction = (docId: string) => {
-    dispatch(deleteTask({ docId, user: { role: user.role, email: user.email } }));
+    dispatch(deleteTask({ docId, kpiCode, bonus, user: { role: user.role, email: user.email } }));
+    window.location.reload();
   };
 
   return (

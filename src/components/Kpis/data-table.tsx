@@ -152,7 +152,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
                   className="cursor-pointer"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => navigate('/app/kpiTasks', { state: { kpiCode: row.original.code, maxBonus: 100 - row.original.currentTaux } })}
+                  onClick={() => navigate('/app/kpiTasks', { state: { kpiCode: row.original.code, availableBonus: row.original.availableBonus } })}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

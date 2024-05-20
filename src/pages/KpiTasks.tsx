@@ -19,7 +19,7 @@ const KpiTasks: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { toast } = useToast();
     const location = useLocation()
-    const { kpiCode, maxBonus } = location.state
+    const { kpiCode, availableBonus } = location.state
 
     useEffect(() => {
         dispatch(getKpiTasks(kpiCode));
@@ -59,7 +59,7 @@ const KpiTasks: React.FC = () => {
                     </div>
                     <div className="h-full flex flex-col justify-center gap-2">
                         {/* Add Task */}
-                        <AddTask from="kpi" mode="outline" kpiCode={kpiCode} maxBonus={maxBonus} />
+                        <AddTask from="kpi" mode="outline" kpiCode={kpiCode} availableBonus={availableBonus} />
                     </div>
                 </Card>
 

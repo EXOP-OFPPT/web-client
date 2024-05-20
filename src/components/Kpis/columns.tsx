@@ -98,9 +98,10 @@ export const columns: ColumnDef<KpiType>[] = [
       );
     },
     cell: ({ row }) => {
-      const minKpi = row.original.minTaux; // replace with your actual min KPI
-      const currentKpi = row.original.currentTaux; // replace with your actual current KPI
-      const progress = Number(Math.min(100, (currentKpi / minKpi) * 100).toFixed(2));
+      // TODO const minKpi = row.original.minTaux; 
+      const currentKpi = row.original.currentTaux;
+      // TODO const progress = Number(Math.min(100, (currentKpi / minKpi) * 100).toFixed(2));
+      const progress = Number(Math.min(100, (currentKpi / 100) * 100).toFixed(2));
       // Calculate hue from progress. 120 is green in HSL, 0 is red.
       const hue = progress * 1.2;
 
@@ -201,7 +202,7 @@ export const columns: ColumnDef<KpiType>[] = [
       if (cookie.get("user").role == "admin") {
         return (
           <div onClick={(e) => e.stopPropagation()} className="flex justify-center items-center gap-2">
-            <AddTask from="global" mode="outline" kpiCode={row.original.code} maxBonus={100-row.original.currentTaux} />
+            <AddTask from="global" mode="outline" kpiCode={row.original.code} availableBonus={row.original.availableBonus} />
             <Update mode="outline" info={row.original} />
             <Delete mode="outline" docId={row.original.code} />
           </div>

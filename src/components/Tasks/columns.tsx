@@ -227,7 +227,7 @@ export const columns: ColumnDef<TaskType>[] = [
       return (
         <div className="flex justify-center items-center gap-2">
           <Update mode="outline" info={row.original} />
-          {(cookie.get("user").role == "admin") && <Delete mode="outline" docId={row.original.id} />}
+          {(cookie.get("user").role == "admin") && <Delete mode="outline" docId={row.original.id} bonus={row.original.bonus} kpiCode={row.original.kpiCode} />}
         </div>
       );
     }

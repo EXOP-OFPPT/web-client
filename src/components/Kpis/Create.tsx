@@ -120,6 +120,7 @@ function Create() {
       description: values.description,
       minTaux: parseInt(values.minTaux),
       currentTaux: parseInt(values.currentTaux),
+      availableBonus: 100 - parseInt(values.currentTaux),
       type: values.type,
     };
     dispatch(createKpi({ docId: docId, kpiData: data }));
@@ -203,6 +204,9 @@ function Create() {
                       <FormControl>
                         <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
                       </FormControl>
+                      <FormDescription>
+                        Be careful this value can't be changed after
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
