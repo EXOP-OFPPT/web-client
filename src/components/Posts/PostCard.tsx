@@ -99,11 +99,11 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
             {/* <img loading="lazy" src={data.attachement.url} className="object-cover w-full h-auto max-h-[700px] border-2 border-border rounded-md" /> */}
           </div>
           {/* //! Actions Post Section */}
-          <div className="flex gap-24 justify-center items-center py-2">
+          <div className="flex gap-10 justify-center items-center py-2">
             {/* //! Likes Section */}
             <Likes currentLikes={data.likes} postId={data.id} />
             {/* //! Comments Section */}
-            <Comments postId={data.id} commentsCount={data.commentsCount} poster={data.poster} />
+            <Comments postId={data.id} commentsCount={data.commentsCount} />
           </div>
         </section>
       </main>
