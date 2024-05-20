@@ -13,6 +13,7 @@ interface Error {
 
 type Attachment = {
     type: string;
+    fileName: string;
     url: string;
 };
 
@@ -43,8 +44,9 @@ export type PostType = {
     description: string;
     likes: number;
     timeAgo?: string;
-    comments?: Comment[];
-    poster?: User;
+    comments: Comment[];
+    commentsCount: number;
+    poster: User;
 };
 
 
@@ -125,35 +127,23 @@ export const getPosts = (): AppThunk => async dispatch => {
             const userDoc1 = await getDoc(userRef1);
             const poster = userDoc1.data();
 
-            const commentsQuery = query(collection(db, "posts", postData.id, 'comments'), orderBy("createdAt", "desc"));
-            const querySnapshot2 = await getDocs(commentsQuery);
-            const commentsPromises = querySnapshot2.docs.map(async (currentDoc) => {
-                const commentData = currentDoc.data();
-                const userRef2 = doc(db, "employees", commentData.sender);
-                const userDoc2 = await getDoc(userRef2);
-                const commenter = userDoc2.data();
+            // Get the count of comments
+            const commentsQuery = query(collection(db, "posts", currentDoc.id, 'comments'));
+            const commentsSnapshot = await getDocs(commentsQuery);
+            const commentsCount = commentsSnapshot.size;
 
-                const createdAt = commentData.createdAt.toDate();
-                const timeAgo = formatDistanceToNow(createdAt, { addSuffix: true });
-                return {
-                    ...commentData,
-                    createdAt: commentData.createdAt.toDate().toISOString(),
-                    timeAgo,
-                    commenter,
-                };
-            });
-            const comments = await Promise.all(commentsPromises);
             const postCreatedAt = postData.createdAt.toDate();
             const postTimeAgo = formatDistanceToNow(postCreatedAt, { addSuffix: true });
             return {
                 ...postData,
                 createdAt: postData.createdAt.toDate().toISOString(),
                 timeAgo: postTimeAgo,
-                comments,
+                commentsCount, // Add the count of comments
                 poster,
             };
         });
         const posts = await Promise.all(postsPromises);
+        console.log(posts);
         dispatch(actionSuccess(posts));
     } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
