@@ -19,6 +19,7 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -91,9 +92,10 @@ type CreateProps = {
   from: "global" | "kpi";
   mode: "ghost" | "outline";
   kpiCode: string;
+  maxBonus: number;
 };
 
-function AddTask({ from, mode, kpiCode }: CreateProps) {
+function AddTask({ from, mode, kpiCode, maxBonus }: CreateProps) {
   const user = cookies.get("user");
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
   const isLoading = useSelector(
@@ -268,8 +270,9 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
                     <FormItem>
                       <FormLabel>Bonus</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Bonus" {...field} />
+                        <Input min={1} max={maxBonus} type="number" placeholder="Bonus" {...field} />
                       </FormControl>
+                      <FormDescription>Max Bonus to assigne to his task is {maxBonus}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -287,19 +290,6 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
                     </FormItem>
                   )}
                 />
-                {/* <FormField
-                  control={form.control}
-                  name="deadLine"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>DeadLine</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button

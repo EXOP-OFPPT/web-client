@@ -201,7 +201,7 @@ export const columns: ColumnDef<KpiType>[] = [
       if (cookie.get("user").role == "admin") {
         return (
           <div onClick={(e) => e.stopPropagation()} className="flex justify-center items-center gap-2">
-            <AddTask from="global" mode="outline" kpiCode={row.original.code} />
+            <AddTask from="global" mode="outline" kpiCode={row.original.code} maxBonus={100-row.original.currentTaux} />
             <Update mode="outline" info={row.original} />
             <Delete mode="outline" docId={row.original.code} />
           </div>

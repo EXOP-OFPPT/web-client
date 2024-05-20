@@ -149,10 +149,10 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                className="cursor-pointer"
+                  className="cursor-pointer"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => navigate('/app/kpiTasks', { state: { kpiCode: row.original.code } })}
+                  onClick={() => navigate('/app/kpiTasks', { state: { kpiCode: row.original.code, maxBonus: 100 - row.original.currentTaux } })}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
