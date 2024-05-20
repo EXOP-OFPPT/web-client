@@ -268,7 +268,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                     <FormItem>
                       <FormLabel>Bonus</FormLabel>
                       <FormControl>
-                        <Input disabled={user.role === "admin" ? false : true} placeholder="Bonus" {...field} />
+                        <Input disabled={true} placeholder="Bonus" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
