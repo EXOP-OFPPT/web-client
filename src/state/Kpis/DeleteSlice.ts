@@ -10,13 +10,6 @@ interface Error {
   message: string;
 }
 
-export type KpiType = {
-  code: string;
-  title: string;
-  description: string;
-  value: string;
-};
-
 // Interface for DeleteState
 interface DeleteState {
   loading: boolean;
@@ -80,7 +73,7 @@ export const deleteKpi =
       dispatch(clearMessageAndError());
       try {
         // Delete employee document
-        await deleteDoc(doc(db, "kpi", docId));
+        await deleteDoc(doc(db, "kpis", docId));
         dispatch(actionSuccess("Kpi deleted successfully"));
         dispatch(getKpis());
       } catch (error: any) {
