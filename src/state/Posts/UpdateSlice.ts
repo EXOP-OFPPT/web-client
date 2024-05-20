@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, increment } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getPosts } from "./GetSlice";
 
@@ -18,6 +18,7 @@ interface UpdatedPostPayload {
 
 type Attachment = {
     type: string;
+    fileName: string;
     url: string;
 };
 
@@ -111,7 +112,29 @@ export const {
 export default updatePostSlice.reducer;
 
 
-export const updateTask =
+
+
+export const addLike = (postId: string): AppThunk => async dispatch => {
+    dispatch(clearMessageAndError());
+
+    const postRef = doc(db, 'posts', postId);
+
+    try {
+        await updateDoc(postRef, {
+            likes: increment(1)
+        });
+
+        dispatch(actionSuccess('Successfully added like'));
+    } catch (error: any) {
+        dispatch(actionFailed({ code: error.code, message: error.message }));
+    } finally {
+        dispatch(setLoading(false));
+    }
+};
+
+
+
+export const updatePost =
     ({ id, updatedData }: UpdatedPostPayload): AppThunk =>
         async (dispatch) => {
             // Reset message and error
