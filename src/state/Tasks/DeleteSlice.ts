@@ -3,6 +3,8 @@ import { AppThunk } from "../store";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getTasks } from "./GetSlice";
+import { updateAvailableBonus } from "../Kpis/UpdateSlice";
+import { getKpis } from "../Kpis/GetSlice";
 
 // Interface for error
 interface Error {
@@ -12,6 +14,8 @@ interface Error {
 
 interface DeletePyload {
   docId: string;
+  bonus: number;
+  kpiCode: string;
   user: {
     role: string;
     email: string;
@@ -86,16 +90,17 @@ export const {
 export default deleteTaskSlice.reducer;
 
 export const deleteTask =
-  ({ docId, user }: DeletePyload): AppThunk =>
+  ({ docId, kpiCode, bonus, user }: DeletePyload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
-      try {
-        await deleteDoc(doc(db, "tasks", docId));
+      deleteDoc(doc(db, "tasks", docId)).then(() => {
+        dispatch(updateAvailableBonus({ code: kpiCode, bonus, user }))
         dispatch(actionSuccess("Task deleted successfully"));
         dispatch(getTasks(user.role, user.email));
-      } catch (error: any) {
-        dispatch(actionFailed({ code: error.code, message: error.message }));
-      }
+        dispatch(getKpis());
+      }).catch((error: any) => {
+        dispatch(actionFailed({ code: error.code, message: error.message }))
+      })
     };
