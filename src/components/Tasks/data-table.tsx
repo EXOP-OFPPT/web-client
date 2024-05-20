@@ -82,7 +82,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by title..."
+          placeholder="Search by Title..."
           value={
             (table.getColumn("title")?.getFilterValue() as string) ?? ""
           }

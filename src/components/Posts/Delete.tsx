@@ -18,13 +18,14 @@ import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
 import { Toaster } from "../ui/toaster";
 import { clearMessageAndError, deletePost } from "@/state/Posts/DeleteSlice";
+import { Badge } from "../ui/badge";
 
 interface DeleteProps {
-  mode: "ghost" | "outline";
   docId: string;
+  fileName: string;
 }
 
-function Delete({ mode, docId }: DeleteProps) {
+function Delete({ docId, fileName }: DeleteProps) {
   const isLoading = useSelector(
     (state: RootState) => state.deleteKpi.loading
   );
@@ -59,28 +60,19 @@ function Delete({ mode, docId }: DeleteProps) {
   }, [message, error]);
 
   const deleteAction = (docId: string) => {
-    dispatch(deletePost({ docId }));
+    dispatch(deletePost({ docId, fileName }));
   };
 
   return (
     <>
       <Toaster />
       <AlertDialog>
-        {/* <Button
-            className="h-8 w-8 hover:text-yellow-500"
-            variant={mode}
-            size="icon"
-          >
-            <Edit size={16} /> */}
-        {mode === "ghost" ? (
-          <AlertDialogTrigger className="h-8 w-8 flex justify-center items-center cursor-pointer rounded-md hover:bg-secondary dark:hover:bg-accent hover:text-red-500">
+        <AlertDialogTrigger>
+          <Badge variant="secondary" className="flex justify-center items-center gap-2 text-red-500 p-2 rounded-md">
             <Trash2 size={16} />
-          </AlertDialogTrigger>
-        ) : (
-          <AlertDialogTrigger className="h-8 w-8 border-[1.5px] flex justify-center items-center cursor-pointer rounded-md bg-white hover:bg-secondary dark:bg-black dark:hover:bg-accent dark:border-accent hover:text-red-500">
-            <Trash2 size={16} />
-          </AlertDialogTrigger>
-        )}
+            <span>Delete</span>
+          </Badge>
+        </AlertDialogTrigger>
         <AlertDialogContent className="bor4der-2 bord5er-red-500">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-red-500">

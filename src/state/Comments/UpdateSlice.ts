@@ -1,9 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { doc, updateDoc, increment } from "firebase/firestore";
+import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getPosts } from "./GetSlice";
-
 
 // Interface for error
 interface Error {
@@ -11,69 +9,50 @@ interface Error {
     message: string;
 }
 
-interface UpdatedPostPayload {
+export type taskType = {
+    id: string;
+    title: string;
+    description: string;
+    status: string;
+    bonus: number;
+    createdAt: Timestamp;
+    deadLine: Timestamp;
+    completedAt?: Timestamp;
+    assignedTo: string;
+    kpiCode: string;
+};
+
+
+// Interface for User action payload
+interface UpdatedTaskPayload {
     id: string;
     updatedData: any;
+    user: {
+        role: string;
+        email: string;
+    }
 }
-
-type Attachment = {
-    type: string;
-    fileName: string;
-    url: string;
-};
-
-export type User = {
-    firstName: string;
-    lastName: string;
-    role: string;
-    phone: string;
-    avatar: string;
-    email: string;
-};
-
-type Comment = {
-    createdAt: string;
-    id: string;
-    content: string;
-    sender: string;
-    timeAgo?: string;
-    commenter?: User;
-};
-
-export type PostType = {
-    title: string;
-    attachement: Attachment;
-    sender: string;
-    createdAt: string;
-    id: string;
-    description: string;
-    likes: number;
-    timeAgo?: string;
-    comments?: Comment[];
-    poster?: User;
-};
 
 
 // Interface for AuthState
-interface PostsState {
-    posts: PostType[] | [];
+interface UpdateState {
+    task: taskType | {};
     loading: boolean;
     error: Error | null;
     message: string | null;
 }
 
 // Initial state
-const initialState: PostsState = {
-    posts: [],
+const initialState: UpdateState = {
+    task: {},
     loading: false,
     error: null,
     message: null,
 };
 
-
 // Create slice
-const updatePostSlice = createSlice({
-    name: "updatePostSlice",
+const updateTaskSlice = createSlice({
+    name: "updateTaskSlice",
     initialState,
     reducers: {
         actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -107,36 +86,15 @@ export const {
     setMessage,
     setError,
     clearMessageAndError,
-} = updatePostSlice.actions;
+} = updateTaskSlice.actions;
 
-export default updatePostSlice.reducer;
-
-
+export default updateTaskSlice.reducer;
 
 
-export const addLike = (postId: string): AppThunk => async dispatch => {
-    dispatch(clearMessageAndError());
-
-    const postRef = doc(db, 'posts', postId);
-
-    try {
-        await updateDoc(postRef, {
-            likes: increment(1)
-        });
-
-        dispatch(actionSuccess('Successfully added like'));
-    } catch (error: any) {
-        dispatch(actionFailed({ code: error.code, message: error.message }));
-    } finally {
-        dispatch(setLoading(false));
-    }
-};
-
-
-
-export const updatePost =
-    ({ id, updatedData }: UpdatedPostPayload): AppThunk =>
+export const updateTask =
+    ({ id, updatedData, user }: UpdatedTaskPayload): AppThunk =>
         async (dispatch) => {
+            console.log(user);
             // Reset message and error
             dispatch(setLoading(true));
             dispatch(clearMessageAndError());
@@ -145,10 +103,11 @@ export const updatePost =
                 const ref = doc(db, "tasks", id);
                 await updateDoc(ref, updatedData);
                 dispatch(actionSuccess("Task updated successfully"));
-                dispatch(getPosts());
             } catch {
                 dispatch(
                     actionFailed({ code: "500", message: "Update task failed" })
                 );
             }
         };
+
+

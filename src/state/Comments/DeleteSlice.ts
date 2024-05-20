@@ -1,9 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { collection, deleteDoc, doc, getDocs, writeBatch } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getPosts } from "./GetSlice";
-import { deleteObject, getStorage, ref } from "firebase/storage";
 
 // Interface for error
 interface Error {
@@ -13,9 +11,24 @@ interface Error {
 
 interface DeletePyload {
   docId: string;
-  fileName: string
+  user: {
+    role: string;
+    email: string;
+  };
 }
 
+export type taskType = {
+  id: string;
+  title: string;
+  description: string;
+  status: "todo" | "inprogress" | "done" | "verified";
+  bonus: number;
+  createdAt: string;
+  deadLine: string;
+  assignedTo: string;
+  completedAt?: string;
+  kpiCode: string;
+};
 
 // Interface for DeleteState
 interface DeleteState {
@@ -32,8 +45,8 @@ const initialState: DeleteState = {
 };
 
 // Create slice
-const deletePostSlice = createSlice({
-  name: "deletePostSlice",
+const deleteTaskSlice = createSlice({
+  name: "deleteTaskSlice",
   initialState,
   reducers: {
     actionSuccess: (state, action: PayloadAction<string | null>) => {
@@ -67,50 +80,20 @@ export const {
   setMessage,
   setError,
   clearMessageAndError,
-} = deletePostSlice.actions;
+} = deleteTaskSlice.actions;
 
-export default deletePostSlice.reducer;
+export default deleteTaskSlice.reducer;
 
-
-const deleteFile = (fileName: string): AppThunk =>
-  async (dispatch) => {
-    const storage = getStorage();
-    // Create a reference to the file to delete
-    const desertRef = ref(storage, `Posts/Images/${fileName}`);
-    deleteObject(desertRef).then(() => {
-      dispatch(actionSuccess(" Post file deleted successfully"));
-    }).catch((error: any) => {
-      dispatch(actionFailed({ code: error.code, message: error.message }));
-    });
-  };
-
-export const deletePost =
-  ({ docId, fileName }: DeletePyload): AppThunk =>
+export const deleteTask =
+  ({ docId, user }: DeletePyload): AppThunk =>
     async (dispatch) => {
-      console.log(docId, fileName);
+      console.log(user);
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       try {
-        // Get reference to the comments subcollection
-        const commentsRef = collection(db, "posts", docId, "comments");
-
-        // Get all comments
-        const commentsSnapshot = await getDocs(commentsRef);
-
-        // Delete all comments
-        const batch = writeBatch(db);
-        commentsSnapshot.docs.forEach((doc) => {
-          batch.delete(doc.ref);
-        });
-        await batch.commit();
-
-        // Delete the post
-        await deleteDoc(doc(db, "posts", docId));
-
-        dispatch(deleteFile(fileName))
-        dispatch(actionSuccess("Post deleted successfully"));
-        dispatch(getPosts());
+        await deleteDoc(doc(db, "tasks", docId));
+        dispatch(actionSuccess("Task deleted successfully"));
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }

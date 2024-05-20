@@ -10,6 +10,7 @@ interface Error {
 
 type Attachment = {
   type: string;
+  fileName: string;
   url: string;
 };
 

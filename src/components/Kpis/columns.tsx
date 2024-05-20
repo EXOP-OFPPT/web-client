@@ -111,7 +111,7 @@ export const columns: ColumnDef<KpiType>[] = [
               className={`h-full flex justify-center items-center rounded-full`}
               style={{
                 width: `${progress}%`,
-                backgroundColor: `hsl(${hue}, 100%, 50%)`
+                backgroundColor: `hsl(${hue}, 80%, 50%)`
               }}
             >
             </div>

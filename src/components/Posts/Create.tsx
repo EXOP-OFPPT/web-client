@@ -114,7 +114,8 @@ const Create = () => {
         icon: <CircleX size={40} className="mr-2" />,
       });
     }
-    const storageRef = ref(storage, `Posts/Images/${crypto.randomUUID() + imageUpload.name}`);
+    const fileName = crypto.randomUUID() + imageUpload.name;
+    const storageRef = ref(storage, `Posts/Images/${fileName}`);
     const uploadTask = uploadBytesResumable(storageRef, imageUpload);
     uploadTask.on(
       "state_changed",
@@ -154,7 +155,7 @@ const Create = () => {
         //! Complete
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           console.log("File available at", downloadURL);
-          const attachement = { url: downloadURL, type: "image" }
+          const attachement = { type: "image", fileName: fileName, url: downloadURL }
           // Create Post Doc
           if (attachement.url) {
             const docId = crypto.randomUUID();

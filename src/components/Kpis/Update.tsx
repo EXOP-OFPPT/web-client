@@ -254,7 +254,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                     <span>Updating Kpi...</span>
                   </Button>
                 ) : (
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit">Update</Button>
                 )}
               </form>
             </Form>

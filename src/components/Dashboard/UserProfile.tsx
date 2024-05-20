@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/state/store";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "@/state/Authe/AuthSlice";
+import { logoutUser } from "@/state/Auth/AuthSlice";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
