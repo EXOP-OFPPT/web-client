@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
-import { User } from "@/state/Comments/GetSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import HoverCardProfile from "./HoverCardProfile";
 import { Badge } from "../ui/badge";
@@ -33,13 +32,13 @@ import { AppDispatch, RootState } from "@/state/store";
 import { clearMessageAndError, createComment } from "@/state/Comments/CreateSlice";
 import { Toaster } from "../ui/toaster";
 import { useToast } from "../ui/use-toast";
-
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 
 interface CommentsProps {
     postId: string;
     commentsCount: number;
-    poster: User;
 }
 
 const formSchema = z.object({
@@ -49,8 +48,8 @@ const formSchema = z.object({
 });
 
 
-const Comments: React.FC<CommentsProps> = ({ postId, commentsCount, poster }) => {
-
+const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
+    const user = cookies.get("user");
     const [comments, setComments] = useState<any[] | []>([])
     const [loading, setLoading] = useState<boolean>(false)
     const message = useSelector((state: RootState) => state.createComment.message);
@@ -126,7 +125,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount, poster }) =>
             postId: postId,
             docId: crypto.randomUUID(),
             content: values.content,
-            sender: poster.email,
+            sender: user.email,
         }
         dispatch(createComment(data))
         getComments(postId)
@@ -157,10 +156,10 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount, poster }) =>
                                 className="flex gap-5 p-2"
                             >
                                 <Avatar className="w-10 h-10 flex items-center justify-center">
-                                    <AvatarImage loading="lazy" src={poster.avatar} className="object-cover" />
+                                    <AvatarImage loading="lazy" src={user.avatar} className="object-cover" />
                                     <AvatarFallback className="text-base">
-                                        {poster.firstName?.charAt(0).toUpperCase()}
-                                        {poster.lastName?.charAt(0).toUpperCase()}
+                                        {user.firstName?.charAt(0).toUpperCase()}
+                                        {user.lastName?.charAt(0).toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
                                 <FormField
