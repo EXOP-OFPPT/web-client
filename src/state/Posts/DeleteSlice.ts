@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { deleteDoc, doc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getPosts } from "./GetSlice";
+import { deleteObject, getStorage, ref } from "firebase/storage";
 
 // Interface for error
 interface Error {
@@ -12,6 +13,7 @@ interface Error {
 
 interface DeletePyload {
   docId: string;
+  fileName: string
 }
 
 
@@ -69,15 +71,44 @@ export const {
 
 export default deletePostSlice.reducer;
 
+
+const deleteFile = (fileName: string): AppThunk =>
+  async (dispatch) => {
+    const storage = getStorage();
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, `Posts/Images/${fileName}`);
+    deleteObject(desertRef).then(() => {
+      dispatch(actionSuccess(" Post file deleted successfully"));
+    }).catch((error: any) => {
+      dispatch(actionFailed({ code: error.code, message: error.message }));
+    });
+  };
+
 export const deletePost =
-  ({ docId }: DeletePyload): AppThunk =>
+  ({ docId, fileName }: DeletePyload): AppThunk =>
     async (dispatch) => {
-      console.log(docId);
+      console.log(docId, fileName);
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       try {
+        // Get reference to the comments subcollection
+        const commentsRef = collection(db, "posts", docId, "comments");
+
+        // Get all comments
+        const commentsSnapshot = await getDocs(commentsRef);
+
+        // Delete all comments
+        const batch = writeBatch(db);
+        commentsSnapshot.docs.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
+
+        // Delete the post
         await deleteDoc(doc(db, "posts", docId));
+
+        dispatch(deleteFile(fileName))
         dispatch(actionSuccess("Post deleted successfully"));
         dispatch(getPosts());
       } catch (error: any) {
