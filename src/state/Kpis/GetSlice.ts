@@ -16,6 +16,7 @@ export type KpiType = {
     description: string;
     minTaux: number;
     currentTaux: number;
+    availableBonus: number;
     type: string;
 };
 
@@ -96,7 +97,7 @@ export const getKpis = (): AppThunk => async dispatch => {
     dispatch(clearMessageAndError());
     try {
         // Get all kpis
-        const querySnapshot = await getDocs(collection(db, "kpi"));
+        const querySnapshot = await getDocs(collection(db, "kpis"));
         const kpis: DocumentData = [];
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
