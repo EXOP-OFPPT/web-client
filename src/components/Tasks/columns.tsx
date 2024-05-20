@@ -198,8 +198,8 @@ export const columns: ColumnDef<TaskType>[] = [
     },
   },
   {
-    id: "toverify",
-    accessorKey: "toverify",
+    id: "Verification",
+    accessorKey: "Verification",
     header: ({ column }) => {
       return (
         <Button
