@@ -15,7 +15,6 @@ const cookies = new Cookies(null, { path: "/" });
 
 const Kpis: React.FC = () => {
     const user = cookies.get("user");
-    const kpis = useSelector((state: RootState) => state.getKpis.kpis);
     const isloading = useSelector(
         (state: RootState) => state.getKpis.loading
     );
@@ -25,9 +24,7 @@ const Kpis: React.FC = () => {
     const { toast } = useToast();
 
     useEffect(() => {
-        if (kpis.length === 0) {
-            dispatch(getKpis());
-        }
+        dispatch(getKpis());
     }, [dispatch]);
 
     useEffect(() => {
