@@ -172,7 +172,7 @@ export const columns: ColumnDef<KpiType>[] = [
 
       return (
         <Button
-          className={`${value == "C" ? "bg-primary hover:bg-primary" : value == "D" ? "bg-neutral-500 hover:bg-neutral-500" : "bg-error hover:bg-error"} cursor-default`}
+          className={`${value == "C" ? "bg-success hover:bg-success" : value == "D" ? "bg-neutral-500 hover:bg-neutral-500" : "bg-error hover:bg-error"} cursor-default`}
           onClick={() => console.log(row.original.code)}>
           {value}
         </Button>
@@ -202,7 +202,7 @@ export const columns: ColumnDef<KpiType>[] = [
       if (cookie.get("user").role == "admin") {
         return (
           <div onClick={(e) => e.stopPropagation()} className="flex justify-center items-center gap-2">
-            <AddTask from="global" mode="outline" kpiCode={row.original.code} availableBonus={row.original.availableBonus} />
+            <AddTask from="global" mode="outline" kpiCode={row.original.code} />
             <Update mode="outline" info={row.original} />
             <Delete mode="outline" docId={row.original.code} />
           </div>
