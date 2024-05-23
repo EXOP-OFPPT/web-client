@@ -2,8 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getTasks } from "./GetSlice";
-import { updateAvailableBonus } from "../Kpis/UpdateSlice";
+import { getEmployeeTasks, getKpiTasks, getTasks } from "./GetSlice";
 import { getKpis } from "../Kpis/GetSlice";
 
 // Interface for error
@@ -14,12 +13,9 @@ interface Error {
 
 interface DeletePyload {
   docId: string;
-  bonus: number;
   kpiCode: string;
-  user: {
-    role: string;
-    email: string;
-  };
+  from: string;
+  email: string;
 }
 
 export type taskType = {
@@ -27,7 +23,6 @@ export type taskType = {
   title: string;
   description: string;
   status: "todo" | "inprogress" | "done" | "verified";
-  bonus: number;
   createdAt: string;
   deadLine: string;
   assignedTo: string;
@@ -90,15 +85,22 @@ export const {
 export default deleteTaskSlice.reducer;
 
 export const deleteTask =
-  ({ docId, kpiCode, bonus, user }: DeletePyload): AppThunk =>
+  ({ docId, kpiCode, from, email }: DeletePyload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       deleteDoc(doc(db, "tasks", docId)).then(() => {
-        dispatch(updateAvailableBonus({ code: kpiCode, bonus, user }))
         dispatch(actionSuccess("Task deleted successfully"));
-        dispatch(getTasks(user.role, user.email));
+        if (from === "tasks") {
+          dispatch(getTasks());
+        }
+        else if ((from === "myTasks") && email) {
+          dispatch(getEmployeeTasks(email));
+        }
+        else if (from === "kpiTasks") {
+          dispatch(getKpiTasks(kpiCode));
+        }
         dispatch(getKpis());
       }).catch((error: any) => {
         dispatch(actionFailed({ code: error.code, message: error.message }))
