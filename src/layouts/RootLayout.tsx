@@ -1,5 +1,5 @@
-import NavBar from "@/components/Dashboard/Navbar";
-import Settings from "@/components/Dashboard/Settings";
+import NavBar from "@/components/Layouts/Navbar";
+import Settings from "@/components/Layouts/Settings";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AppDispatch, RootState } from "@/state/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,18 +9,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { CheckCircle2 } from "lucide-react";
 import { clearMessageAndError } from "@/state/Auth/AuthSlice";
 import { getEmployees } from "@/state/Employees/GetSlice";
-import { getTasks } from "@/state/Tasks/GetSlice";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
-  const user = cookies.get("user");
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
-  const tasks = useSelector((state: RootState) => state.getTasks.tasks);
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
   const message = useSelector((state: RootState) => state.auth.message);
   const dispatch = useDispatch<AppDispatch>();
@@ -30,10 +25,6 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
     if (employees.length === 0) {
       dispatch(getEmployees());
     }
-    if (tasks.length === 0) {
-      dispatch(getTasks(user.role, user.email));
-    }
-
   }, [dispatch]);
 
   useEffect(() => {
