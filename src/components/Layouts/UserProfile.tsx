@@ -45,7 +45,7 @@ const UserProfile: React.FC = () => {
       desc: "To-do and Daily Tasks",
       iconBg: "rgb(255, 244, 229)",
       iconColor: "rgb(254, 201, 15)",
-      path: "/app/tasks",
+      path: "/app/myTasks",
     },
   ];
 

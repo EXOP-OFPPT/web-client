@@ -50,6 +50,7 @@ import { Toaster } from "../ui/toaster";
 import { clearMessageAndError, updateTask } from "@/state/Tasks/UpdateSlice";
 import { Timestamp } from "firebase/firestore";
 import Cookies from "universal-cookie";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 const cookie = new Cookies(null, { path: "/" });
 
 
@@ -72,10 +73,6 @@ const formSchema = z.object({
   deadLine: z.any({
     required_error: "deadLine is required",
   }),
-  bonus: z.any({
-    required_error: "Bonus is required",
-  }),
-
 });
 
 type infoProps = {
@@ -87,7 +84,6 @@ type infoProps = {
   deadLine: string | Timestamp;
   assignedTo: string;
   kpiCode: string;
-  bonus: number;
 };
 
 type UpdateProps = {
@@ -143,7 +139,6 @@ const Update = ({ mode, info }: UpdateProps) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-
     return `${year}-${month}-${day}`;
   }
 
@@ -156,14 +151,12 @@ const Update = ({ mode, info }: UpdateProps) => {
       status: info.status,
       createdAt: info.createdAt instanceof Timestamp ? formatDate(info.createdAt.toDate().toISOString()) : formatDate(info.createdAt),
       assignedTo: info.assignedTo,
-      bonus: info.bonus
     },
   });
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
-    console.log({ id: info.id, updatedData: { ...values, createdAt: info.createdAt, deadLine: info.deadLine } });
     const createdAtTimestamp = Timestamp.fromDate(new Date(values.createdAt));
     const deadLineTimestamp = Timestamp.fromDate(new Date(deadLine));
     const data = {
@@ -173,10 +166,14 @@ const Update = ({ mode, info }: UpdateProps) => {
       createdAt: createdAtTimestamp,
       deadLine: deadLineTimestamp
     }
+    // Get current Component url
+    const url = window.location.pathname;
+    const from = url.substring(url.lastIndexOf('/') + 1);
     dispatch(updateTask({
       id: info.id,
       updatedData: data,
-      user: { role: user.role, email: user.email }
+      from: from,
+      email: user.email,
     }));
   }
 
@@ -263,19 +260,6 @@ const Update = ({ mode, info }: UpdateProps) => {
                 />
                 <FormField
                   control={form.control}
-                  name="bonus"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Bonus</FormLabel>
-                      <FormControl>
-                        <Input disabled={true} placeholder="Bonus" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="createdAt"
                   render={({ field }) => (
                     <FormItem>
@@ -332,7 +316,16 @@ const Update = ({ mode, info }: UpdateProps) => {
                         <SelectContent>
                           {employees.map((employee) => (
                             <SelectItem key={employee.email} value={employee.email}>
-                              {employee.email}
+                              <div className="w-full h-full flex justify-center items-center gap-2">
+                                <Avatar className="w-6 h-6 my-2 flex items-center justify-center cursor-pointer">
+                                  <AvatarImage loading="lazy" src={employee.avatar} className="object-cover" />
+                                  <AvatarFallback className="text-[9px]">
+                                    {employee.firstName?.charAt(0).toUpperCase()}
+                                    {employee.lastName?.charAt(0).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span>{employee.email}</span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>

@@ -22,7 +22,7 @@ const States: React.FC<StatesProps> = () => {
 
 
   useEffect(() => {
-    dispatch(getTasks(user.role, user.email));
+    dispatch(getTasks());
   }, [dispatch]);
 
   useEffect(() => {

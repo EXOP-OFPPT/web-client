@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getTasks } from "./GetSlice";
+import { getEmployeeTasks, getKpiTasks, getTasks } from "./GetSlice";
 
 // Interface for error
 interface Error {
@@ -15,7 +15,6 @@ export type taskType = {
     title: string;
     description: string;
     status: string;
-    bonus: number;
     createdAt: Timestamp;
     deadLine: Timestamp;
     completedAt?: Timestamp;
@@ -28,10 +27,8 @@ export type taskType = {
 interface UpdatedTaskPayload {
     id: string;
     updatedData: any;
-    user: {
-        role: string;
-        email: string;
-    }
+    from: string;
+    email?: string;
 }
 
 
@@ -93,22 +90,29 @@ export default updateTaskSlice.reducer;
 
 
 export const updateTask =
-    ({ id, updatedData, user }: UpdatedTaskPayload): AppThunk =>
+    ({ id, updatedData, from, email }: UpdatedTaskPayload): AppThunk =>
         async (dispatch) => {
             // Reset message and error
             dispatch(setLoading(true));
             dispatch(clearMessageAndError());
-            try {
-                console.log("Updating task");
-                const ref = doc(db, "tasks", id);
-                await updateDoc(ref, updatedData);
+            console.log("Updating task");
+            const ref = doc(db, "tasks", id);
+            updateDoc(ref, updatedData).then(() => {
                 dispatch(actionSuccess("Task updated successfully"));
-                dispatch(getTasks(user.role, user.email));
-            } catch {
+                if (from === "tasks") {
+                    dispatch(getTasks());
+                }
+                else if ((from === "myTasks") && email) {
+                    dispatch(getEmployeeTasks(email));
+                }
+                else if ((from === "kpiTasks")) {
+                    dispatch(getKpiTasks(updatedData.kpiCode));
+                }
+            }).catch(() => {
                 dispatch(
                     actionFailed({ code: "500", message: "Update task failed" })
                 );
-            }
+            });
         };
 
 

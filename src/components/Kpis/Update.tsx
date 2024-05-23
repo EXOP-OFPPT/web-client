@@ -111,7 +111,7 @@ const Update = ({ mode, info }: UpdateProps) => {
       description: info.description,
       minTaux: info.minTaux,
       currentTaux: info.currentTaux.toString(),
-      type: info.type,
+      type: info.type.charAt(0).toUpperCase() + info.type.slice(1),
     },
   });
 
@@ -124,7 +124,6 @@ const Update = ({ mode, info }: UpdateProps) => {
       description: values.description,
       minTaux: values.minTaux,
       currentTaux: parseInt(values.currentTaux),
-      type: values.type,
     };
     dispatch(updateKpi({ code: info.code, updatedData: data }));
   }
@@ -192,7 +191,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                     <FormItem>
                       <FormLabel>Min Taux</FormLabel>
                       <FormControl>
-                        <Input disabled placeholder="Min Taux" {...field} />
+                        <Input placeholder="Min Taux" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -205,7 +204,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                     <FormItem>
                       <FormLabel>Current Taux</FormLabel>
                       <FormControl>
-                        <Input disabled type="number" min={0} max={100} placeholder="Current Taux" {...field} />
+                        <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

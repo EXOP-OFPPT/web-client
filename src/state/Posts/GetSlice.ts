@@ -143,7 +143,6 @@ export const getPosts = (): AppThunk => async dispatch => {
             };
         });
         const posts = await Promise.all(postsPromises);
-        console.log(posts);
         dispatch(actionSuccess(posts));
     } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));

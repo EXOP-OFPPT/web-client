@@ -16,7 +16,6 @@ type KpiType = {
   description: string;
   minTaux: number;
   currentTaux: number;
-  availableBonus: number;
 };
 
 
@@ -115,15 +114,15 @@ export const createKpi =
       // Check if user already exist
       await dispatch(checkKpiExist(docId, setKpiExist));
       if (!store.getState().createKpi.kpiExist) {
-        console.log("Creating kpi");
-        //! Add a new document with account id.
-        await setDoc(doc(db, "kpis", docId), {
+        setDoc(doc(db, "kpis", docId), {
           ...kpiData,
         }).then(() => {
           dispatch(actionSuccess("Kpi created successfully"));
           dispatch(getKpis());
           dispatch(setLoading(false));
-        })
+        }).catch((error) => {
+          dispatch(actionFailed({ code: "500", message: error.message }));
+        });
       } else {
         dispatch(
           actionFailed({ code: "500", message: "Kpi already exists" })

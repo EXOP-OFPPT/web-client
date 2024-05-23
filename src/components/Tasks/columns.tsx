@@ -80,7 +80,7 @@ export const columns: ColumnDef<TaskType>[] = [
       } else if (row.original.status === 'inprogress') {
         bgColor = 'bg-yellow-500';
       } else if (row.original.status === 'done') {
-        bgColor = 'bg-primary';
+        bgColor = 'bg-success';
       }
       return (
         <Badge variant="outline" className={`w-20 font-bold flex justify-center items-center py-2 px-4 ${bgColor} hover:${bgColor}`}>
@@ -174,7 +174,7 @@ export const columns: ColumnDef<TaskType>[] = [
       return (
         <Card className="border-neutral-700">
           <div className="text-center bg-neutral-4000 w-full h-3 p-[1.5px]">
-            <div className={`!bg-blue-500 h-full flex justify-center items-center rounded-full`} style={{ width: `${progress}%` }}>
+            <div className={`bg-blue-500 !bg-primary h-full flex justify-center items-center rounded-full`} style={{ width: `${progress}%` }}>
             </div>
             <span className="text-[13px]">{date}</span>
           </div>
@@ -224,12 +224,20 @@ export const columns: ColumnDef<TaskType>[] = [
     accessorKey: "action",
     header: "Action",
     cell: ({ row }) => {
-      return (
-        <div className="flex justify-center items-center gap-2">
-          <Update mode="outline" info={row.original} />
-          {(cookie.get("user").role == "admin") && <Delete mode="outline" docId={row.original.id} bonus={row.original.bonus} kpiCode={row.original.kpiCode} />}
-        </div>
-      );
+      if (cookie.get("user").role == "admin") {
+        return (
+          <div className="flex justify-center items-center gap-2">
+            <Update mode="outline" info={row.original} />
+            <Delete mode="outline" docId={row.original.id} kpiCode={row.original.kpiCode} />
+          </div>
+        );
+      } else if (cookie.get("user").email == row.original.assignedTo) {
+        return (
+          <div className="flex justify-center items-center gap-2">
+            <Update mode="outline" info={row.original} />
+          </div>
+        );
+      }
     }
   },
   // {

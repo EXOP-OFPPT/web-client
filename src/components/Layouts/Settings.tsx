@@ -61,7 +61,7 @@ const Settings = () => {
                 key={index}
                 style={{ backgroundColor: theme.color }}
                 className="rounded-full w-10 h-10 flex justify-center items-center text-white"
-                onClick={() => dispatch(setHandlePickedTheme(theme.name))}
+                onClick={() => dispatch(setHandlePickedTheme({name:theme.name, color:theme.color}))}
               >
                 {pickedTheme == theme.name && <Check />}
               </button>

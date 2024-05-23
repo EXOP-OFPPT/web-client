@@ -73,9 +73,12 @@ export const deleteKpi =
       dispatch(clearMessageAndError());
       try {
         // Delete employee document
-        await deleteDoc(doc(db, "kpis", docId));
-        dispatch(actionSuccess("Kpi deleted successfully"));
-        dispatch(getKpis());
+        deleteDoc(doc(db, "kpis", docId)).then(() => {
+          dispatch(actionSuccess("Kpi deleted successfully"));
+          dispatch(getKpis());
+        }).catch((error) => {
+          dispatch(actionFailed({ code: error.code, message: error.message }));
+        })
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }

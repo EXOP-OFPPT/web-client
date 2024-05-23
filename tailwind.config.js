@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,js,jsx,tsx}',
-    './components/**/*.{ts,js,jsx,tsx}',
-    './app/**/*.{ts,tsx,js,jsx}',
-    './src/**/*.{ts,tsx,js,jsx}',
+    "./pages/**/*.{ts,js,jsx,tsx}",
+    "./components/**/*.{ts,js,jsx,tsx}",
+    "./app/**/*.{ts,tsx,js,jsx}",
+    "./src/**/*.{ts,tsx,js,jsx}",
   ],
   prefix: "",
   theme: {
@@ -38,6 +38,10 @@ module.exports = {
         error: {
           DEFAULT: "#ff4d4f",
           foreground: "#f44",
+        },
+        success: {
+          DEFAULT: "hsl(142.1 76.2% 36.3%)",
+          foreground: "hsl(142.1 76.2% 26.3%)",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -78,4 +82,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

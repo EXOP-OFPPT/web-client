@@ -15,7 +15,6 @@ export type TaskType = {
     title: string;
     description: string;
     status: "todo" | "inprogress" | "done" | "verified";
-    bonus: number;
     assignedTo: string;
     createdAt: Timestamp;
     deadLine: Timestamp;
@@ -88,44 +87,25 @@ export default getTasksSlice.reducer;
 // };
 
 
-
 // Async action creator
-export const getTasks = (role: string, email: string): AppThunk => async dispatch => {
+export const getTasks = (): AppThunk => async dispatch => {
     dispatch(setLoading(true));
     dispatch(clearMessageAndError());
     try {
-        if (role === "admin") {
-            // Get all tasks
-            const querySnapshot = await getDocs(collection(db, "tasks"));
-            const tasks: DocumentData = [];
-            querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                const data = doc.data();
-                tasks.push({
-                    ...data,
-                    createdAt: data.createdAt.toDate().toISOString(),
-                    deadLine: data.deadLine.toDate().toISOString(),
-                    completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
-                });
+        // Get all tasks
+        const querySnapshot = await getDocs(collection(db, "tasks"));
+        const tasks: DocumentData = [];
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            const data = doc.data();
+            tasks.push({
+                ...data,
+                createdAt: data.createdAt.toDate().toISOString(),
+                deadLine: data.deadLine.toDate().toISOString(),
+                completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
             });
-            dispatch(actionSuccess(tasks));
-        } else {
-            // Get all tasks assigned to the user
-            const q = query(collection(db, "tasks"), where("assignedTo", "==", email));
-            const querySnapshot = await getDocs(q);
-            const tasks: DocumentData = [];
-            querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                const data = doc.data();
-                tasks.push({
-                    ...data,
-                    createdAt: data.createdAt.toDate().toISOString(),
-                    deadLine: data.deadLine.toDate().toISOString(),
-                    completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
-                });
-            });
-            dispatch(actionSuccess(tasks));
-        }
+        });
+        dispatch(actionSuccess(tasks));
     } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
     } finally {
@@ -141,6 +121,33 @@ export const getKpiTasks = (kpiCode: string): AppThunk => async dispatch => {
     try {
         // Get all tasks assigned to the user
         const q = query(collection(db, "tasks"), where("kpiCode", "==", kpiCode));
+        const querySnapshot = await getDocs(q);
+        const tasks: DocumentData = [];
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            const data = doc.data();
+            tasks.push({
+                ...data,
+                createdAt: data.createdAt.toDate().toISOString(),
+                deadLine: data.deadLine.toDate().toISOString(),
+                completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
+            });
+        });
+        dispatch(actionSuccess(tasks));
+    } catch (error: any) {
+        dispatch(actionFailed({ code: error.code, message: error.message }));
+    } finally {
+        dispatch(setLoading(false));
+    }
+};
+
+// Async action creator
+export const getEmployeeTasks = (email: string): AppThunk => async dispatch => {
+    dispatch(setLoading(true));
+    dispatch(clearMessageAndError());
+    try {
+        // Get all tasks assigned to the user
+        const q = query(collection(db, "tasks"), where("assignedTo", "==", email));
         const querySnapshot = await getDocs(q);
         const tasks: DocumentData = [];
         querySnapshot.forEach((doc) => {

@@ -25,10 +25,9 @@ interface DeleteProps {
   mode: "ghost" | "outline";
   docId: string;
   kpiCode: string;
-  bonus: number;
 }
 
-function Delete({ mode, docId, kpiCode, bonus }: DeleteProps) {
+function Delete({ mode, docId, kpiCode }: DeleteProps) {
   const user = cookies.get("user");
   const isLoading = useSelector(
     (state: RootState) => state.deleteTask.loading
@@ -63,9 +62,11 @@ function Delete({ mode, docId, kpiCode, bonus }: DeleteProps) {
     }
   }, [message, error]);
 
-  const deleteAction = (docId: string) => {
-    dispatch(deleteTask({ docId, kpiCode, bonus, user: { role: user.role, email: user.email } }));
-    window.location.reload();
+  const deleteAction = async (docId: string) => {
+    // Get current Component url
+    const url = window.location.pathname;
+    const from = url.substring(url.lastIndexOf('/') + 1);
+    dispatch(deleteTask({ docId, kpiCode, from: from, email: user.email }))
   };
 
   return (

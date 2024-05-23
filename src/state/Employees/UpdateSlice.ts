@@ -117,9 +117,14 @@ export const updateEmployee =
                 console.log("Updating employee");
                 //! Update a new document with account id.
                 const ref = doc(db, "employees", email);
-                await updateDoc(ref, updatedData);
-                dispatch(actionSuccess("Employee updated successfully"));
-                dispatch(getEmployees());
+                updateDoc(ref, updatedData).then(() => {
+                    dispatch(actionSuccess("Employee updated successfully"));
+                    dispatch(getEmployees());
+                }).catch((error) => {
+                    dispatch(
+                        actionFailed({ code: "500", message: error.message })
+                    );
+                });
             } else {
                 dispatch(
                     actionFailed({ code: "500", message: "Update failed" })

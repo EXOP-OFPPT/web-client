@@ -106,11 +106,13 @@ export const deletePost =
         await batch.commit();
 
         // Delete the post
-        await deleteDoc(doc(db, "posts", docId));
-
-        dispatch(deleteFile(fileName))
-        dispatch(actionSuccess("Post deleted successfully"));
-        dispatch(getPosts());
+        deleteDoc(doc(db, "posts", docId)).then(() => {
+          dispatch(deleteFile(fileName))
+          dispatch(actionSuccess("Post deleted successfully"));
+          dispatch(getPosts());
+        }).catch((error: any) => {
+          dispatch(actionFailed({ code: error.code, message: error.message }));
+        });
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }

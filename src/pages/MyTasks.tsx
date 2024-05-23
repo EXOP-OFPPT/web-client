@@ -7,10 +7,13 @@ import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearMessageAndError, getTasks } from "@/state/Tasks/GetSlice";
+import { clearMessageAndError, getEmployeeTasks } from "@/state/Tasks/GetSlice";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 
-const Tasks: React.FC = () => {
+const MyTasks: React.FC = () => {
+    const user = cookies.get("user");
     const isloading = useSelector((state: RootState) => state.getTasks.loading);
     const message = useSelector((state: RootState) => state.getTasks.message);
     const error = useSelector((state: RootState) => state.getTasks.error);
@@ -18,7 +21,7 @@ const Tasks: React.FC = () => {
     const { toast } = useToast();
 
     useEffect(() => {
-        dispatch(getTasks());
+        dispatch(getEmployeeTasks(user.email));
     }, [dispatch]);
 
     useEffect(() => {
@@ -71,7 +74,7 @@ const Tasks: React.FC = () => {
     );
 };
 
-export default Tasks;
+export default MyTasks;
 
 
 

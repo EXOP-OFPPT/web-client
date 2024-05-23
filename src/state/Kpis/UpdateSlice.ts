@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getKpis } from "./GetSlice";
-import { getTasks } from "../Tasks/GetSlice";
 
 // Interface for error
 interface Error {
@@ -12,13 +11,12 @@ interface Error {
 }
 
 type KpiType = {
-    code: string;
-    title: string;
-    description: string;
-    minTaux: number;
-    currentTaux: number;
-    availableBonus?: number;
-    type: string;
+    code?: string;
+    title?: string;
+    description?: string;
+    minTaux?: number;
+    currentTaux?: number;
+    type?: string;
 };
 
 
@@ -26,15 +24,6 @@ type KpiType = {
 interface UpdatedKpiPayload {
     code: string;
     updatedData: KpiType;
-}
-
-interface UpdatedCurrentTauxKpiPayload {
-    code: string;
-    bonus: number;
-    user: {
-        role: string;
-        email: string;
-    }
 }
 
 // Interface for AuthState
@@ -104,12 +93,11 @@ export const checkKpiExist =
     (docId: string, setAction: Function): AppThunk =>
         async (dispatch) => {
             try {
-                const docRef = doc(db, "kpi", docId);
+                const docRef = doc(db, "kpis", docId);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     dispatch(setAction(docSnap.data()));
                 } else {
-                    // docSnap.data() will be undefined in this case
                     dispatch(setAction(null));
                 }
             } catch (error: any) {
@@ -123,14 +111,14 @@ export const updateKpi =
             // Reset message and error
             dispatch(setLoading(true));
             dispatch(clearMessageAndError());
-            // Check if user already exist
             try {
-                console.log("Updating kpi");
-                //! Update a new document with account id.
-                const ref = doc(db, "kpi", code);
-                await updateDoc(ref, updatedData);
-                dispatch(actionSuccess("Kpi updated successfully"));
-                dispatch(getKpis());
+                const ref = doc(db, "kpis", code);
+                updateDoc(ref, updatedData).then(() => {
+                    dispatch(actionSuccess("Kpi updated successfully"));
+                    dispatch(getKpis());
+                }).catch((error: any) => {
+                    dispatch(actionFailed({ code: error.code, message: error.message }));
+                });
             } catch {
                 dispatch(
                     actionFailed({ code: "500", message: "Update failed" })
@@ -138,44 +126,3 @@ export const updateKpi =
             }
         };
 
-
-
-
-export const updateCurrentTauxTask =
-    ({ code, bonus, user }: UpdatedCurrentTauxKpiPayload): AppThunk =>
-        async (dispatch) => {
-            // Reset message and error
-            dispatch(clearMessageAndError());
-            try {
-                const ref = doc(db, "kpis", code);
-                await updateDoc(ref, {
-                    currentTaux: increment(bonus || 0)
-                });
-                dispatch(getTasks(user.role, user.email));
-            } catch {
-                dispatch(
-                    actionFailed({ code: "500", message: "Update Kpi failed" })
-                );
-                dispatch(clearMessageAndError());
-            }
-        };
-
-export const updateAvailableBonus =
-    ({ code, bonus, user }: UpdatedCurrentTauxKpiPayload): AppThunk =>
-        async (dispatch) => {
-            console.log(bonus, code);
-            // Reset message and error
-            dispatch(clearMessageAndError());
-            try {
-                const ref = doc(db, "kpis", code);
-                await updateDoc(ref, {
-                    availableBonus: increment(bonus)
-                });
-                dispatch(getTasks(user.role, user.email));
-            } catch {
-                dispatch(
-                    actionFailed({ code: "500", message: "Update Kpi failed" })
-                );
-                dispatch(clearMessageAndError());
-            }
-        };

@@ -82,9 +82,12 @@ export const deleteEmployee =
       dispatch(clearMessageAndError());
       try {
         // Delete employee document
-        await deleteDoc(doc(db, "employees", docId));
-        dispatch(actionSuccess("Employee deleted successfully"));
-        dispatch(getEmployees());
+        deleteDoc(doc(db, "employees", docId)).then(() => {
+          dispatch(actionSuccess("Employee deleted successfully"));
+          dispatch(getEmployees());
+        }).catch((error) => {
+          dispatch(actionFailed({ code: error.code, message: error.message }));
+        });
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       }

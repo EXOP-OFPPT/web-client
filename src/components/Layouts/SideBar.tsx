@@ -10,10 +10,13 @@ import { BookCheckIcon, CircleUserRound, ImagePlusIcon, LineChart, ListTodoIcon,
 import { Link, NavLink } from "react-router-dom";
 import EXOP from "../../../public/EXOP-Make-crop.png";
 import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
 
 const SideBar: React.FC = () => {
+  const pickedTheme = useSelector((state: RootState) => state.navBar.pickedTheme);
   const activeLink =
-    "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-red bg-primary";
+    `flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-red bg-primary`;
   const normalLink =
     "flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800";
 
@@ -78,12 +81,12 @@ const SideBar: React.FC = () => {
                   {item.title}
                 </p>
                 {item.links.map((link, index) => (
-                  <Card key={index} className="my-2 mx-4">
+                  <Card key={index} className={`my-2 mx-4`}>
                     <NavLink
                       to={`${link.path}`}
                       // className="flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg"
                       style={({ isActive }) => ({
-                        color: isActive ? "white" : "",
+                        color: isActive && pickedTheme!=="zinc-theme" ? "white" : "",
                       })}
                       className={({ isActive }) =>
                         isActive ? activeLink : normalLink

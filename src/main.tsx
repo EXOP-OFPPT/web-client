@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
-import "./style/index.css";
+import "./style/App.css";
 
 // ------------- Cookies import --------------
 // import Cookies from "universal-cookie";
@@ -37,6 +37,9 @@ import Kpi from "./pages/Kpis";
 import Tasks from "./pages/Tasks";
 import Posts from "./pages/Posts";
 import KpiTasks from "./pages/KpiTasks";
+import MyTasks from "./pages/MyTasks";
+import Dashboard from "./pages/Dashboard";
+import ThemeSwitcher from "./components/global/ThemeSwitcher";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -47,10 +50,12 @@ const router = createBrowserRouter([
         <RootLayout>
           <Routes>
             <Route index path="/" element={<Home />} />
+            <Route index path="statistics" element={<Dashboard />} />
             <Route index path="employees" element={<Employees />} />
             <Route index path="kpis" element={<Kpi />} />
             <Route index path="kpiTasks" element={<KpiTasks />} />
             <Route index path="tasks" element={<Tasks />} />
+            <Route index path="myTasks" element={<MyTasks />} />
             <Route index path="posts" element={<Posts />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
@@ -84,31 +89,11 @@ const router = createBrowserRouter([
 
 // ------------- Router Provider --------------
 const AppRouter = () => {
-  // const isLogin = cookies.get("isLoggedIn"); // true | false
-  // const pickedTheme = useSelector(
-  //   (state: RootState) => state.navBar.pickedTheme
-  // );
 
-  // useEffect(() => {
-  //   console.log("Theme" , pickedTheme);
-  //   // Create a new link element
-  //   const linkElement = document.createElement("link");
-  //   linkElement.rel = "stylesheet";
-  //   linkElement.href = `./src/style/Themes/${pickedTheme}.css`;
-
-  //   // Insert the link element into the head tag
-  //   document.head.appendChild(linkElement);
-
-  //   // Return a cleanup function to remove the link element when the component unmounts
-  //   // return () => {
-  //   //   document.head.removeChild(linkElement);
-  //   // };
-
-  // }, [pickedTheme]);
 
   return (
     <>
-      {/* {isLogin ? <Button>Sign Out</Button> : <Button>Sign In</Button>} */}
+    <ThemeSwitcher/>
       <RouterProvider router={router} />
     </>
   );
