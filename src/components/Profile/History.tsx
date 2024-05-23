@@ -25,7 +25,7 @@ const History: React.FC<HistoryProps> = () => {
 
   useEffect(() => {
     if (tasks.length === 0) {
-      dispatch(getTasks(user.role, user.email));
+      dispatch(getTasks());
     }
   }, [dispatch]);
 
