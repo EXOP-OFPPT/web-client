@@ -2,8 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, store } from "../store";
 import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-import { getTasks } from "./GetSlice";
-import { updateAvailableBonus } from "../Kpis/UpdateSlice";
+import { getEmployeeTasks, getKpiTasks, getTasks } from "./GetSlice";
 import { getKpis } from "../Kpis/GetSlice";
 
 // Interface for error
@@ -17,7 +16,6 @@ export type taskType = {
   title: string;
   description: string;
   status: string;
-  bonus: number;
   createdAt: Timestamp;
   deadLine: Timestamp;
   completedAt?: Timestamp | undefined;
@@ -29,10 +27,8 @@ export type taskType = {
 interface taskPayload {
   docId: string;
   taskData: taskType;
-  user: {
-    role: string;
-    email: string;
-  };
+  from: string;
+  email: string;
 }
 
 interface CreateState {
@@ -100,7 +96,7 @@ export const checkTaskExist =
   (docId: string, setAction: Function): AppThunk =>
     async (dispatch) => {
       try {
-        const docRef = doc(db, "kpi", docId);
+        const docRef = doc(db, "kpis", docId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           dispatch(setAction(docSnap.data()));
@@ -114,7 +110,7 @@ export const checkTaskExist =
     };
 
 export const createTask =
-  ({ docId, taskData, user }: taskPayload): AppThunk =>
+  ({ docId, taskData, from, email }: taskPayload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
@@ -124,15 +120,24 @@ export const createTask =
       if (!store.getState().createKpi.kpiExist) {
         console.log("Creating Task");
         //! Add a new document with account id.
-        await setDoc(doc(db, "tasks", docId), {
+        setDoc(doc(db, "tasks", docId), {
           ...taskData,
         }).then(() => {
-          dispatch(updateAvailableBonus({ code: taskData.kpiCode, bonus: (-taskData.bonus), user: user }));
           dispatch(actionSuccess("Task created successfully"));
-          dispatch(getTasks(user.role, user.email));
           dispatch(getKpis());
+          if (from === "tasks") {
+            dispatch(getTasks());
+          }
+          else if ((from === "myTasks") && email) {
+            dispatch(getEmployeeTasks(email));
+          }
+          else if (from === "kpiTasks") {
+            dispatch(getKpiTasks(taskData.kpiCode));
+          }
           dispatch(setLoading(false));
-        })
+        }).catch((error) => {
+          dispatch(actionFailed({ code: "500", message: error.message }));
+        });
       } else {
         dispatch(
           actionFailed({ code: "500", message: "Task already exists" })
