@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
+import "./style/index.css";
 import "./style/App.css";
 
 // ------------- Cookies import --------------
