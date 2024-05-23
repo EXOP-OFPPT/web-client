@@ -11,10 +11,9 @@ const ThemeSwitcher = () => {
 
   useEffect(() => {
     // Create a new link element
-    const currentPickedTheme = pickedTheme 
     const linkElement = document.createElement("link");
     linkElement.rel = "stylesheet";
-    linkElement.href = `/src/style/Themes/${currentPickedTheme}.css`;
+    linkElement.href = `/src/style/Themes/${pickedTheme}.css`;
 
     // Insert the link element into the head tag
     document.head.appendChild(linkElement);

@@ -18,8 +18,8 @@ const theme = JSON.parse(localStorage.getItem("theme") || '{"name": "green-theme
 // Initial state
 const initialState: SideBarState = {
   menu: "",
-  pickedTheme: theme?.name || "green-theme",
-  primaryColor: theme?.color || "hsl(142.1 76.2% 36.3%)",
+  pickedTheme: theme.name,
+  primaryColor: theme.color,
 };
 // Create slice
 const NavBar = createSlice({
