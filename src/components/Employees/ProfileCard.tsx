@@ -29,7 +29,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
-    dispatch(getTasks("admin", ""))
+    dispatch(getTasks())
   }, [dispatch])
 
   useEffect(() => {
