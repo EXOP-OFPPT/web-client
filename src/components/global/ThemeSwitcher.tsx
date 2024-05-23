@@ -1,26 +1,25 @@
+import { RootState } from "@/state/store";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
-type ThemeSwitcherProps = {
-  currentTheme: string;
-};
 
-const ThemeSwitcher = ({ currentTheme }: ThemeSwitcherProps) => {
+const ThemeSwitcher = () => {
+
+  const pickedTheme = useSelector(
+    (state: RootState) => state.navBar.pickedTheme
+  );
+
   useEffect(() => {
-    console.log("Theme")
-    // // Create a new link element
-    // const linkElement = document.createElement("link");
-    // linkElement.rel = "stylesheet";
-    // linkElement.type = "text/css";
-    // linkElement.href = `./src/${currentTheme}`;
+    // Create a new link element
+    const currentPickedTheme = pickedTheme 
+    const linkElement = document.createElement("link");
+    linkElement.rel = "stylesheet";
+    linkElement.href = `/src/style/Themes/${currentPickedTheme}.css`;
 
-    // // Insert the link element into the head tag
-    // document.head.appendChild(linkElement);
+    // Insert the link element into the head tag
+    document.head.appendChild(linkElement);
 
-    // // Return a cleanup function to remove the link element when the component unmounts
-    // return () => {
-    //   document.head.removeChild(linkElement);
-    // };
-  }, [currentTheme]);
+  }, [pickedTheme]);
 
   return null; // This component doesn't render anything directly
 };
