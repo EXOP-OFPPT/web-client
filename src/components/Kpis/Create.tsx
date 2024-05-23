@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -188,9 +187,6 @@ function Create() {
                       <FormControl>
                         <Input type="number" min={0} max={100} placeholder="Min Taux" {...field} />
                       </FormControl>
-                      <FormDescription>
-                        Be careful this value can't be changed after
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -204,9 +200,6 @@ function Create() {
                       <FormControl>
                         <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
                       </FormControl>
-                      <FormDescription>
-                        Be careful this value can't be changed after
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
