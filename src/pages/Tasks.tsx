@@ -7,14 +7,10 @@ import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Cookies from "universal-cookie";
 import { clearMessageAndError, getTasks } from "@/state/Tasks/GetSlice";
-
-const cookies = new Cookies(null, { path: "/" });
 
 
 const Tasks: React.FC = () => {
-    const user = cookies.get("user");
     const isloading = useSelector((state: RootState) => state.getTasks.loading);
     const message = useSelector((state: RootState) => state.getTasks.message);
     const error = useSelector((state: RootState) => state.getTasks.error);
@@ -22,7 +18,7 @@ const Tasks: React.FC = () => {
     const { toast } = useToast();
 
     useEffect(() => {
-        dispatch(getTasks(user.role, user.email));
+        dispatch(getTasks());
     }, [dispatch]);
 
     useEffect(() => {
