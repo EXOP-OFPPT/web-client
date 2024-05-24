@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import "@/style/LoginStyle.css"
 import { Input } from "@/components/ui/input";
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +23,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { Card } from "../ui/card";
 import { ModeToggle } from "../global/mode-toggle";
 import { Button } from "../ui/button";
-import "./LoginStyle.css";
 import EXOP from "../../../public/EXOP-Make-crop.png";
 // import icon from "@/assets/fingerprint.svg";
 import arrow from "@/assets/arrow.svg";
@@ -106,10 +106,10 @@ function Login() {
           <div className="form-container sign-in border-none">
             <Form {...form}>
               <form
-                className="w-full space-y-3"
+                className="w-full space-y-3 text-center"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
-                <div className="social-icons">
+                <div className="social-icons flex justify-center items-center">
                   <img src={EXOP} alt="EXOP Logo" className="w-24 ml-3" />
                   {/* <img
                     className="fingerprint fill-current text-green-600"
@@ -122,7 +122,7 @@ function Login() {
                   control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem className="w-full !text-left">
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
@@ -139,7 +139,7 @@ function Login() {
                   control={form.control}
                   name="password"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem className="w-full !text-left">
                       <FormLabel>Password</FormLabel>
                       <FormControl>
                         <Input
@@ -153,22 +153,24 @@ function Login() {
                     </FormItem>
                   )}
                 />
-                <small
-                  onClick={() =>
-                    navigate("resetPassword", { state: { from: "login" } })
-                  }
-                  className="cursor-pointer hover:text-sky-500"
-                >
-                  Mot de Passe Oublier?
-                </small>
-                {isLoading ? (
-                  <Button disabled>
-                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                    Please wait
-                  </Button>
-                ) : (
-                  <Button type="submit">Connectez-vous</Button>
-                )}
+                <div className="flex flex-col gap-2 p-0 m-0 text-center">
+                  <small
+                    onClick={() =>
+                      navigate("resetPassword", { state: { from: "login" } })
+                    }
+                    className="cursor-pointer hover:text-sky-500"
+                  >
+                    Mot de Passe Oublier?
+                  </small>
+                  {isLoading ? (
+                    <Button disabled>
+                      <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                      Please wait
+                    </Button>
+                  ) : (
+                    <Button type="submit">Connectez-vous</Button>
+                  )}
+                </div>
               </form>
             </Form>
           </div>
