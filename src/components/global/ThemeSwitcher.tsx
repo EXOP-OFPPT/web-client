@@ -18,10 +18,6 @@ const ThemeSwitcher = () => {
     // Insert the link element into the head tag
     document.head.appendChild(linkElement);
 
-    return () => {
-      document.head.removeChild(linkElement);
-    };
-
   }, [pickedTheme]);
 
   return null; // This component doesn't render anything directly
