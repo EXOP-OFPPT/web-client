@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "@/firebase/firebase";
+import { auth, db } from "@/firebase/firebase";
 import { getEmployees } from "./GetSlice";
 
 // Interface for error
@@ -81,6 +81,8 @@ export const deleteEmployee =
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       try {
+        console.log("Deleting employee... ", docId);
+        console.log(auth.currentUser?.email)
         // Delete employee document
         deleteDoc(doc(db, "employees", docId)).then(() => {
           dispatch(actionSuccess("Employee deleted successfully"));

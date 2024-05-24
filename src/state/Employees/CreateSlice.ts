@@ -4,6 +4,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { getEmployees } from "./GetSlice";
+import { sendEmail } from "@/lib/SendEmail";
 
 // Interface for error
 interface Error {
@@ -110,6 +111,7 @@ export const checkUserExist =
 export const createEmployee =
   ({ email, password, userData }: UserPayload): AppThunk =>
     async (dispatch) => {
+      const admin = auth.currentUser;
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
@@ -125,7 +127,9 @@ export const createEmployee =
           //! Create user with email and password
           createUserWithEmailAndPassword(auth, email, password)
             .then(async () => {
-              dispatch(actionSuccess("Employee created successfully"));
+              // Send the email
+              await sendEmail({ from: admin?.email || "Admin.com", to: email, password, subject: 'Welcome to EXOP App' });
+              dispatch(actionSuccess("Employee created successfully, Email send to user"));
             })
             .catch(() => {
               dispatch(setLoading(false));

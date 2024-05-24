@@ -108,9 +108,9 @@ export const updateTask =
                 else if ((from === "kpiTasks")) {
                     dispatch(getKpiTasks(updatedData.kpiCode));
                 }
-            }).catch(() => {
+            }).catch((error:any) => {
                 dispatch(
-                    actionFailed({ code: "500", message: "Update task failed" })
+                    actionFailed({ code: "500", message: error.message })
                 );
             });
         };
