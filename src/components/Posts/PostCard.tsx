@@ -101,7 +101,7 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
           {/* //! Actions Post Section */}
           <div className="flex gap-10 justify-center items-center py-2">
             {/* //! Likes Section */}
-            <Likes currentLikes={data.likes} postId={data.id} />
+            <Likes postId={data.id} />
             {/* //! Comments Section */}
             <Comments postId={data.id} commentsCount={data.commentsCount} />
           </div>
