@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
-import "./style/index.css";
-import "./style/App.css";
+// import "./style/index.css";
 
 // ------------- Cookies import --------------
 // import Cookies from "universal-cookie";
@@ -94,7 +93,7 @@ const AppRouter = () => {
 
   return (
     <>
-    <ThemeSwitcher/>
+      <ThemeSwitcher/>
       <RouterProvider router={router} />
     </>
   );
