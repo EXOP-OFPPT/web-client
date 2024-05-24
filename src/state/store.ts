@@ -21,6 +21,7 @@ import deleteTaskSlice from "./Tasks/DeleteSlice";
 // --------------- Posts Slices ----------------
 import getPostsSlice from "./Posts/GetSlice";
 import createPostsSlice from "./Posts/CreateSlice";
+import updatePostsSlice from "./Posts/UpdateSlice";
 import deletePostsSlice from "./Posts/DeleteSlice";
 // --------------- Comments Slices ----------------
 import getCommentsSlice from "./Comments/GetSlice";
@@ -48,6 +49,7 @@ export const store = configureStore({
         // ---------------------------------
         getPosts: getPostsSlice,
         createPost: createPostsSlice,
+        updatePost: updatePostsSlice,
         deletePost: deletePostsSlice,
         // ---------------------------------
         getComments: getCommentsSlice,
