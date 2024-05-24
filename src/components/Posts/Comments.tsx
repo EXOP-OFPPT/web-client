@@ -4,7 +4,6 @@ import { z } from "zod";
 import { CheckCircle2, CircleX, Loader2, MessageCircleIcon, MessageCirclePlusIcon } from "lucide-react";
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerFooter,
     DrawerHeader,
@@ -22,7 +21,6 @@ import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import HoverCardProfile from "./HoverCardProfile";
-import { Badge } from "../ui/badge";
 import { collection, doc, getDoc, getDocs, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase";
@@ -229,9 +227,9 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
                             </ScrollArea>
                     }
                     <DrawerFooter>
-                        <DrawerClose>
+                        {/* <DrawerClose>
                             <Badge variant="outline" className="p-2 px-10 rounded-md">Cancel</Badge>
-                        </DrawerClose>
+                        </DrawerClose> */}
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer >
