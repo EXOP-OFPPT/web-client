@@ -114,22 +114,28 @@ export default updatePostSlice.reducer;
 
 
 
-export const addLike = (postId: string): AppThunk => async dispatch => {
+export const addLike = (postId: string, like: number): AppThunk => async dispatch => {
     dispatch(clearMessageAndError());
 
     const postRef = doc(db, 'posts', postId);
 
-    try {
-        await updateDoc(postRef, {
-            likes: increment(1)
-        });
-
-        dispatch(actionSuccess('Successfully added like'));
-    } catch (error: any) {
+    updateDoc(postRef, {
+        likes: increment(like)
+    }).then(() => {
+        const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+        if (like === 1) {
+            likedPosts.push(postId);
+        } else if (like === -1) {
+            const index = likedPosts.indexOf(postId);
+            if (index !== -1) {
+                likedPosts.splice(index, 1);
+            }
+        }
+        localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+        dispatch(actionSuccess('Successfully updated like'));
+    }).catch((error: any) => {
         dispatch(actionFailed({ code: error.code, message: error.message }));
-    } finally {
-        dispatch(setLoading(false));
-    }
+    })
 };
 
 
@@ -141,7 +147,6 @@ export const updatePost =
             dispatch(setLoading(true));
             dispatch(clearMessageAndError());
             try {
-                console.log("Updating task");
                 const ref = doc(db, "tasks", id);
                 await updateDoc(ref, updatedData);
                 dispatch(actionSuccess("Task updated successfully"));
