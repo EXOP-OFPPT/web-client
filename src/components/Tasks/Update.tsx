@@ -58,8 +58,8 @@ const formSchema = z.object({
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
-  description: z.string().min(2, {
-    message: "Description must be at least 2 characters.",
+  probleme: z.string().min(2, {
+    message: "Probleme must be at least 2 characters.",
   }),
   status: z.string({
     required_error: "Status is required",
@@ -78,7 +78,7 @@ const formSchema = z.object({
 type infoProps = {
   id: string;
   title: string;
-  description: string;
+  probleme: string;
   status: "todo" | "inprogress" | "done" | "verified";
   createdAt: string | Timestamp;
   deadLine: string | Timestamp;
@@ -147,7 +147,7 @@ const Update = ({ mode, info }: UpdateProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: info.title,
-      description: info.description,
+      probleme: info.probleme,
       status: info.status,
       createdAt: info.createdAt instanceof Timestamp ? formatDate(info.createdAt.toDate().toISOString()) : formatDate(info.createdAt),
       assignedTo: info.assignedTo,
@@ -222,12 +222,12 @@ const Update = ({ mode, info }: UpdateProps) => {
                 />
                 <FormField
                   control={form.control}
-                  name="description"
+                  name="probleme"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>Probleme</FormLabel>
                       <FormControl>
-                        <Input disabled={user.role === "admin" ? false : true} placeholder="Description" {...field} />
+                        <Input disabled={user.role === "admin" ? false : true} placeholder="Probleme" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
