@@ -192,7 +192,7 @@ const Create = () => {
   }
 
   return (
-    <>
+    <div className="pointer-events-auto">
       <Toaster />
       <Dialog>
         <DialogTrigger asChild>
@@ -266,7 +266,7 @@ const Create = () => {
           </ScrollArea>
         </DialogContent>
       </Dialog >
-    </>
+    </div>
   );
 }
 
