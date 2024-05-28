@@ -45,15 +45,15 @@ export const columns: ColumnDef<TaskType>[] = [
     },
   },
   {
-    id: "description",
-    accessorKey: "description",
+    id: "probleme",
+    accessorKey: "probleme",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Description
+          Probleme
           <ChevronsUpDown size={12} className="ml-2" />
         </Button>
       );
