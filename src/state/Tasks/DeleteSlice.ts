@@ -21,7 +21,7 @@ interface DeletePyload {
 export type taskType = {
   id: string;
   title: string;
-  description: string;
+  probleme: string;
   status: "todo" | "inprogress" | "done" | "verified";
   createdAt: string;
   deadLine: string;
