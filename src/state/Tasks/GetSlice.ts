@@ -13,7 +13,7 @@ interface Error {
 export type TaskType = {
     id: string;
     title: string;
-    description: string;
+    probleme: string;
     status: "todo" | "inprogress" | "done" | "verified";
     assignedTo: string;
     createdAt: Timestamp;
