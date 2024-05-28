@@ -3,7 +3,6 @@ import { mapTasksToChartData } from './ChartData';
 import { Card } from '../ui/card';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/state/store';
-import { Badge } from '../ui/badge';
 
 
 
@@ -20,13 +19,16 @@ export function Overview() {
         <Tooltip content={({ active, payload, label }) => {
           if (active && payload && payload.length) {
             return (
-              <Card style={{ padding: '10px' }}>
-                <p><strong>{label}</strong></p>
+              <Card className='w-40'>
+                <div className="h-7 flex items-center px-2 flex-1 !rounded-sm rounded-bl-none !rounded-br-none">
+                  <p className="text-sm font-medium leading-none">
+                    {label}
+                  </p>
+                </div>
                 {payload.map((item, index) => (
-                  <div className='flex justify-center items-center gap-4' key={index} style={{ color: item.color }}>
-                    <Badge variant="outline" className={`w-full`} style={{ border: `2px solid ${item.color}` }}>
-                      {item.name}
-                    </Badge>
+                  <div className='bg-secondary flex items-center gap-4 px-4 py-1' key={index} style={{ color: item.color }}>
+                    <span className="flex h-2 w-2 translate-y-1 rounded-full" style={{ background: `${item.color}` }} />
+                    <span>{item.name}</span>
                     <span>
                       {item.value}
                     </span>
