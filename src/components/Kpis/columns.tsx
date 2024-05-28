@@ -65,7 +65,7 @@ export const columns: ColumnDef<KpiType>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Min Taux
+          Sible
           <ChevronsUpDown size={12} className="ml-2" />
         </Button>
       );
@@ -80,7 +80,7 @@ export const columns: ColumnDef<KpiType>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Current Taux
+          Score
           <ChevronsUpDown size={12} className="ml-2" />
         </Button>
       );

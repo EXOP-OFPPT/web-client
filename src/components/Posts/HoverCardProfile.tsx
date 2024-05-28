@@ -18,7 +18,7 @@ interface HoverCardProfileProps {
 const HoverCardProfile: React.FC<HoverCardProfileProps> = ({ user, children }) => {
     return (
         <HoverCard openDelay={0} closeDelay={0}>
-            <HoverCardTrigger>
+            <HoverCardTrigger className="h-fit">
                 {children}
             </HoverCardTrigger>
             <HoverCardContent className="flex items-center gap-2">

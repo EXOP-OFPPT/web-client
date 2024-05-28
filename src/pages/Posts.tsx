@@ -55,7 +55,7 @@ const Posts: React.FC = () => {
             <Toaster />
             <div className="h-[calc(100vh-4rem)] flex flex-col items-center">
                 {/* Header */}
-                <Card className="fixed bg-background z-10 w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 border-t-0 rounded-tl-none rounded-tr-none">
+                <Card className="pointer-events-none fixed bg-transparent shadow-none border-none z-10 w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5">
                     <div className="flex flex-col items-start">
                         <h6>Page</h6>
                         <h3 className="text-4xl font-bold text-primary">Posts</h3>
@@ -73,8 +73,8 @@ const Posts: React.FC = () => {
                 ) : (
                     <>
                         {
-                            posts.length === 0 ?
-                                <Alert className="w-fit px-32 py-16 mt-40 flex flex-col justify-center items-center gap-5">
+                            (posts.length === 0) ?
+                                <Alert className="w-fit px-32 py-16 mt-32 flex flex-col justify-center items-center gap-5">
                                     <AlertTitle className="text-2xl">No posts yet</AlertTitle>
                                     <AlertDescription className="flex justify-center items-center">
                                         <ImageOffIcon className="h-60 w-60 text-muted-foreground" />

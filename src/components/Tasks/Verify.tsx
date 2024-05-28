@@ -17,7 +17,7 @@ const cookies = new Cookies(null, { path: "/" });
 type infoProps = {
     id: string;
     title: string;
-    description: string;
+    probleme: string;
     status: "todo" | "inprogress" | "done" | "verified";
     createdAt: string | Timestamp;
     deadLine: string | Timestamp;
@@ -80,7 +80,7 @@ const Verify = ({ info }: VerifyProps) => {
                         <DialogTitle>Verify Task</DialogTitle>
                     </DialogHeader>
                     <DialogDescription>
-                        Enter new taux for this task
+                        Enter new score for this task
                     </DialogDescription>
                     <Form {...form}>
                         <form
@@ -92,9 +92,9 @@ const Verify = ({ info }: VerifyProps) => {
                                 name="newTaux"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>New Taux</FormLabel>
+                                        <FormLabel>New score</FormLabel>
                                         <FormControl>
-                                            <Input min={0} max={100} type="number" placeholder="Enter new taux" {...field} />
+                                            <Input min={1} max={100} type="number" placeholder="Enter new score" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

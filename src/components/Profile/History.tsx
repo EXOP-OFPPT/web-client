@@ -52,7 +52,7 @@ const History: React.FC<HistoryProps> = () => {
                     <ListTodoIcon className="h-4 w-4" />
                     <AlertTitle>{task.title}</AlertTitle>
                     <AlertDescription className="flex gap-4">
-                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">{task.description}</span>
+                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">{task.probleme}</span>
                       <Badge variant="outline" className={`w-fit flex justify-center items-center ${bgColor} hover:${bgColor}`}>
                         {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                       </Badge>

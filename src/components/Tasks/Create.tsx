@@ -71,8 +71,8 @@ const formSchema = z.object({
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
-  description: z.string().min(2, {
-    message: "Description must be at least 2 characters.",
+  probleme: z.string().min(2, {
+    message: "Probleme must be at least 2 characters.",
   }),
   status: z.string({
     required_error: "Status is required",
@@ -164,7 +164,7 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
     defaultValues: {
       id: crypto.randomUUID(),
       title: "Task 5",
-      description: "Description Task 5",
+      probleme: "Probleme Task 5",
       status: "todo",
       createdAt: format(new Date(), 'yyyy-MM-dd'),
       assignedTo: "",
@@ -181,7 +181,7 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
     const data = {
       id: docId,
       title: values.title,
-      description: values.description,
+      probleme: values.probleme,
       status: values.status,
       createdAt: createdAtTimestamp,
       deadLine: deadLineTimestamp,
@@ -246,12 +246,12 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
                   />
                   <FormField
                     control={form.control}
-                    name="description"
+                    name="probleme"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel>Probleme</FormLabel>
                         <FormControl>
-                          <Input placeholder="Description" {...field} />
+                          <Input placeholder="Probleme" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

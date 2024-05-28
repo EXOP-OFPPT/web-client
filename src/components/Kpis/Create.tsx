@@ -183,7 +183,7 @@ function Create() {
                   name="minTaux"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Min Taux</FormLabel>
+                      <FormLabel>Sible</FormLabel>
                       <FormControl>
                         <Input type="number" min={0} max={100} placeholder="Min Taux" {...field} />
                       </FormControl>
@@ -196,7 +196,7 @@ function Create() {
                   name="currentTaux"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Current Taux</FormLabel>
+                      <FormLabel>Score</FormLabel>
                       <FormControl>
                         <Input type="number" min={0} max={100} placeholder="Current Taux" {...field} />
                       </FormControl>
