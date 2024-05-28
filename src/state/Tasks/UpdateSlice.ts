@@ -13,7 +13,7 @@ interface Error {
 export type taskType = {
     id: string;
     title: string;
-    description: string;
+    probleme: string;
     status: string;
     createdAt: Timestamp;
     deadLine: Timestamp;
