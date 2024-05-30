@@ -1,4 +1,4 @@
-# React + TypeScript + Vite + Talwind Css + Shadcn + Firebase
+# React + TypeScript + Vite + Talwind Css + Shadcn + Firebase + Charts Library
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
