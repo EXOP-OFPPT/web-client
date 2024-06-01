@@ -47,7 +47,7 @@ const router = createBrowserRouter([
   {
     path: "/app/*",
     element: (
-      // <ProtectedRoute>
+      <ProtectedRoute>
         <RootLayout>
           <Routes>
             {/* <Route index path="/" element={<Home />} /> */}
@@ -62,7 +62,7 @@ const router = createBrowserRouter([
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   {
