@@ -66,7 +66,7 @@ function Delete({ mode, docId, kpiCode }: DeleteProps) {
     // Get current Component url
     const url = window.location.pathname;
     const from = url.substring(url.lastIndexOf('/') + 1);
-    dispatch(deleteTask({ docId, kpiCode, from: from, email: user.email }))
+    dispatch(deleteTask({ docId, contribute: "Delete Task", kpiCode, from: from, email: user.email }))
   };
 
   return (
