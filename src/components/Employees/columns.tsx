@@ -18,7 +18,7 @@ export const columns: ColumnDef<EmployeeType>[] = [
     cell: ({ row }) => {
       return (
         <Avatar className="h-8 w-8 flex items-center justify-center">
-          <AvatarImage loading="lazy" src={row.original.avatar} className="object-cover" />
+          <AvatarImage loading="lazy" src={row.original.avatar?.photoURL} className="object-cover" />
           <AvatarFallback className="text-xs">
             {row.original.firstName?.charAt(0).toUpperCase()}
             {row.original.lastName?.charAt(0).toUpperCase()}
