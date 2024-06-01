@@ -4,6 +4,7 @@ import { doc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getEmployeeTasks, getKpiTasks, getTasks } from "./GetSlice";
 import { getKpis } from "../Kpis/GetSlice";
+import { updateContribution } from "../Employees/UpdateSlice";
 
 // Interface for error
 interface Error {
@@ -16,8 +17,9 @@ export type taskType = {
   title: string;
   probleme: string;
   status: string;
-  createdAt: Timestamp;
   deadLine: Timestamp;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
   completedAt?: Timestamp | undefined;
   assignedTo: string;
   kpiCode: string;
@@ -26,6 +28,7 @@ export type taskType = {
 
 interface taskPayload {
   docId: string;
+  contribute: string;
   taskData: taskType;
   from: string;
   email: string;
@@ -110,7 +113,7 @@ export const checkTaskExist =
     };
 
 export const createTask =
-  ({ docId, taskData, from, email }: taskPayload): AppThunk =>
+  ({ docId, contribute, taskData, from, email }: taskPayload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
@@ -123,6 +126,7 @@ export const createTask =
         setDoc(doc(db, "tasks", docId), {
           ...taskData,
         }).then(() => {
+          dispatch(updateContribution({ email, contribute }));
           dispatch(actionSuccess("Task created successfully"));
           dispatch(getKpis());
           if (from === "tasks") {
