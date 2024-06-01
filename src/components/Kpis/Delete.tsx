@@ -21,6 +21,8 @@ import {
   clearMessageAndError,
   deleteKpi,
 } from "@/state/Kpis/DeleteSlice";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 interface DeleteProps {
   mode: "ghost" | "outline";
@@ -28,6 +30,7 @@ interface DeleteProps {
 }
 
 function Delete({ mode, docId }: DeleteProps) {
+  const user = cookies.get("user");
   const isLoading = useSelector(
     (state: RootState) => state.deleteKpi.loading
   );
@@ -62,7 +65,7 @@ function Delete({ mode, docId }: DeleteProps) {
   }, [message, error]);
 
   const deleteAction = (docId: string) => {
-    dispatch(deleteKpi(docId));
+    dispatch(deleteKpi({ docId, contribute: "Delete Kpi", email: user.email }));
   };
 
   return (
