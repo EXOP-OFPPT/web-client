@@ -28,6 +28,7 @@ import EXOP from "../../../public/EXOP-Make-crop.png";
 import arrow from "@/assets/arrow.svg";
 import Cookies from "universal-cookie";
 import { CircleX, Loader2 } from "lucide-react";
+import { auth } from "@/firebase/firebase";
 const cookies = new Cookies(null, { path: "/" });
 
 const formSchema = z.object({
@@ -40,6 +41,7 @@ const formSchema = z.object({
 });
 
 function Login() {
+  const authUser = auth.currentUser;
   const error = useSelector((state: RootState) => state.auth.error);
   const cookieIsLogin = cookies.get("user");
   const reduxIsLogin = useSelector((state: RootState) => state.auth.isLogin);
@@ -53,7 +55,7 @@ function Login() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "abdonsila222@gmail.com",
-      password: "123456789",
+      password: "123456",
     },
   });
 
@@ -81,7 +83,7 @@ function Login() {
   }, [error, reduxIsLogin]);
 
   useEffect(() => {
-    if (cookieIsLogin || reduxIsLogin) {
+    if ((cookieIsLogin && authUser) || reduxIsLogin) {
       navigate("/app", { replace: true });
     }
   }, [navigate, cookieIsLogin, reduxIsLogin]);
