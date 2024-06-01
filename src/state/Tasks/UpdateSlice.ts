@@ -3,6 +3,7 @@ import { AppThunk } from "../store";
 import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getEmployeeTasks, getKpiTasks, getTasks } from "./GetSlice";
+import { updateContribution } from "../Employees/UpdateSlice";
 
 // Interface for error
 interface Error {
@@ -15,20 +16,24 @@ export type taskType = {
     title: string;
     probleme: string;
     status: string;
-    createdAt: Timestamp;
     deadLine: Timestamp;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
     completedAt?: Timestamp;
     assignedTo: string;
     kpiCode: string;
 };
 
 
+
 // Interface for User action payload
 interface UpdatedTaskPayload {
     id: string;
+    contribute: string;
+    kpiCode?: string;
     updatedData: any;
     from: string;
-    email?: string;
+    email: string;
 }
 
 
@@ -90,14 +95,14 @@ export default updateTaskSlice.reducer;
 
 
 export const updateTask =
-    ({ id, updatedData, from, email }: UpdatedTaskPayload): AppThunk =>
+    ({ id, contribute, kpiCode, updatedData, from, email }: UpdatedTaskPayload): AppThunk =>
         async (dispatch) => {
             // Reset message and error
             dispatch(setLoading(true));
             dispatch(clearMessageAndError());
-            console.log("Updating task");
             const ref = doc(db, "tasks", id);
             updateDoc(ref, updatedData).then(() => {
+                dispatch(updateContribution({ email, contribute }));
                 dispatch(actionSuccess("Task updated successfully"));
                 if (from === "tasks") {
                     dispatch(getTasks());
@@ -105,10 +110,10 @@ export const updateTask =
                 else if ((from === "myTasks") && email) {
                     dispatch(getEmployeeTasks(email));
                 }
-                else if ((from === "kpiTasks")) {
-                    dispatch(getKpiTasks(updatedData.kpiCode));
+                else if ((from === "kpiTasks") && kpiCode) {
+                    dispatch(getKpiTasks(kpiCode));
                 }
-            }).catch((error:any) => {
+            }).catch((error: any) => {
                 dispatch(
                     actionFailed({ code: "500", message: error.message })
                 );
@@ -116,3 +121,18 @@ export const updateTask =
         };
 
 
+//! AreaChart Contribution
+// so this component is working fine, and i want to used to display the employee the contribute work in the years, so i have a list of tasks for a sepecifique employee this is the type of Task:
+// type TaskType = {
+//     id: string;
+//     title: string;
+//     probleme: string;
+//     status: "todo" | "inprogress" | "done" | "verified";
+//     assignedTo: string;
+//     deadLine: Timestamp;
+//     createdAt: Timestamp;
+//     updatedAt: Timestamp;
+//     completedAt?: Timestamp;
+//     kpiCode: string;
+// };
+// and i want to considere the contribution as a  
