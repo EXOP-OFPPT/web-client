@@ -1,3 +1,4 @@
+import { auth } from "@/firebase/firebase";
 import { RootState } from "@/state/store";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -9,10 +10,13 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const isLogin = cookies.get("user"); // true | false
+  const user = cookies.get("user");
+  const authUser = auth.currentUser;
   const reduxIsLoading = useSelector((state: RootState) => state.auth.isLoading);
 
-  return isLogin || reduxIsLoading ? children : <Navigate to="/login" />;
+
+  return true ? children : <Navigate to="/login" />;
+  // return (user && authUser) || reduxIsLoading ? children : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;
