@@ -38,7 +38,8 @@ const AvatarComponent: React.FC = () => {
         icon: <CircleX size={40} className="mr-2" />,
       });
     }
-    const storageRef = ref(storage, `Avatars/${crypto.randomUUID() + imageUpload.name}`);
+    const photoName = crypto.randomUUID() + imageUpload.name;
+    const storageRef = ref(storage, `Avatars/${photoName}`);
     const uploadTask = uploadBytesResumable(storageRef, imageUpload);
     uploadTask.on(
       "state_changed",
@@ -78,7 +79,7 @@ const AvatarComponent: React.FC = () => {
         // Complete
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           console.log("File available at", downloadURL);
-          await dispatch(updatePhotoProfile(downloadURL, user?.email));
+          await dispatch(updatePhotoProfile(downloadURL, photoName, user?.email));
           toast({
             variant: "default",
             title: "Update Profile",
@@ -92,6 +93,9 @@ const AvatarComponent: React.FC = () => {
     );
   };
 
+  console.log(user)
+
+
   return (
     <Card className="rounded-lg shadow-lg p-10">
       <div className="font-bold pb-7 uppercase">Image de profile</div>
@@ -99,7 +103,7 @@ const AvatarComponent: React.FC = () => {
         {loading ?
           <Loader2 className="h-40 w-40 text-primary animate-spin" />
           : <Avatar className="w-60 h-60 flex items-center justify-center">
-            <AvatarImage loading="lazy" src={user?.avatar} className="object-cover" />
+            <AvatarImage loading="lazy" src={user?.photoURL} className="object-cover" />
             <AvatarFallback className="text-6xl">
               {user?.firstName?.charAt(0).toUpperCase()}
               {user?.lastName?.charAt(0).toUpperCase()}
