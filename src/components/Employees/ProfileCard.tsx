@@ -63,7 +63,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
 
       <div className="p-4 flex flex-col items-center">
         <Avatar className="w-32 h-32 flex items-center justify-center">
-          <AvatarImage loading="lazy" src={data.avatar} className="object-cover" />
+          <AvatarImage loading="lazy" src={data.avatar?.photoURL} className="object-cover" />
           <AvatarFallback className="text-4xl">
             {data?.firstName?.charAt(0).toUpperCase()}
             {data?.lastName?.charAt(0).toUpperCase()}
