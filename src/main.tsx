@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
 // import "./style/index.css";
+import "./style/App.css";
 
 // ------------- Cookies import --------------
 // import Cookies from "universal-cookie";
@@ -28,7 +29,7 @@ import RootLayout from "./layouts/RootLayout";
 // ------------- Components import --------------
 import ProtectedRoute from "./components/global/PrivateRoutes";
 import Login from "./components/Auth/Login";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Employees from "./pages/Employees";
 import ResetPassword from "./components/Auth/ResetPassword";
@@ -46,10 +47,11 @@ const router = createBrowserRouter([
   {
     path: "/app/*",
     element: (
-      <ProtectedRoute>
+      // <ProtectedRoute>
         <RootLayout>
           <Routes>
-            <Route index path="/" element={<Home />} />
+            {/* <Route index path="/" element={<Home />} /> */}
+            <Route index path="/" element={<Dashboard />} />
             <Route index path="statistics" element={<Dashboard />} />
             <Route index path="employees" element={<Employees />} />
             <Route index path="kpis" element={<Kpi />} />
@@ -60,7 +62,7 @@ const router = createBrowserRouter([
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>
-      </ProtectedRoute>
+      // </ProtectedRoute>
     ),
   },
   {
@@ -93,7 +95,7 @@ const AppRouter = () => {
 
   return (
     <>
-      <ThemeSwitcher/>
+      <ThemeSwitcher />
       <RouterProvider router={router} />
     </>
   );
