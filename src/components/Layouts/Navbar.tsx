@@ -49,7 +49,7 @@ const NavBar: React.FC = () => {
             }
           >
             <Avatar className="w-8 h-8 flex items-center justify-center">
-              <AvatarImage loading="lazy" src={user?.avatar} className="object-cover" />
+              <AvatarImage loading="lazy" src={user?.photoURL} className="object-cover" />
               <AvatarFallback className="text-xs">
                 {user?.firstName?.charAt(0).toUpperCase()}
                 {user?.lastName?.charAt(0).toUpperCase()}
