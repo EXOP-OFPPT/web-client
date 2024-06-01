@@ -178,12 +178,14 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
     const docId = crypto.randomUUID();
     const createdAtTimestamp = Timestamp.fromDate(new Date(values.createdAt));
     const deadLineTimestamp = Timestamp.fromDate(deadLine ? new Date(deadLine) : new Date());
+    console.log(createdAtTimestamp)
     const data = {
       id: docId,
       title: values.title,
       probleme: values.probleme,
       status: values.status,
       createdAt: createdAtTimestamp,
+      updatedAt: createdAtTimestamp,
       deadLine: deadLineTimestamp,
       assignedTo: values.assignedTo,
       kpiCode: values.kpiCode,
@@ -191,7 +193,7 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
     // Get current Component url
     const url = window.location.pathname;
     const from = url.substring(url.lastIndexOf('/') + 1);
-    dispatch(createTask({ docId: docId, taskData: data, from: from, email: user.email }));
+    dispatch(createTask({ docId: docId, contribute: "Create Task", taskData: data, from: from, email: user.email }));
   }
   if (kpiData)
     return (
@@ -273,9 +275,24 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="todo">Todo</SelectItem>
-                            <SelectItem value="inprogress">In Progress</SelectItem>
-                            <SelectItem value="done">Done</SelectItem>
+                            <SelectItem value="todo">
+                              <span className="flex items-center">
+                                <span className="h-2 w-2 rounded-full bg-gray-500 mr-2"></span>
+                                Todo
+                              </span>
+                            </SelectItem>
+                            <SelectItem value="inprogress">
+                              <span className="flex items-center">
+                                <span className="h-2 w-2 rounded-full bg-orange-500 mr-2"></span>
+                                In Progress
+                              </span>
+                            </SelectItem>
+                            <SelectItem value="done">
+                              <span className="flex items-center">
+                                <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                                Done
+                              </span>
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -337,7 +354,7 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
                               <SelectItem key={employee.email} value={employee.email}>
                                 <div className="w-full h-full flex justify-center items-center gap-2">
                                   <Avatar className="w-6 h-6 my-2 flex items-center justify-center cursor-pointer">
-                                    <AvatarImage loading="lazy" src={employee.avatar} className="object-cover" />
+                                    <AvatarImage loading="lazy" src={employee.avatar?.photoURL} className="object-cover" />
                                     <AvatarFallback className="text-[9px]">
                                       {employee.firstName?.charAt(0).toUpperCase()}
                                       {employee.lastName?.charAt(0).toUpperCase()}
