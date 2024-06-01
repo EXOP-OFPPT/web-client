@@ -51,8 +51,8 @@ const Verify = ({ info }: VerifyProps) => {
         // Get current Component url
         const url = window.location.pathname;
         const from = url.substring(url.lastIndexOf('/') + 1);
-        await dispatch(updateTask({ id: info.id, updatedData: { status: "verified", currentTaux: newTaux, completedAt: Timestamp.fromDate(new Date()), kpiCode: info.kpiCode }, from: from, email: user.email }));
-        await dispatch(updateKpi({ code: info.kpiCode, updatedData: { currentTaux: newTaux } }));
+        await dispatch(updateTask({ id: info.id, contribute: "Verify Task", kpiCode: info.kpiCode, updatedData: { status: "verified", currentTaux: newTaux, updatedAt: Timestamp.fromDate(new Date()), completedAt: Timestamp.fromDate(new Date()) }, from: from, email: user.email }));
+        await dispatch(updateKpi({ code: info.kpiCode, contribute: "Update Score", email: user.email, updatedData: { currentTaux: newTaux } }));
     }
 
     if (user.role === "user" && info.status === "done") {
