@@ -33,7 +33,7 @@ export const EmployeeProductivity = ({ employee }: EmployeeProductivityProps) =>
     return (
         <div className="flex justify-between items-center">
             <Avatar className="h-9 w-9">
-                <AvatarImage src={employee.avatar} loading="lazy" className="object-cover" alt="Avatar" />
+                <AvatarImage src={employee.avatar?.photoURL} loading="lazy" className="object-cover" alt="Avatar" />
                 <AvatarFallback>
                     {employee?.firstName?.charAt(0).toUpperCase()}
                     {employee?.lastName?.charAt(0).toUpperCase()}

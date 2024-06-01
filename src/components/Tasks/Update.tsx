@@ -158,12 +158,14 @@ const Update = ({ mode, info }: UpdateProps) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // ✅ This will be type-safe and validated.
     const createdAtTimestamp = Timestamp.fromDate(new Date(values.createdAt));
+    const updatedAtTimestamp = Timestamp.fromDate(new Date(format(new Date(), 'yyyy-MM-dd')));
     const deadLineTimestamp = Timestamp.fromDate(new Date(deadLine));
     const data = {
       ...values,
       id: info.id,
       kpiCode: info.kpiCode,
       createdAt: createdAtTimestamp,
+      updatedAt: updatedAtTimestamp,
       deadLine: deadLineTimestamp
     }
     // Get current Component url
@@ -171,9 +173,11 @@ const Update = ({ mode, info }: UpdateProps) => {
     const from = url.substring(url.lastIndexOf('/') + 1);
     dispatch(updateTask({
       id: info.id,
+      contribute: "Task update",
       updatedData: data,
       from: from,
       email: user.email,
+      kpiCode: info.kpiCode,
     }));
   }
 
@@ -249,9 +253,24 @@ const Update = ({ mode, info }: UpdateProps) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="todo">Todo</SelectItem>
-                          <SelectItem value="inprogress">In Progress</SelectItem>
-                          <SelectItem value="done">Done</SelectItem>
+                          <SelectItem value="todo">
+                            <span className="flex items-center">
+                              <span className="h-2 w-2 rounded-full bg-gray-500 mr-2"></span>
+                              Todo
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="inprogress">
+                            <span className="flex items-center">
+                              <span className="h-2 w-2 rounded-full bg-orange-500 mr-2"></span>
+                              In Progress
+                            </span>
+                          </SelectItem>
+                          <SelectItem value="done">
+                            <span className="flex items-center">
+                              <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                              Done
+                            </span>
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -318,7 +337,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                             <SelectItem key={employee.email} value={employee.email}>
                               <div className="w-full h-full flex justify-center items-center gap-2">
                                 <Avatar className="w-6 h-6 my-2 flex items-center justify-center cursor-pointer">
-                                  <AvatarImage loading="lazy" src={employee.avatar} className="object-cover" />
+                                  <AvatarImage loading="lazy" src={employee.avatar?.photoURL} className="object-cover" />
                                   <AvatarFallback className="text-[9px]">
                                     {employee.firstName?.charAt(0).toUpperCase()}
                                     {employee.lastName?.charAt(0).toUpperCase()}

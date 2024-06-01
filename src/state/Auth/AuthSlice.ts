@@ -4,6 +4,7 @@ import { auth, db } from '@/firebase/firebase';
 import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import Cookies from 'universal-cookie';
 import { doc, DocumentData, getDoc, updateDoc } from "firebase/firestore";
+import { deleteObject, getStorage, ref } from "firebase/storage";
 
 const cookies = new Cookies(null, { path: '/' });
 
@@ -130,9 +131,20 @@ export const getUserProfile = (): AppThunk => async dispatch => {
     dispatch(actionFailed({ code: "500", message: error }));
   }
 }
+const deleteFile = (fileName: string): AppThunk =>
+  async () => {
+    const storage = getStorage();
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, `Avatars/${fileName}`);
+    deleteObject(desertRef).then(() => {
+      console.log("File deleted successfully");
+    }).catch((error: any) => {
+      console.log({ code: error.code, message: error.message });
+    });
+  };
 
 
-export const updatePhotoProfile = (photoURL: string, currentEmail: string): AppThunk => async dispatch => {
+export const updatePhotoProfile = (photoURL: string, photoName: string, currentEmail: string): AppThunk => async dispatch => {
   try {
     dispatch(clearMessageAndError())
     const user = auth.currentUser;
@@ -140,16 +152,23 @@ export const updatePhotoProfile = (photoURL: string, currentEmail: string): AppT
       await updateProfile(user, {
         photoURL
       }).then(async () => {
-        //! Update a new document with account id.
         const ref = doc(db, "employees", currentEmail);
-        await updateDoc(ref, { avatar: photoURL }).then(async () => {
+        await getDoc(ref).then(async (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            if (data && data.avatar) {
+              // Delete the existing image
+              dispatch(deleteFile(data.avatar.photoName))
+            }
+          }
+        });
+        await updateDoc(ref, { avatar: { photoURL, photoName }, }).then(async () => {
           // get the updated user profile
-          console.log(currentEmail)
           await dispatch(checkUserExist(currentEmail));
           await dispatch(getUserProfile());
           const state = store.getState();
           const expiryDate = new Date();
-          expiryDate.setDate(expiryDate.getDate() + 7); // Set the date to 7 days in the future
+          expiryDate.setDate(expiryDate.getDate() + 7);
           cookies.set('user', JSON.stringify(state.auth.user), { path: '/', expires: expiryDate });
         })
       }).catch((error) => {
@@ -174,9 +193,11 @@ export const login = ({ email, password }: LoginPayload): AppThunk => async disp
           throw new Error("Failed to get user profile");
         }
         const state = store.getState();
-        const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + 7); // Set the date to 7 days in the future
-        cookies.set('user', JSON.stringify(state.auth.user), { path: '/', expires: expiryDate });
+        if (!cookies.get("user")) {
+          const expiryDate = new Date();
+          expiryDate.setDate(expiryDate.getDate() + 7); // Set the date to 7 days in the future
+          cookies.set('user', JSON.stringify(state.auth.user), { path: '/', expires: expiryDate });
+        }
         dispatch(actionSuccess());
         dispatch(setMessage("User logged in successfully!"));
       })
@@ -217,4 +238,21 @@ export const resetPassword = (email: string): AppThunk => async dispatch => {
       dispatch(setLoading(false));
       dispatch(actionFailed({ code: error.code, message: error.message }));
     });
+};
+
+//Delete user Account
+export const deleteUserAccount = (): AppThunk => async dispatch => {
+  try {
+    dispatch(clearMessageAndError())
+    const user = auth.currentUser;
+    if (user !== null) {
+      await user.delete().then(() => {
+        dispatch(logoutUser());
+      }).catch((error) => {
+        dispatch(actionFailed({ code: error.code, message: error.message }));
+      });
+    }
+  } catch (error: any) {
+    dispatch(actionFailed({ code: error.code, message: error.message }));
+  }
 };

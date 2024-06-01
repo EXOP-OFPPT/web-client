@@ -3,6 +3,7 @@ import { AppThunk, store } from "../store";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getKpis } from "./GetSlice";
+import { updateContribution } from "../Employees/UpdateSlice";
 
 // Interface for error
 interface Error {
@@ -22,6 +23,8 @@ type KpiType = {
 // Interface for User action payload
 interface kpiPayload {
   docId: string;
+  contribute: string;
+  email: string;
   kpiData: KpiType;
 }
 
@@ -106,7 +109,7 @@ export const checkKpiExist =
     };
 
 export const createKpi =
-  ({ docId, kpiData }: kpiPayload): AppThunk =>
+  ({ docId, contribute, email, kpiData }: kpiPayload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
@@ -117,6 +120,7 @@ export const createKpi =
         setDoc(doc(db, "kpis", docId), {
           ...kpiData,
         }).then(() => {
+          dispatch(updateContribution({ email, contribute }));
           dispatch(actionSuccess("Kpi created successfully"));
           dispatch(getKpis());
           dispatch(setLoading(false));

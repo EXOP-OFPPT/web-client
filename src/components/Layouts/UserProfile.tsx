@@ -78,7 +78,7 @@ const UserProfile: React.FC = () => {
       </div>
       <div className="flex gap-5 items-center mt-6 border-color border-b-1 pb-6">
         <Avatar className="h-24 w-24 flex items-center justify-center">
-          <AvatarImage loading="lazy" src={user?.avatar} className="object-cover" />
+          <AvatarImage loading="lazy" src={user?.photoURL} className="object-cover" />
           <AvatarFallback className="text-4xl">
             {user?.firstName?.charAt(0).toUpperCase()}
             {user?.lastName?.charAt(0).toUpperCase()}

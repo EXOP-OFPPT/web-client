@@ -3,7 +3,7 @@ import { Card } from "../ui/card";
 import Cookies from "universal-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
-import { getTasks } from "@/state/Tasks/GetSlice";
+import { getEmployeeTasks } from "@/state/Tasks/GetSlice";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ListTodoIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
@@ -19,18 +19,15 @@ type HistoryProps = {};
 
 const History: React.FC<HistoryProps> = () => {
   const user = cookies.get("user");
-  const tasks = useSelector((state: RootState) => state.getTasks.tasks);
-  const userTasks = tasks.filter((task) => task.assignedTo === user.email);
+  const userTasks = useSelector((state: RootState) => state.getTasks.tasks);
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
-    if (tasks.length === 0) {
-      dispatch(getTasks());
-    }
+    dispatch(getEmployeeTasks(user.email));
   }, [dispatch]);
 
   return (
-    <Card className="rounded-lg shadow-lg py-2">
+    <Card className="rounded-lg shadow-lg py-2 mb-4">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>

@@ -16,8 +16,9 @@ export type TaskType = {
     probleme: string;
     status: "todo" | "inprogress" | "done" | "verified";
     assignedTo: string;
-    createdAt: Timestamp;
     deadLine: Timestamp;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
     completedAt?: Timestamp;
     kpiCode: string;
 };
@@ -92,16 +93,19 @@ export const getTasks = (): AppThunk => async dispatch => {
     dispatch(setLoading(true));
     dispatch(clearMessageAndError());
     try {
+        // Get the current year
+        const currentYear = new Date().getFullYear();
         // Get all tasks
-        const querySnapshot = await getDocs(collection(db, "tasks"));
+        const querySnapshot = await getDocs(query(collection(db, "tasks"), where("updatedAt", ">=", new Date(currentYear, 0, 1)), where("updatedAt", "<", new Date(currentYear + 1, 0, 1))));
         const tasks: DocumentData = [];
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             const data = doc.data();
             tasks.push({
                 ...data,
-                createdAt: data.createdAt.toDate().toISOString(),
                 deadLine: data.deadLine.toDate().toISOString(),
+                createdAt: data.createdAt.toDate().toISOString(),
+                updatedAt: data.updatedAt.toDate().toISOString(),
                 completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
             });
         });
@@ -119,8 +123,10 @@ export const getKpiTasks = (kpiCode: string): AppThunk => async dispatch => {
     dispatch(setLoading(true));
     dispatch(clearMessageAndError());
     try {
+        // Get the current year
+        const currentYear = new Date().getFullYear();
         // Get all tasks assigned to the user
-        const q = query(collection(db, "tasks"), where("kpiCode", "==", kpiCode));
+        const q = query(collection(db, "tasks"), where("updatedAt", ">=", new Date(currentYear, 0, 1)), where("updatedAt", "<", new Date(currentYear + 1, 0, 1)), where("kpiCode", "==", kpiCode));
         const querySnapshot = await getDocs(q);
         const tasks: DocumentData = [];
         querySnapshot.forEach((doc) => {
@@ -128,13 +134,45 @@ export const getKpiTasks = (kpiCode: string): AppThunk => async dispatch => {
             const data = doc.data();
             tasks.push({
                 ...data,
-                createdAt: data.createdAt.toDate().toISOString(),
                 deadLine: data.deadLine.toDate().toISOString(),
+                createdAt: data.createdAt.toDate().toISOString(),
+                updatedAt: data.updatedAt.toDate().toISOString(),
                 completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
             });
         });
         dispatch(actionSuccess(tasks));
     } catch (error: any) {
+        console.log(error)
+        dispatch(actionFailed({ code: error.code, message: error.message }));
+    } finally {
+        dispatch(setLoading(false));
+    }
+};
+
+
+
+export const getRecentEmployeeTasks = (email: string): AppThunk => async dispatch => {
+    dispatch(setLoading(true));
+    dispatch(clearMessageAndError());
+    try {
+        // Get all tasks assigned to the user
+        const q = query(collection(db, "tasks"),where("assignedTo", "==", email));
+        const querySnapshot = await getDocs(q);
+        const tasks: DocumentData = [];
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            const data = doc.data();
+            tasks.push({
+                ...data,
+                deadLine: data.deadLine.toDate().toISOString(),
+                createdAt: data.createdAt.toDate().toISOString(),
+                updatedAt: data.updatedAt.toDate().toISOString(),
+                completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
+            });
+        });
+        dispatch(actionSuccess(tasks));
+    } catch (error: any) {
+        console.log(error)
         dispatch(actionFailed({ code: error.code, message: error.message }));
     } finally {
         dispatch(setLoading(false));
@@ -146,8 +184,10 @@ export const getEmployeeTasks = (email: string): AppThunk => async dispatch => {
     dispatch(setLoading(true));
     dispatch(clearMessageAndError());
     try {
+        // Get the current year
+        const currentYear = new Date().getFullYear();
         // Get all tasks assigned to the user
-        const q = query(collection(db, "tasks"), where("assignedTo", "==", email));
+        const q = query(collection(db, "tasks"), where("updatedAt", ">=", new Date(currentYear, 0, 1)), where("updatedAt", "<", new Date(currentYear + 1, 0, 1)), where("assignedTo", "==", email));
         const querySnapshot = await getDocs(q);
         const tasks: DocumentData = [];
         querySnapshot.forEach((doc) => {
@@ -155,13 +195,15 @@ export const getEmployeeTasks = (email: string): AppThunk => async dispatch => {
             const data = doc.data();
             tasks.push({
                 ...data,
-                createdAt: data.createdAt.toDate().toISOString(),
                 deadLine: data.deadLine.toDate().toISOString(),
+                createdAt: data.createdAt.toDate().toISOString(),
+                updatedAt: data.updatedAt.toDate().toISOString(),
                 completedAt: data.completedAt ? data.completedAt.toDate().toISOString() : undefined,
             });
         });
         dispatch(actionSuccess(tasks));
     } catch (error: any) {
+        console.log(error)
         dispatch(actionFailed({ code: error.code, message: error.message }));
     } finally {
         dispatch(setLoading(false));

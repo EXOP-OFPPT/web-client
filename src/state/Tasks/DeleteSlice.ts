@@ -4,6 +4,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getEmployeeTasks, getKpiTasks, getTasks } from "./GetSlice";
 import { getKpis } from "../Kpis/GetSlice";
+import { updateContribution } from "../Employees/UpdateSlice";
 
 // Interface for error
 interface Error {
@@ -13,6 +14,7 @@ interface Error {
 
 interface DeletePyload {
   docId: string;
+  contribute: string;
   kpiCode: string;
   from: string;
   email: string;
@@ -85,12 +87,13 @@ export const {
 export default deleteTaskSlice.reducer;
 
 export const deleteTask =
-  ({ docId, kpiCode, from, email }: DeletePyload): AppThunk =>
+  ({ docId, contribute, kpiCode, from, email }: DeletePyload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
       deleteDoc(doc(db, "tasks", docId)).then(() => {
+        dispatch(updateContribution({ email, contribute }));
         dispatch(actionSuccess("Task deleted successfully"));
         if (from === "tasks") {
           dispatch(getTasks());

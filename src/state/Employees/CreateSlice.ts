@@ -12,6 +12,7 @@ interface Error {
   message: string;
 }
 
+
 export type EmployeeType = {
   matricule: number;
   firstName: string;

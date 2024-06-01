@@ -1,0 +1,11 @@
+.MuiChartsLegend-series text tspan {
+  fill: gray !important;
+}
+
+.heatmap-chart .apexcharts-heatmap-rect {
+  stroke: #000 !important;
+}
+
+/* .apexcharts-heatmap-rect {
+  stroke-width: 0 !important;
+} */

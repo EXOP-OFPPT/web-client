@@ -1,8 +1,8 @@
 'use client';
 
+import BarChartComponent from '@/components/Dashboard/BarChartComponent';
 import { CalendarDateRangePicker } from '@/components/Dashboard/CalendarDateRangePicker';
-import { Overview } from '@/components/Dashboard/Overview';
-import { PieChart } from '@/components/Dashboard/PieChart';
+import PieChartComponent from '@/components/Dashboard/PieChartComponent';
 import { RecentInfo } from '@/components/Dashboard/RecentInfo';
 import { Resume } from '@/components/Dashboard/Resume';
 import { Button } from '@/components/ui/button';
@@ -24,9 +24,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 
+
 export default function Dashboard() {
-  const tasks = useSelector((state: RootState) => state.getTasks.tasks)
-  const kpis = (useSelector((state: RootState) => state.getKpis.kpis))
+  const employeesLoading = useSelector((state: RootState) => state.getEmployees.loading)
+  const tasksLoading = useSelector((state: RootState) => state.getTasks.loading)
+  const kpisLoading = (useSelector((state: RootState) => state.getKpis.loading))
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function Dashboard() {
     getData()
   }, [])
 
-  if (tasks.length === 0 || kpis.length === 0) {
+  if (employeesLoading || tasksLoading || kpisLoading) {
     return (
       <div className='h-screen w-full flex justify-center items-center'>
         <Loader2Icon className="h-10 w-10 mt-10 text-primary animate-spin" />
@@ -59,27 +61,27 @@ export default function Dashboard() {
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics" disabled>
-                Analytics
-              </TabsTrigger>
             </TabsList>
             <TabsContent value="overview" className="space-y-4">
+              {/*//! Resume Cards */}
               <Resume />
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-8">
                 <Card className="col-span-7">
                   <CardHeader>
-                    <CardTitle>Overview</CardTitle>
+                    <CardTitle>Tasks Timeline</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    <Overview />
+                    {/*//! Bar Chart Component */}
+                    <BarChartComponent />
                   </CardContent>
                 </Card>
-                <Card className="col-span-7 md:col-span-3">
+                <Card className="col-span-8 md:col-span-4">
                   <CardHeader>
                     <CardTitle>PieChart</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    <PieChart />
+                    {/*//! Pie Chart Component */}
+                    <PieChartComponent />
                   </CardContent>
                 </Card>
                 <Card className="col-span-7 md:col-span-4">

@@ -16,13 +16,13 @@ export function Overview() {
       <BarChart data={chartDataArray}>
         <XAxis dataKey="name" stroke="#888888" />
         <YAxis />
-        <Tooltip content={({ active, payload, label }) => {
+        <Tooltip content={({ active, payload }) => {
           if (active && payload && payload.length) {
             return (
               <Card className='w-40'>
                 <div className="h-7 flex items-center px-2 flex-1 !rounded-sm rounded-bl-none !rounded-br-none">
                   <p className="text-sm font-medium leading-none">
-                    {label}
+                    {payload[0].payload.month}
                   </p>
                 </div>
                 {payload.map((item, index) => (

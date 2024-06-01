@@ -35,7 +35,7 @@ export function Resume() {
             for (let kpi of kpis) {
                 sum += kpi.currentTaux;
             }
-            setAverage(sum / kpis.length)
+            setAverage(Number((sum / kpis.length).toFixed(2)))
         }
 
         setKpis(updatedKpis)

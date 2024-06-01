@@ -43,6 +43,8 @@ import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
 import { Toaster } from "../ui/toaster";
 import { createKpi, clearMessageAndError } from "@/state/Kpis/CreateSlice";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 
 const formSchema = z.object({
@@ -63,6 +65,7 @@ const formSchema = z.object({
 
 
 function Create() {
+  const user = cookies.get("user");
   const isLoading = useSelector(
     (state: RootState) => state.createKpi.loading
   );
@@ -122,7 +125,7 @@ function Create() {
       availableBonus: 100 - parseInt(values.currentTaux),
       type: values.type,
     };
-    dispatch(createKpi({ docId: docId, kpiData: data }));
+    dispatch(createKpi({ docId: docId, contribute: "Create Kpi", email: user.email, kpiData: data }));
   }
 
   return (

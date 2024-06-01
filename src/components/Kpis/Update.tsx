@@ -41,6 +41,9 @@ import {
   clearMessageAndError,
   updateKpi
 } from "@/state/Kpis/UpdateSlice";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
+
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -49,9 +52,11 @@ const formSchema = z.object({
   description: z.string().min(2, {
     message: "Description must be at least 2 characters.",
   }),
-  minTaux: z.number(),
+  minTaux: z.string({
+    required_error: "Sible is required",
+  }),
   currentTaux: z.string({
-    required_error: "Current Taux is required",
+    required_error: "Score is required",
   }),
   type: z.string(),
 });
@@ -71,6 +76,7 @@ type UpdateProps = {
 };
 
 const Update = ({ mode, info }: UpdateProps) => {
+  const user = cookies.get("user");
   const isLoading = useSelector(
     (state: RootState) => state.updateKpi.loading
   );
@@ -109,7 +115,7 @@ const Update = ({ mode, info }: UpdateProps) => {
     defaultValues: {
       title: info.title,
       description: info.description,
-      minTaux: info.minTaux,
+      minTaux: info.minTaux.toString(),
       currentTaux: info.currentTaux.toString(),
       type: info.type.charAt(0).toUpperCase() + info.type.slice(1),
     },
@@ -122,10 +128,10 @@ const Update = ({ mode, info }: UpdateProps) => {
       code: info.code,
       title: values.title,
       description: values.description,
-      minTaux: values.minTaux,
+      minTaux: parseInt(values.minTaux),
       currentTaux: parseInt(values.currentTaux),
     };
-    dispatch(updateKpi({ code: info.code, updatedData: data }));
+    dispatch(updateKpi({ code: info.code, contribute: "Update Kpi", email: user.email, updatedData: data }));
   }
 
   return (
@@ -217,7 +223,7 @@ const Update = ({ mode, info }: UpdateProps) => {
                     <FormItem>
                       <FormLabel>Type</FormLabel>
                       <FormControl>
-                        <Input disabled placeholder="Type" {...field} />
+                        <Input placeholder="Type" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

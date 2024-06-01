@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, store } from "../store";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getEmployees } from "./GetSlice";
 
@@ -9,6 +9,12 @@ interface Error {
     code: string;
     message: string;
 }
+
+type ContributionPyload = {
+    contribute: string;
+    email: string;
+};
+
 
 export type EmployeeType = {
     matricule: number;
@@ -104,6 +110,29 @@ export const checkUserExist =
                 dispatch(setAction(null));
             }
         };
+
+
+
+export const updateContribution =
+    ({ contribute, email }: ContributionPyload): AppThunk =>
+        async (dispatch) => {
+            // Reset message and error
+            dispatch(setLoading(true));
+            dispatch(clearMessageAndError());
+            const contributionsRef = collection(db, "employees", email, "contributions");
+            const contribution = {
+                contribute: contribute,
+                contributedAt: new Date().toISOString()
+            };
+            addDoc(contributionsRef, contribution)
+                .then(() => {
+                    console.log("Contribution added successfully");
+                })
+                .catch((error: any) => {
+                    console.log({ code: "500", message: error.message })
+                });
+        };
+
 
 export const updateEmployee =
     ({ email, updatedData }: UpdatedUserPayload): AppThunk =>
