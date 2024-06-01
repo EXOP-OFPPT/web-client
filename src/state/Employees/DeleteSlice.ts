@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { deleteDoc, doc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, writeBatch } from "firebase/firestore";
 import { auth, db } from "@/firebase/firebase";
 import { getEmployees } from "./GetSlice";
 
@@ -9,6 +9,7 @@ interface Error {
   code: string;
   message: string;
 }
+
 
 export type EmployeeType = {
   matricule: number;
@@ -83,6 +84,15 @@ export const deleteEmployee =
       try {
         console.log("Deleting employee... ", docId);
         console.log(auth.currentUser?.email)
+        // Delete contributions subcollection
+        const contributionsRef = collection(db, "employees", docId, "contributions");
+        const q = query(contributionsRef);
+        const querySnapshot = await getDocs(q);
+        const batch = writeBatch(db);
+        querySnapshot.docs.forEach((doc) => {
+          batch.delete(doc.ref);
+        });
+        await batch.commit();
         // Delete employee document
         deleteDoc(doc(db, "employees", docId)).then(() => {
           dispatch(actionSuccess("Employee deleted successfully"));
@@ -92,5 +102,7 @@ export const deleteEmployee =
         });
       } catch (error: any) {
         dispatch(actionFailed({ code: error.code, message: error.message }));
+      } finally {
+        dispatch(setLoading(false));
       }
     };
