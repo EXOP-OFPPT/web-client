@@ -41,6 +41,7 @@ import {
   clearMessageAndError,
   updateEmployee,
 } from "@/state/Employees/UpdateSlice";
+import { Avatar } from "@/state/Employees/GetSlice";
 
 const formSchema = z.object({
   matricule: z.any(),
@@ -71,7 +72,7 @@ type infoProps = {
   email: string;
   role: string;
   photoURL?: string;
-  avatar?: string;
+  avatar?: Avatar;
 };
 
 type UpdateProps = {
