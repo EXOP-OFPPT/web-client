@@ -1,11 +1,9 @@
 import React, { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import AreaChart from "../Dashboard/AreaChart";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/state/store";
 import Cookies from "universal-cookie";
-import { getEmployeeContributions } from "@/state/Employees/GetSlice";
 import { ThemeProviderContext } from "../global/theme-provider";
+import { EmployeeType } from "@/state/Employees/GetSlice";
+import AreaChartComponent from "../Charts/AreaChartComponent";
 const cookies = new Cookies(null, { path: "/" });
 
 type ChartsProps = {};
@@ -14,15 +12,8 @@ type Theme = "dark" | "light" | "system"
 
 const Charts: React.FC<ChartsProps> = () => {
   const user = cookies.get("user");
-  const employeeContributes = useSelector((state: RootState) => state.getEmployees.employeeContributions)
-  const loading = useSelector((state: RootState) => state.getEmployees.loading)
   const { theme } = React.useContext(ThemeProviderContext);
   const [stateTheme, setStateTheme] = React.useState<"dark" | "light">("light");
-  const dispatch = useDispatch<AppDispatch>()
-
-  useEffect(() => {
-    dispatch(getEmployeeContributions(user.email))
-  }, [])
 
   useEffect(() => {
     let currentTheme: Theme = theme
@@ -36,18 +27,16 @@ const Charts: React.FC<ChartsProps> = () => {
   }, [theme])
 
 
-  if (!loading) {
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle> Vos statistique</CardTitle>
-        </CardHeader>
-        <CardContent className="!p-0">
-          <AreaChart contributions={employeeContributes} theme={stateTheme} />
-        </CardContent>
-      </Card>
-    );
-  }
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle> Vos statistique</CardTitle>
+      </CardHeader>
+      <CardContent className="!p-0">
+        <AreaChartComponent employee={user as EmployeeType} theme={stateTheme} />
+      </CardContent>
+    </Card>
+  );
 };
 
 export default Charts;
