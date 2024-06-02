@@ -1,10 +1,14 @@
 'use client';
 
-import BarChartComponent from '@/components/Dashboard/BarChartComponent';
-import { CalendarDateRangePicker } from '@/components/Dashboard/CalendarDateRangePicker';
-import PieChartComponent from '@/components/Dashboard/PieChartComponent';
+import BarChartComponent from '@/components/Charts/BarChartComponent';
+import { CalendarDateRangePicker } from '@/components/Charts/CalendarDateRangePicker';
+import PieChartComponent from '@/components/Charts/PieChartComponent';
+import RadarChartKpiComponent from '@/components/Charts/RadarChartKpiComponent';
+import RadarChartTaskComponent from '@/components/Charts/RadarChartTaskComponent';
+import EmployeesContributions from '@/components/Dashboard/EmployeesContributions';
 import { RecentInfo } from '@/components/Dashboard/RecentInfo';
 import { Resume } from '@/components/Dashboard/Resume';
+import { ThemeProviderContext } from '@/components/global/theme-provider';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -19,16 +23,23 @@ import { getKpis } from '@/state/Kpis/GetSlice';
 import { AppDispatch, RootState } from '@/state/store';
 import { getTasks } from '@/state/Tasks/GetSlice';
 import { Loader2Icon } from 'lucide-react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies(null, { path: "/" });
 
-
-
+type Theme = "dark" | "light" | "system"
 
 export default function Dashboard() {
+  const user = cookies.get("user")
   const employeesLoading = useSelector((state: RootState) => state.getEmployees.loading)
+  const employees = useSelector((state: RootState) => state.getEmployees.employees)
   const tasksLoading = useSelector((state: RootState) => state.getTasks.loading)
+  const tasks = useSelector((state: RootState) => state.getTasks.tasks)
   const kpisLoading = (useSelector((state: RootState) => state.getKpis.loading))
+  const kpis = (useSelector((state: RootState) => state.getKpis.kpis))
+  const { theme } = React.useContext(ThemeProviderContext);
+  const [stateTheme, setStateTheme] = React.useState<"dark" | "light">("light");
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
@@ -38,6 +49,17 @@ export default function Dashboard() {
     }
     getData()
   }, [])
+
+  useEffect(() => {
+    let currentTheme: Theme = theme
+    if (currentTheme === "system") {
+      currentTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light"
+    }
+    setStateTheme(currentTheme)
+  }, [theme])
 
   if (employeesLoading || tasksLoading || kpisLoading) {
     return (
@@ -65,26 +87,44 @@ export default function Dashboard() {
             <TabsContent value="overview" className="space-y-4">
               {/*//! Resume Cards */}
               <Resume />
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-8">
-                <Card className="col-span-7">
+              {/* Remark about verified tasks */}
+              <p className="text-sm text-gray-500">
+                Note: The verified tasks are also considered as done tasks.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                <Card className="col-span-1 md:col-span-2 lg:col-span-1">
                   <CardHeader>
                     <CardTitle>Tasks Timeline</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    {/*//! Bar Chart Component */}
                     <BarChartComponent />
                   </CardContent>
                 </Card>
-                <Card className="col-span-8 md:col-span-4">
+                <Card className="col-span-1 md:col-span-1 lg:col-span-1">
+                  <CardHeader>
+                    <CardTitle>Radar Kpi Chart</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pl-2">
+                    <RadarChartKpiComponent kpis={kpis} theme={stateTheme} />
+                  </CardContent>
+                </Card>
+                <Card className="col-span-1 md:col-span-1 lg:col-span-1">
+                  <CardHeader>
+                    <CardTitle>Radar Task Chart</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pl-2">
+                    <RadarChartTaskComponent tasks={tasks} theme={stateTheme} />
+                  </CardContent>
+                </Card>
+                <Card className="col-span-1 md:col-span-1 lg:col-span-1">
                   <CardHeader>
                     <CardTitle>PieChart</CardTitle>
                   </CardHeader>
-                  <CardContent className="pl-2">
-                    {/*//! Pie Chart Component */}
+                  <CardContent className="pl-2 h-auto flex flex-1 justify-center items-center">
                     <PieChartComponent />
                   </CardContent>
                 </Card>
-                <Card className="col-span-7 md:col-span-4">
+                <Card className="col-span-1 md:col-span-1 lg:col-span-1">
                   <CardHeader>
                     <CardTitle>Employees</CardTitle>
                     <CardDescription>
@@ -95,6 +135,18 @@ export default function Dashboard() {
                     <RecentInfo />
                   </CardContent>
                 </Card>
+                {user?.role === 'admin' &&
+                  <Card className="col-span-full">
+                    <CardHeader>
+                      <CardTitle>Employees Contributes</CardTitle>
+                      <CardDescription>
+                        The Statistiques of employees
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <EmployeesContributions employees={employees} theme={stateTheme} />
+                    </CardContent>
+                  </Card>}
               </div>
             </TabsContent>
           </Tabs>
