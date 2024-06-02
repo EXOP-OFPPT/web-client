@@ -93,7 +93,6 @@ const AvatarComponent: React.FC = () => {
     );
   };
 
-  console.log(user)
 
 
   return (
