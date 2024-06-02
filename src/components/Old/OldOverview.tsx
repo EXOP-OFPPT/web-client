@@ -1,5 +1,5 @@
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { mapTasksToChartData } from './ChartData';
+import { mapTasksToChartData } from '../Charts/ChartData';
 import { Card } from '../ui/card';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/state/store';

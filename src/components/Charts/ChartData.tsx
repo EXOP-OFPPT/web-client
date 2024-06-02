@@ -1,5 +1,3 @@
-'use client';
-
 interface IChartData {
   [key: string]: {
     month: string;
@@ -40,11 +38,18 @@ export function mapTasksToChartData(tasks: any[]) {
 
     if (chartData[month] && isStatusKey(statusKey)) {
       chartData[month][statusKey as 'todo' | 'inprogress' | 'done' | 'verified']++;
+
+      // If the task is verified, also increment the 'done' count
+      if (statusKey === 'verified') {
+        chartData[month]['done']++;
+      }
     }
   }
 
   return Object.values(chartData);
 }
+
+
 
 // export function mapTasksToChartData(tasks: any[]) {
 

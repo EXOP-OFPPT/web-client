@@ -36,12 +36,12 @@ export default function PieChartComponent() {
                     highlightScope: { faded: 'global', highlighted: 'item' },
                     faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                     innerRadius: 30,
-                    outerRadius: 100,
-                    paddingAngle: 5,
+                    outerRadius: 120,
+                    paddingAngle: 2,
                     cornerRadius: 5,
                 },
             ]}
-            height={200}
+            height={250}
         />
     );
 }
