@@ -1,34 +1,27 @@
-import { EmployeeType } from "@/state/Employees/GetSlice"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { useSelector } from "react-redux";
-import { RootState } from "@/state/store";
-import { useEffect, useState } from "react";
 import { Card } from "../ui/card";
 
+type AvatarType = {
+    photoURL: string;
+    photoName: string;
+}
+type EmployeeType = {
+    matricule: number | string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+    role: string;
+    photoURL?: string;
+    avatar?: AvatarType;
+    productivity: number
+};
 type EmployeeProductivityProps = {
     employee: EmployeeType;
 }
 
 
 export const EmployeeProductivity = ({ employee }: EmployeeProductivityProps) => {
-
-    const tasks = useSelector((state: RootState) => state.getTasks.tasks);
-    const verified = tasks.filter((task) => task.status === "verified" && task.assignedTo === employee.email);
-    const done = tasks.filter((task) => task.status === "done" && task.assignedTo === employee.email);
-    const inProgress = tasks.filter((task) => task.status === "inprogress" && task.assignedTo === employee.email);
-    const todo = tasks.filter((task) => task.status === "todo" && task.assignedTo === employee.email);
-    const [productivity, setProductivity] = useState<number>(0);
-
-    useEffect(() => {
-        const currentProductivity = (
-            (verified.length * 1.0 +
-                done.length * 0.75 +
-                inProgress.length * 0.5 +
-                todo.length * 0.0) /
-            (tasks.length * 1.0)
-        ) * 100;
-        setProductivity(currentProductivity);
-    }, [tasks]);
 
     return (
         <div className="flex justify-between items-center">
@@ -48,9 +41,9 @@ export const EmployeeProductivity = ({ employee }: EmployeeProductivityProps) =>
             {/* <div className="ml-auto font-medium">{productivity.toFixed(2)}%</div> */}
             <Card className="ml-auto sm:bl min-w-32 max-w-32  border-neutral-700">
                 <div className="text-center w-full h-2 p-[1.5px]">
-                    <div className="!bg-primary h-full flex justify-center items-center rounded-full" style={{ width: `${productivity}%` }}>
+                    <div className="!bg-primary h-full flex justify-center items-center rounded-full" style={{ width: `${employee?.productivity}%` }}>
                     </div>
-                    <span className="text-[13px]">{productivity}</span>
+                    <span className="text-[13px]">{employee?.productivity.toFixed(2)}</span>
                 </div>
             </Card>
         </div>
