@@ -44,6 +44,7 @@ function Login() {
   const authUser = auth.currentUser;
   const error = useSelector((state: RootState) => state.auth.error);
   const cookieIsLogin = cookies.get("user");
+  const EHP = cookies.get("EHP");
   const reduxIsLogin = useSelector((state: RootState) => state.auth.isLogin);
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const navigate = useNavigate();
@@ -83,14 +84,17 @@ function Login() {
   }, [error, reduxIsLogin]);
 
   useEffect(() => {
-    if ((cookieIsLogin && authUser) || reduxIsLogin) {
+    if ((cookieIsLogin && EHP && authUser) || reduxIsLogin) {
       navigate("/app", { replace: true });
     }
-  }, [navigate, cookieIsLogin, reduxIsLogin]);
+    else if (cookieIsLogin && EHP && !authUser && !reduxIsLogin) {
+      dispatch(login({ email: cookieIsLogin.email, password: EHP, type: 'already' }))
+    }
+  }, [navigate, authUser, cookieIsLogin, EHP, reduxIsLogin]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    dispatch(login(values));
+    dispatch(login({ ...values, type: 'first' }));
   }
 
   return (
