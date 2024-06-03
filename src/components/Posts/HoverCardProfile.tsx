@@ -23,7 +23,7 @@ const HoverCardProfile: React.FC<HoverCardProfileProps> = ({ user, children }) =
             </HoverCardTrigger>
             <HoverCardContent className="flex items-center gap-2">
                 <Avatar className="w-11 h-11 my-2 flex items-center justify-center">
-                    <AvatarImage loading="lazy" src={user?.avatar} className="object-cover" />
+                    <AvatarImage loading="lazy" src={user?.avatar.photoURL} className="object-cover" />
                     <AvatarFallback className="text-base">
                         {user?.firstName?.charAt(0).toUpperCase()}
                         {user?.lastName?.charAt(0).toUpperCase()}
