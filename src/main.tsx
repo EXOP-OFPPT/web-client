@@ -42,6 +42,7 @@ import MyTasks from "./pages/MyTasks";
 import Dashboard from "./pages/Dashboard";
 import ThemeSwitcher from "./components/global/ThemeSwitcher";
 import Events from "./pages/Events";
+import LandingPage from "./pages/LandingPage";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -65,6 +66,12 @@ const router = createBrowserRouter([
           </Routes>
         </RootLayout>
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/",
+    element: (
+        <LandingPage />
     ),
   },
   {
