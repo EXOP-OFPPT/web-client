@@ -41,6 +41,7 @@ import KpiTasks from "./pages/KpiTasks";
 import MyTasks from "./pages/MyTasks";
 import Dashboard from "./pages/Dashboard";
 import ThemeSwitcher from "./components/global/ThemeSwitcher";
+import Events from "./pages/Events";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -59,6 +60,7 @@ const router = createBrowserRouter([
             <Route index path="tasks" element={<Tasks />} />
             <Route index path="myTasks" element={<MyTasks />} />
             <Route index path="posts" element={<Posts />} />
+            <Route index path="events" element={<Events />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>
