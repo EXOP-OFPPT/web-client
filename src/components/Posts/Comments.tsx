@@ -154,7 +154,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
                                 className="flex gap-5 p-2"
                             >
                                 <Avatar className="w-10 h-10 flex items-center justify-center">
-                                    <AvatarImage loading="lazy" src={user.avatar} className="object-cover" />
+                                    <AvatarImage loading="lazy" src={user.avatar.photoURL} className="object-cover" />
                                     <AvatarFallback className="text-base">
                                         {user.firstName?.charAt(0).toUpperCase()}
                                         {user.lastName?.charAt(0).toUpperCase()}
@@ -206,7 +206,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
                                                 <div className="flex gap-6 items-center">
                                                     <HoverCardProfile user={item.commenter}>
                                                         <Avatar className="w-10 h-10 flex items-center justify-center">
-                                                            <AvatarImage loading="lazy" src={item.commenter?.avatar} className="object-cover" />
+                                                            <AvatarImage loading="lazy" src={item.commenter?.avatar.photoURL} className="object-cover" />
                                                             <AvatarFallback className="text-base">
                                                                 {item.commenter?.firstName?.charAt(0).toUpperCase()}
                                                                 {item.commenter?.lastName?.charAt(0).toUpperCase()}
