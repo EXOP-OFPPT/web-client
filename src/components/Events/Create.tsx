@@ -135,7 +135,7 @@ function Create() {
       title: values.title,
       description: values.description,
       location: {
-        type: values.locationType,
+        type: values.locationType as "physical" | "virtual",
         address: values.locationAddress
       },
       createdAt: createdAtTimestamp,
