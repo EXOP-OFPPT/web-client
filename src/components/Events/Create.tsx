@@ -51,6 +51,7 @@ import { Timestamp } from "firebase/firestore";
 import FancyMultipleSelect from "../global/FancyMultiSelect";
 import { EmployeeType } from "@/state/Employees/GetSlice";
 import Cookies from "universal-cookie";
+import { EventType } from "@/state/Events/GetSlice";
 const cookies = new Cookies(null, { path: "/" });
 
 
@@ -129,7 +130,7 @@ function Create() {
     const startedAtTimestamp = Timestamp.fromDate(date ? new Date(date) : new Date());
     const createdAtTimestamp = Timestamp.fromDate(new Date());
 
-    const data = {
+    const data: EventType = {
       id: docId,
       title: values.title,
       description: values.description,
