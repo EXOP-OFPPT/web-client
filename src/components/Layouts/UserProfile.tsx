@@ -3,7 +3,7 @@ import {
   BookCheck,
   CircleUserRound,
   CircleX,
-  Inbox,
+  // Inbox,
   LogOut,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
@@ -31,14 +31,14 @@ const UserProfile: React.FC = () => {
       iconBg: "#E5FAFB",
       path: "/profile",
     },
-    {
-      icon: <Inbox />,
-      title: "My Inbox",
-      desc: "Messages & Emails",
-      iconColor: "rgb(0, 194, 146)",
-      iconBg: "rgb(235, 250, 242)",
-      path: "/app/inbox",
-    },
+    // {
+    //   icon: <Inbox />,
+    //   title: "My Inbox",
+    //   desc: "Messages & Emails",
+    //   iconColor: "rgb(0, 194, 146)",
+    //   iconBg: "rgb(235, 250, 242)",
+    //   path: "/app/inbox",
+    // },
     {
       icon: <BookCheck />,
       title: "My Tasks",
