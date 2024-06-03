@@ -5,6 +5,9 @@ import { auth, db } from "@/firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { getEmployees } from "./GetSlice";
 import { sendEmail } from "@/lib/SendEmail";
+import { login } from "../Auth/AuthSlice";
+import Cookies from "universal-cookie";
+const cookies = new Cookies(null, { path: "/" });
 
 // Interface for error
 interface Error {
@@ -112,7 +115,6 @@ export const checkUserExist =
 export const createEmployee =
   ({ email, password, userData }: UserPayload): AppThunk =>
     async (dispatch) => {
-      const admin = auth.currentUser;
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
@@ -129,8 +131,11 @@ export const createEmployee =
           createUserWithEmailAndPassword(auth, email, password)
             .then(async () => {
               // Send the email
-              await sendEmail({ from: admin?.email || "Admin.com", to: email, password, subject: 'Welcome to EXOP App' });
+              await sendEmail({ from: "exop.ofppt@gmail.com", to: email, password, subject: 'Welcome to EXOP App' });
               dispatch(actionSuccess("Employee created successfully, Email send to user"));
+              const user = cookies.get("user");
+              const EHP = cookies.get("EHP");
+              dispatch(login({ email: user.email, password: EHP, type: 'already' }))
             })
             .catch(() => {
               dispatch(setLoading(false));
@@ -140,6 +145,7 @@ export const createEmployee =
                 )
               );
             });
+          console.log(auth.currentUser)
           dispatch(getEmployees());
         } catch (error) {
           dispatch(setLoading(false));

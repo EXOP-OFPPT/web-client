@@ -94,9 +94,10 @@ export const getTasks = (): AppThunk => async dispatch => {
     dispatch(clearMessageAndError());
     try {
         // Get the current year
-        const currentYear = new Date().getFullYear();
+        // const currentYear = new Date().getFullYear();
         // Get all tasks
-        const querySnapshot = await getDocs(query(collection(db, "tasks"), where("updatedAt", ">=", new Date(currentYear, 0, 1)), where("updatedAt", "<", new Date(currentYear + 1, 0, 1))));
+        // const querySnapshot = await getDocs(query(collection(db, "tasks"), where("updatedAt", ">=", new Date(currentYear, 0, 1)), where("updatedAt", "<", new Date(currentYear + 1, 0, 1))));
+        const querySnapshot = await getDocs(query(collection(db, "tasks")));
         const tasks: DocumentData = [];
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots

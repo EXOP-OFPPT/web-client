@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, store } from '../store';
 import { auth, db } from '@/firebase/firebase';
-import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updatePassword, updateProfile } from "firebase/auth";
 import Cookies from 'universal-cookie';
-import { doc, DocumentData, getDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, DocumentData, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { deleteObject, getStorage, ref } from "firebase/storage";
+import CryptoJS from 'crypto-js';
+
 
 const cookies = new Cookies(null, { path: '/' });
 
@@ -13,6 +15,7 @@ const cookies = new Cookies(null, { path: '/' });
 interface LoginPayload {
   email: string;
   password: string;
+  type: 'first' | 'already';
 }
 
 interface UserProfileState {
@@ -103,8 +106,6 @@ export const checkUserExist = (docId: string): AppThunk => async dispatch => {
     const docRef = doc(db, "employees", docId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      console.log(docId)
-      console.log("Document data:", docSnap.data());
       dispatch(setUser(docSnap.data()));
     } else {
       // docSnap.data() will be undefined in this case
@@ -180,12 +181,22 @@ export const updatePhotoProfile = (photoURL: string, photoName: string, currentE
   }
 };
 
+
 // Async action creator
-export const login = ({ email, password }: LoginPayload): AppThunk => async dispatch => {
+export const login = ({ email, password, type }: LoginPayload): AppThunk => async dispatch => {
   dispatch(setLoading(true));
   dispatch(clearMessageAndError())
+
   await dispatch(checkUserExist(email));
+  if (type == 'already') {
+    // Hash the password to check
+    const SECRET_KEY = import.meta.env.VITE_SECRET_KEY as string;
+    const bytes = CryptoJS.AES.decrypt(password, SECRET_KEY);
+    password = bytes.toString(CryptoJS.enc.Utf8);
+  }
   if (store.getState().auth.user) {
+    console.log(email, password)
+
     await signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         dispatch(getUserProfile());
@@ -196,6 +207,13 @@ export const login = ({ email, password }: LoginPayload): AppThunk => async disp
         if (!cookies.get("user")) {
           const expiryDate = new Date();
           expiryDate.setDate(expiryDate.getDate() + 7); // Set the date to 7 days in the future
+
+          // Encrypt the password
+          const SECRET_KEY = import.meta.env.VITE_SECRET_KEY as string;
+          const EHP = CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
+          console.log(EHP)
+          // Store the encrypted password in a cookie
+          cookies.set('EHP', EHP, { path: '/', expires: expiryDate });
           cookies.set('user', JSON.stringify(state.auth.user), { path: '/', expires: expiryDate });
         }
         dispatch(actionSuccess());
@@ -216,6 +234,7 @@ export const logoutUser = (): AppThunk => async dispatch => {
   try {
     dispatch(clearMessageAndError())
     await signOut(auth).then(() => {
+      cookies.remove('EHP', { path: '/' });
       cookies.remove('user', { path: '/' });
       dispatch(logout());
     });
@@ -240,14 +259,56 @@ export const resetPassword = (email: string): AppThunk => async dispatch => {
     });
 };
 
-//Delete user Account
-export const deleteUserAccount = (): AppThunk => async dispatch => {
+
+// Function to update password
+export const updateAccountPassword = (newPassword: string): AppThunk => async dispatch => {
   try {
-    dispatch(clearMessageAndError())
     const user = auth.currentUser;
     if (user !== null) {
-      await user.delete().then(() => {
-        dispatch(logoutUser());
+      updatePassword(user, newPassword).then(() => {
+        dispatch(setMessage("Password updated successfully!"));
+      })
+        .catch((error) => {
+          dispatch(actionFailed({ code: error.code, message: error.message }));
+        });
+    }
+  } catch (error: any) {
+    dispatch(actionFailed({ code: error.code, message: error.message }));
+  }
+};
+
+// Function to delete account, employee document, and contributes subcollection
+export const deleteAccountAndDocument = (): AppThunk => async dispatch => {
+  try {
+    const user = auth.currentUser;
+    if (user !== null) {
+      // Get the employee document reference
+      const docRef = doc(db, "employees", user.email as string);
+
+      // Get the contributes subcollection
+      const contributesCollection = collection(docRef, "contributions");
+
+      // Get all the documents in the contributes subcollection
+      const contributesSnapshot = await getDocs(contributesCollection);
+
+      // Delete each document in the contributes subcollection
+      // Delete each document in the contributes subcollection
+      contributesSnapshot.forEach((doc) => {
+        deleteDoc(doc.ref);
+      });
+
+      // Delete the employee document
+      deleteDoc(docRef).then(async () => {
+        dispatch(setMessage("Employee and contributes deleted successfully"));
+
+        // Delete the user account
+        user.delete()
+          .then(() => {
+            dispatch(logoutUser());
+          })
+          .catch((error) => {
+            dispatch(actionFailed({ code: error.code, message: error.message }));
+          });
       }).catch((error) => {
         dispatch(actionFailed({ code: error.code, message: error.message }));
       });
@@ -256,3 +317,5 @@ export const deleteUserAccount = (): AppThunk => async dispatch => {
     dispatch(actionFailed({ code: error.code, message: error.message }));
   }
 };
+
+

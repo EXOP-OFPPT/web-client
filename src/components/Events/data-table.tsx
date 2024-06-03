@@ -32,11 +32,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { EmployeeType } from "@/state/Employees/GetSlice";
+import { EventType } from "@/state/Events/GetSlice";
 
 interface DataTableProps {
-  columns: ColumnDef<EmployeeType>[];
-  data: EmployeeType[];
+  columns: ColumnDef<EventType>[];
+  data: EventType[];
 }
 
 export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
@@ -81,20 +81,19 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
   return (
     <div>
       <div className="flex items-center py-4">
-        {/* Filter Input */}
         <Input
-          placeholder="Filter by Last Name..."
+          placeholder="Filter by title..."
           value={
-            (table.getColumn("lastName")?.getFilterValue() as string) ?? ""
+            (table.getColumn("title")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) => {
             return table
-              .getColumn("lastName")
+              .getColumn("title")
               ?.setFilterValue(event.target.value);
           }}
           className="max-w-xs"
         />
-        {/* Drop Menu */}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto flex gap-2">
@@ -148,11 +147,12 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className="cursor-pointer"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="text-center">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

@@ -7,39 +7,39 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { setHandlePickedTheme } from "@/state/NavBar/NavBarSlice";
-import { AppDispatch, RootState } from "@/state/store";
-import { Check, SettingsIcon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+// import { setHandlePickedTheme } from "@/state/NavBar/NavBarSlice";
+// import { AppDispatch, RootState } from "@/state/store";
+import { SettingsIcon } from "lucide-react";
+// import { useDispatch, useSelector } from "react-redux";
 
 const Settings = () => {
-  const pickedTheme = useSelector(
-    (state: RootState) => state.navBar.pickedTheme
-  );
-  const dispatch = useDispatch<AppDispatch>();
+  // const pickedTheme = useSelector(
+  //   (state: RootState) => state.navBar.pickedTheme
+  // );
+  // const dispatch = useDispatch<AppDispatch>();
 
-  const themeColors = [
-    {
-      name: "zinc-theme",
-      color: "hsl(240 3.7% 15.9%)",
-    },
-    {
-      name: "rose-theme",
-      color: "hsl(346.8 77.2% 49.8%)",
-    },
-    {
-      name: "blue-theme",
-      color: "hsl(221.2 83.2% 53.3%)",
-    },
-    {
-      name: "green-theme",
-      color: "hsl(142.1 76.2% 36.3%)",
-    },
-    {
-      name: "orange-theme",
-      color: "hsl(24.6 95% 53.1%)",
-    },
-  ];
+  // const themeColors = [
+  //   {
+  //     name: "zinc-theme",
+  //     color: "hsl(240 3.7% 15.9%)",
+  //   },
+  //   {
+  //     name: "rose-theme",
+  //     color: "hsl(346.8 77.2% 49.8%)",
+  //   },
+  //   {
+  //     name: "blue-theme",
+  //     color: "hsl(221.2 83.2% 53.3%)",
+  //   },
+  //   {
+  //     name: "green-theme",
+  //     color: "hsl(142.1 76.2% 36.3%)",
+  //   },
+  //   {
+  //     name: "orange-theme",
+  //     color: "hsl(24.6 95% 53.1%)",
+  //   },
+  // ];
 
   return (
     <Sheet>
@@ -55,7 +55,7 @@ const Settings = () => {
           <SheetTitle>Settings</SheetTitle>
           {/* Mode Toggle */}
           <ModeToggle />
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             {themeColors.map((theme, index) => (
               <button
                 key={index}
@@ -66,7 +66,7 @@ const Settings = () => {
                 {pickedTheme == theme.name && <Check />}
               </button>
             ))}
-          </div>
+          </div> */}
         </SheetHeader>
       </SheetContent>
     </Sheet>

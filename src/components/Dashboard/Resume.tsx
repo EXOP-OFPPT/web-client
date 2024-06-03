@@ -7,15 +7,17 @@ import { useEffect, useState } from "react";
 
 export function Resume() {
 
+    const currentYear = new Date().getFullYear();
+    const previousYear = currentYear - 1;
+    const contentDescription = `${previousYear}-${currentYear}`;
     const employees = useSelector((state: RootState) => state.getEmployees.employees)
+    const events = useSelector((state: RootState) => state.getEvents.events);
     const [kpis, setKpis] = useState<KpiType[] | []>(useSelector((state: RootState) => state.getKpis.kpis))
     const [average, setAverage] = useState<number>(0)
 
 
-
-
     useEffect(() => {
-
+        if (kpis.length === 0) return
         const updatedKpis = kpis.map(kpi => {
             let value;
             if (kpi.currentTaux < kpi.minTaux && kpi.type == "eliminated") {
@@ -44,12 +46,13 @@ export function Resume() {
     }, [])
 
 
+
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <ResumeCard
                 title="Score Total"
                 contentTitle={average}
-                contentDescription="2023-2024"
+                contentDescription={contentDescription}
                 icon={
                     <svg viewBox="0 0 15 15"
                         fill="none"
@@ -64,7 +67,7 @@ export function Resume() {
             <ResumeCard
                 title="Employees Numbers"
                 contentTitle={employees.length}
-                contentDescription="2023-2024"
+                contentDescription={contentDescription}
                 icon={
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -84,8 +87,9 @@ export function Resume() {
             />
             <ResumeCard
                 title="Last Meeting"
-                contentTitle="20/03/2024"
-                contentDescription="2023-2024"
+                contentTitle={events[0]?.startedAt?.toString().split('T')[0]}
+                // contentTitle={new Date(events[0].startedAt.toString()).toLocaleDateString()}
+                contentDescription={contentDescription}
                 icon={
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -104,8 +108,9 @@ export function Resume() {
             />
             <ResumeCard
                 title="Next Meeting"
-                contentTitle="20/09/2024"
-                contentDescription="2023-2024"
+                contentTitle={events[1]?.startedAt?.toString().split('T')[0]}
+                // contentTitle={new Date(events[1].startedAt.toString()).toLocaleDateString()}
+                contentDescription={contentDescription}
                 icon={
                     <svg
                         xmlns="http://www.w3.org/2000/svg"

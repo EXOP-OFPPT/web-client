@@ -8,7 +8,7 @@ export default function DisplayPostsCards() {
   const data = useSelector((state: RootState) => state.getPosts.posts);
 
   return (
-    <div className="w-full h-auto flex justify-center py-5">
+    <div className="w-full h-auto flex mt-20 justify-center py-5">
       <Card className="w-auto max-w-[900px] bg-transparent pr-5">
         {data.map((item: PostType, index: number) => {
           return <PostCard key={index} data={item} />;

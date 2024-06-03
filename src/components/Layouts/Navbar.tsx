@@ -1,12 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { AppDispatch, RootState } from "@/state/store";
-import { Bell, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import UserProfile from "./UserProfile";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
 import Notification from "./Notification";
-import NavButton from "../global/NavButton";
+// import NavButton from "../global/NavButton";
 import TooltipComponent from "../global/TooltipComponent";
 import SideBar from "./SideBar";
 import Cookies from "universal-cookie";
@@ -24,8 +24,8 @@ const NavBar: React.FC = () => {
       <SideBar />
       {/*//! NavBar items */}
       <div className="h-full flex justify-center items-center gap-2">
-        {/* Notification */}
-        <TooltipComponent title="Notification">
+        {/*//! Notification */}
+        {/* <TooltipComponent title="Notification">
           <NavButton
             title="Notification"
             dotColor="rgb(254, 201, 15)"
@@ -36,7 +36,7 @@ const NavBar: React.FC = () => {
             }
             icon={<Bell />}
           />
-        </TooltipComponent>
+        </TooltipComponent> */}
 
         {/* Profile Trigger */}
         <TooltipComponent title="Profile">

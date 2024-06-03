@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
-// import "./style/index.css";
-import "./style/App.css";
+import "./style/index.css";
 
 // ------------- Cookies import --------------
 // import Cookies from "universal-cookie";
@@ -40,7 +39,9 @@ import Posts from "./pages/Posts";
 import KpiTasks from "./pages/KpiTasks";
 import MyTasks from "./pages/MyTasks";
 import Dashboard from "./pages/Dashboard";
-import ThemeSwitcher from "./components/global/ThemeSwitcher";
+// import ThemeSwitcher from "./components/global/ThemeSwitcher";
+import Events from "./pages/Events";
+import LandingPage from "./pages/LandingPage";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -59,10 +60,17 @@ const router = createBrowserRouter([
             <Route index path="tasks" element={<Tasks />} />
             <Route index path="myTasks" element={<MyTasks />} />
             <Route index path="posts" element={<Posts />} />
+            <Route index path="events" element={<Events />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </RootLayout>
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/",
+    element: (
+        <LandingPage />
     ),
   },
   {
@@ -95,7 +103,7 @@ const AppRouter = () => {
 
   return (
     <>
-      <ThemeSwitcher />
+      {/* <ThemeSwitcher /> */}
       <RouterProvider router={router} />
     </>
   );

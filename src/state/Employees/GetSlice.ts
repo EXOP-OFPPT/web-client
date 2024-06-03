@@ -105,7 +105,6 @@ export const getEmployees = (): AppThunk => async dispatch => {
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
             employees.push(doc.data());
-            console.log(doc.data())
         });
         dispatch(actionSuccess(employees));
     } catch (error: any) {

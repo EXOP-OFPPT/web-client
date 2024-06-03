@@ -33,13 +33,16 @@ export function RecentInfo() {
                 }
             });
 
-            const productivity = (
-                (verified * 1.0 +
-                    done * 0.75 +
-                    inProgress * 0.5 +
-                    todo * 0.0) /
-                (tasks.length * 1.0)
-            ) * 100;
+            let productivity = 0;
+            if (tasks.length > 0) {
+                productivity = (
+                    (verified * 1.0 +
+                        done * 0.75 +
+                        inProgress * 0.5 +
+                        todo * 0.0) /
+                    (tasks.length * 1.0)
+                ) * 100;
+            }
 
             return { ...employee, productivity };
         }).sort((a, b) => b.productivity - a.productivity); // Sort employees by productivity

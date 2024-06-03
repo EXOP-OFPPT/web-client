@@ -15,8 +15,6 @@ import Likes from "./Likes";
 const cookies = new Cookies(null, { path: "/" });
 
 
-
-
 type PostCardProps = {
   data: PostType;
 };
@@ -26,6 +24,8 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
   const [isTextShown, setIsTextShown] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(true);
 
+  console.log(data)
+
 
   return (
     <div className="flex flex-col sm:min-w-40 py-2">
@@ -34,7 +34,7 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
         <section className="w-16 flex justify-center">
           <HoverCardProfile user={data.poster}>
             <Avatar className="w-11 h-11 my-2 flex items-center justify-center cursor-pointer">
-              <AvatarImage loading="lazy" src={data.poster?.avatar} className="object-cover" />
+              <AvatarImage loading="lazy" src={data.poster?.avatar.photoURL} className="object-cover" />
               <AvatarFallback className="text-base">
                 {data.poster?.firstName?.charAt(0).toUpperCase()}
                 {data.poster?.lastName?.charAt(0).toUpperCase()}

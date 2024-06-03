@@ -6,7 +6,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { BookCheckIcon, CircleUserRound, ImagePlusIcon, LineChart, ListTodoIcon, PanelLeftOpen } from "lucide-react";
+import { BookCheckIcon, CalendarClockIcon, CircleUserRound, ImagePlusIcon, LineChart, ListTodoIcon, PanelLeftOpen } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import EXOP from "../../../public/EXOP-Make-crop.png";
 import React from "react";
@@ -43,6 +43,10 @@ const SideBar: React.FC = () => {
         {
           path: "posts",
           icon: <ImagePlusIcon className="scale-75" />,
+        },
+        {
+          path: "events",
+          icon: <CalendarClockIcon className="scale-75" />,
         },
       ],
     },
@@ -86,7 +90,7 @@ const SideBar: React.FC = () => {
                       to={`${link.path}`}
                       // className="flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg"
                       style={({ isActive }) => ({
-                        color: isActive && pickedTheme!=="zinc-theme" ? "white" : "",
+                        color: isActive && pickedTheme !== "zinc-theme" ? "white" : "",
                       })}
                       className={({ isActive }) =>
                         isActive ? activeLink : normalLink

@@ -31,15 +31,22 @@ export function mapTasksToChartData(tasks: any[]) {
     Dec: { month: 'Dec', todo: 0, inprogress: 0, done: 0, verified: 0 },
   };
 
-  // Then in your loop:
+  const currentYear = new Date().getFullYear();
+
   for (let task of tasks) {
-    const month = new Date(task.updatedAt).toLocaleString('en-US', { month: 'short' }).charAt(0).toUpperCase() + new Date(task.updatedAt).toLocaleString('en-US', { month: 'short' }).slice(1);
+    const taskDate = new Date(task.updatedAt);
+    const taskYear = taskDate.getFullYear();
+
+    if (taskYear !== currentYear) {
+      continue;
+    }
+
+    const month = taskDate.toLocaleString('en-US', { month: 'short' }).charAt(0).toUpperCase() + taskDate.toLocaleString('en-US', { month: 'short' }).slice(1);
     const statusKey = task.status;
 
     if (chartData[month] && isStatusKey(statusKey)) {
       chartData[month][statusKey as 'todo' | 'inprogress' | 'done' | 'verified']++;
 
-      // If the task is verified, also increment the 'done' count
       if (statusKey === 'verified') {
         chartData[month]['done']++;
       }
