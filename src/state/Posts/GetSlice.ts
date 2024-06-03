@@ -17,12 +17,17 @@ type Attachment = {
     url: string;
 };
 
+type Avatar = {
+    photoURL: string;
+    photoName: string;
+}
+
 export type User = {
     firstName: string;
     lastName: string;
     role: string;
     phone: string;
-    avatar: string;
+    avatar: Avatar;
     email: string;
 };
 
