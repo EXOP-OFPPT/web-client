@@ -1,7 +1,7 @@
 'use client';
 
 import BarChartComponent from '@/components/Charts/BarChartComponent';
-import { CalendarDateRangePicker } from '@/components/Charts/CalendarDateRangePicker';
+// import { CalendarDateRangePicker } from '@/components/Charts/CalendarDateRangePicker';
 import PieChartComponent from '@/components/Charts/PieChartComponent';
 import RadarChartKpiComponent from '@/components/Charts/RadarChartKpiComponent';
 import RadarChartTaskComponent from '@/components/Charts/RadarChartTaskComponent';
@@ -19,11 +19,12 @@ import {
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getEvents } from '@/state/Events/GetSlice';
 import { getKpis } from '@/state/Kpis/GetSlice';
 import { AppDispatch, RootState } from '@/state/store';
 import { getTasks } from '@/state/Tasks/GetSlice';
 import { Loader2Icon } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies(null, { path: "/" });
@@ -38,14 +39,17 @@ export default function Dashboard() {
   const tasks = useSelector((state: RootState) => state.getTasks.tasks)
   const kpisLoading = (useSelector((state: RootState) => state.getKpis.loading))
   const kpis = (useSelector((state: RootState) => state.getKpis.kpis))
+  const eventsLoading = (useSelector((state: RootState) => state.getEvents.loading))
   const { theme } = React.useContext(ThemeProviderContext);
   const [stateTheme, setStateTheme] = React.useState<"dark" | "light">("light");
+  const [showEmployeesContributions, setShowEmployeesContributions] = useState(false);
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     const getData = async () => {
       await dispatch(getTasks())
       await dispatch(getKpis())
+      await dispatch(getEvents())
     }
     getData()
   }, [])
@@ -61,7 +65,7 @@ export default function Dashboard() {
     setStateTheme(currentTheme)
   }, [theme])
 
-  if (employeesLoading || tasksLoading || kpisLoading) {
+  if (employeesLoading || tasksLoading || kpisLoading || eventsLoading) {
     return (
       <div className='h-screen w-full flex justify-center items-center'>
         <Loader2Icon className="h-10 w-10 mt-10 text-primary animate-spin" />
@@ -75,10 +79,10 @@ export default function Dashboard() {
             <h2 className="text-3xl font-bold tracking-tight">
               Hi, Welcome back 👋
             </h2>
-            <div className="hidden items-center space-x-2 md:flex">
+            {/* <div className="hidden items-center space-x-2 md:flex">
               <CalendarDateRangePicker />
               <Button>Download</Button>
-            </div>
+            </div> */}
           </div>
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
@@ -97,7 +101,15 @@ export default function Dashboard() {
                     <CardTitle>Tasks Timeline</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    <BarChartComponent />
+                    {
+                      (tasks.length === 0) ?
+                        <div className="flex justify-center items-center h-40">
+                          <p className="text-gray-500">No tasks to display for this current year</p>
+                        </div>
+                        :
+                        <BarChartComponent />
+                    }
+                    {/* <BarChartComponent /> */}
                   </CardContent>
                 </Card>
                 <Card className="col-span-1 md:col-span-1 lg:col-span-1">
@@ -105,7 +117,15 @@ export default function Dashboard() {
                     <CardTitle>Radar Kpi Chart</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
-                    <RadarChartKpiComponent kpis={kpis} theme={stateTheme} />
+                    {
+                      (kpis.length === 0) ?
+                        <div className="flex justify-center items-center h-40">
+                          <p className="text-gray-500">No kpis to display</p>
+                        </div>
+                        :
+                        <RadarChartKpiComponent kpis={kpis} theme={stateTheme} />
+                    }
+                    {/* <RadarChartKpiComponent kpis={kpis} theme={stateTheme} /> */}
                   </CardContent>
                 </Card>
                 <Card className="col-span-1 md:col-span-1 lg:col-span-1">
@@ -121,7 +141,15 @@ export default function Dashboard() {
                     <CardTitle>PieChart</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2 h-auto flex flex-1 justify-center items-center">
-                    <PieChartComponent />
+                    {
+                      (kpis.length === 0) ?
+                        <div className="flex justify-center items-center h-40">
+                          <p className="text-gray-500">No kpis to display</p>
+                        </div>
+                        :
+                        <PieChartComponent />
+                    }
+                    {/* <PieChartComponent /> */}
                   </CardContent>
                 </Card>
                 <Card className="col-span-1 md:col-span-1 lg:col-span-1">
@@ -142,11 +170,17 @@ export default function Dashboard() {
                       <CardDescription>
                         The Statistiques of employees
                       </CardDescription>
+                      <Button onClick={() => setShowEmployeesContributions(!showEmployeesContributions)}>
+                        {showEmployeesContributions ? 'Hide Employees Contributions' : 'Show Employees Contributions'}
+                      </Button>
                     </CardHeader>
-                    <CardContent>
-                      <EmployeesContributions employees={employees} theme={stateTheme} />
-                    </CardContent>
-                  </Card>}
+                    {showEmployeesContributions && (
+                      <CardContent>
+                        <EmployeesContributions employees={employees} theme={stateTheme} />
+                      </CardContent>
+                    )}
+                  </Card>
+                }
               </div>
             </TabsContent>
           </Tabs>
