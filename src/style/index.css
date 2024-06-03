@@ -57,3 +57,21 @@
       @apply bg-background text-foreground;
     }
   }
+
+
+  .MuiChartsLegend-series text tspan {
+    fill: gray !important;
+  }
+  
+  .heatmap-chart .apexcharts-heatmap-rect {
+    stroke: #000 !important;
+  }
+  
+  .apexcharts-yaxis text {
+    transform: translateX(-10px);
+    /* transform: rotate(45deg); */
+  }
+  
+  /* .apexcharts-heatmap-rect {
+    stroke-width: 0 !important;
+  } */
