@@ -92,7 +92,7 @@ const Actions: React.FC<DetailsProps> = () => {
                     </div>
                     <Button onClick={() => updatePassword()} className="mt-4">Update Password</Button>
                     <AlertDialog>
-                        <AlertDialogTrigger className="bg-orange-400 h-70 w-70 mt-10">
+                        <AlertDialogTrigger className="h-70 w-70 mt-10">
                             <Badge variant={"destructive"} className="px-10 py-4 rounded-md">Delete Account</Badge>
                         </AlertDialogTrigger>
                         <AlertDialogContent className="bor4der-2 bord5er-red-500">

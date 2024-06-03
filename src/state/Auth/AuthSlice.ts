@@ -91,7 +91,6 @@ export default Auth.reducer;
 //! Async action creator
 // export const observeAuthState = (): AppThunk => dispatch => {
 //   onAuthStateChanged(auth, user => {
-//     console.log("User: ", user)
 //     if (user) {
 //       dispatch(actionSuccess(user.providerData[0]));
 //     } else {
@@ -138,10 +137,7 @@ const deleteFile = (fileName: string): AppThunk =>
     // Create a reference to the file to delete
     const desertRef = ref(storage, `Avatars/${fileName}`);
     deleteObject(desertRef).then(() => {
-      console.log("File deleted successfully");
-    }).catch((error: any) => {
-      console.log({ code: error.code, message: error.message });
-    });
+    })
   };
 
 
@@ -195,7 +191,6 @@ export const login = ({ email, password, type }: LoginPayload): AppThunk => asyn
     password = bytes.toString(CryptoJS.enc.Utf8);
   }
   if (store.getState().auth.user) {
-    console.log(email, password)
 
     await signInWithEmailAndPassword(auth, email, password)
       .then(() => {
@@ -211,7 +206,6 @@ export const login = ({ email, password, type }: LoginPayload): AppThunk => asyn
           // Encrypt the password
           const SECRET_KEY = import.meta.env.VITE_SECRET_KEY as string;
           const EHP = CryptoJS.AES.encrypt(password, SECRET_KEY).toString();
-          console.log(EHP)
           // Store the encrypted password in a cookie
           cookies.set('EHP', EHP, { path: '/', expires: expiryDate });
           cookies.set('user', JSON.stringify(state.auth.user), { path: '/', expires: expiryDate });
