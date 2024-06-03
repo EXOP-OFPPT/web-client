@@ -6,6 +6,7 @@ import States from "@/components/Profile/States";
 import Charts from "@/components/Profile/Charts";
 import History from "@/components/Profile/History";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Actions from "@/components/Profile/Actions";
 
 const Profile = () => {
   return (
@@ -22,6 +23,7 @@ const Profile = () => {
         </div>
         <History />
         <Charts />
+        <Actions />
       </ScrollArea>
     </>
   );
