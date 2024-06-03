@@ -26,6 +26,11 @@ import deletePostsSlice from "./Posts/DeleteSlice";
 // --------------- Comments Slices ----------------
 import getCommentsSlice from "./Comments/GetSlice";
 import createCommentSlice from "./Comments/CreateSlice";
+// --------------- Events Slices ----------------
+import getEventsSlice from "./Events/GetSlice";
+import createEventSlice from "./Events/CreateSlice";
+import updateEventSlice from "./Events/UpdateSlice";
+import deleteEventSlice from "./Events/DeleteSlice";
 
 export const store = configureStore({
     reducer: {
@@ -54,6 +59,11 @@ export const store = configureStore({
         // ---------------------------------
         getComments: getCommentsSlice,
         createComment: createCommentSlice,
+        // ---------------------------------
+        getEvents: getEventsSlice,
+        createEvent: createEventSlice,
+        updateEvent: updateEventSlice,
+        deleteEvent: deleteEventSlice,
     },
 });
 export type RootState = ReturnType<typeof store.getState>;
