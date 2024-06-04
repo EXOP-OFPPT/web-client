@@ -15,13 +15,13 @@ const Footer = () => {
                     </a>
                     <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 ">
                         <li>
-                            <a href="#" className="hover:underline me-4 md:me-6">Why Exop</a>
+                            <a href="#whyExop" className="hover:underline me-4 md:me-6">Why Exop</a>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline me-4 md:me-6">How it works ?</a>
+                            <a href="#howItWorks" className="hover:underline me-4 md:me-6">How it works ?</a>
                         </li>
                         <li>
-                            <a href="#" className="hover:underline me-4 md:me-6">Features</a>
+                            <a href="#features" className="hover:underline me-4 md:me-6">Features</a>
                         </li>
                     </ul>
                 </div>
