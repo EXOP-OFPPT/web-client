@@ -164,10 +164,14 @@ export default function LandingPage() {
             <div className="bg-white">
                 <Navbar />
                 <HeroScetion />
-                <SectionOne />
-                <SectionTwo />
-                <section className="py-12">
-                    <div className="container mx-auto px-4">
+                <div id='whyExop'>
+                    <SectionOne />
+                </div>
+                <div id='howItWorks'>
+                    <SectionTwo />
+                </div>
+                <section id='features' className="py-12">
+                    <div className="mx-auto px-4">
                         <h2 className="text-3xl font-semibold text-center mb-8">
                             Explore Comprehensive Features
                         </h2>
