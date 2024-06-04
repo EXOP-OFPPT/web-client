@@ -20,9 +20,9 @@ const Navbar = () => {
                     </button>
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12">
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Why Exop</a>
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">How it works ?</a>
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Features</a>
+                    <a href="#whyExop" className="text-sm font-semibold leading-6 text-gray-900">Why Exop</a>
+                    <a href="#howItWorks" className="text-sm font-semibold leading-6 text-gray-900">How it works ?</a>
+                    <a href="#features" className="text-sm font-semibold leading-6 text-gray-900">Features</a>
                 </div>
             </nav>
 
