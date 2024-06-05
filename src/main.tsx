@@ -51,7 +51,6 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <RootLayout>
           <Routes>
-            {/* <Route index path="/" element={<Home />} /> */}
             <Route index path="/" element={<Dashboard />} />
             <Route index path="statistics" element={<Dashboard />} />
             <Route index path="employees" element={<Employees />} />
