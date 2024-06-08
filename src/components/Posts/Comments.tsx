@@ -28,10 +28,8 @@ import { formatDistanceToNow } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { clearMessageAndError, createComment } from "@/state/Comments/CreateSlice";
-import { Toaster } from "../ui/toaster";
 import { useToast } from "../ui/use-toast";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 interface CommentsProps {
@@ -47,7 +45,7 @@ const formSchema = z.object({
 
 
 const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
-    const user = cookies.get("user");
+    const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
     const [comments, setComments] = useState<any[] | []>([])
     const [loading, setLoading] = useState<boolean>(false)
     const message = useSelector((state: RootState) => state.createComment.message);
@@ -123,7 +121,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
             postId: postId,
             docId: crypto.randomUUID(),
             content: values.content,
-            sender: user.email,
+            sender: user?.email,
         }
         dispatch(createComment(data))
         getComments(postId)
@@ -136,7 +134,6 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
 
     return (
         <>
-            <Toaster />
             < Drawer >
                 <DrawerTrigger>
                     <div onClick={() => getComments(postId)} className="flex gap-1 justify-center items-center text-muted-foreground hover:text-blue-400 cursor-pointer">
