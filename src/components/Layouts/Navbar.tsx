@@ -9,12 +9,12 @@ import Notification from "./Notification";
 // import NavButton from "../global/NavButton";
 import TooltipComponent from "../global/TooltipComponent";
 import SideBar from "./SideBar";
-import Cookies from "universal-cookie";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
+
 
 const NavBar: React.FC = () => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const menu = useSelector((state: RootState) => state.navBar.menu);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -49,7 +49,7 @@ const NavBar: React.FC = () => {
             }
           >
             <Avatar className="w-8 h-8 flex items-center justify-center">
-              <AvatarImage loading="lazy" src={user?.photoURL} className="object-cover" />
+              <AvatarImage loading="lazy" src={user?.avatar.photoURL} className="object-cover" />
               <AvatarFallback className="text-xs">
                 {user?.firstName?.charAt(0).toUpperCase()}
                 {user?.lastName?.charAt(0).toUpperCase()}
