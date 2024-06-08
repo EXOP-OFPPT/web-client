@@ -16,7 +16,6 @@ import { CheckCircle2, CircleX, Loader2, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import { clearMessageAndError, deletePost } from "@/state/Posts/DeleteSlice";
 import { Badge } from "../ui/badge";
 
@@ -65,7 +64,6 @@ function Delete({ docId, fileName }: DeleteProps) {
 
   return (
     <>
-      <Toaster />
       <AlertDialog>
         <AlertDialogTrigger>
           <Badge variant="secondary" className="flex justify-center items-center gap-2 text-red-500 p-2 rounded-md">
