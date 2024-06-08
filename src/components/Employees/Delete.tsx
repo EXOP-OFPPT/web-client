@@ -16,7 +16,6 @@ import { CheckCircle2, CircleX, Loader2, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import {
   clearMessageAndError,
   deleteEmployee,
@@ -67,7 +66,6 @@ function Delete({ mode, docId }: DeleteProps) {
 
   return (
     <>
-      <Toaster />
       <AlertDialog>
         {/* <Button
             className="h-8 w-8 hover:text-yellow-500"
