@@ -1,6 +1,6 @@
 "use client";
 import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
+import { Calendar as CalendarIcon, CalendarPlusIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -37,22 +37,19 @@ import {
   Loader2,
   CheckCircle2,
   CircleX,
-  ListPlusIcon,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import React, { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
 import { clearMessageAndError, createEvent } from "@/state/Events/CreateSlice";
 import { Timestamp } from "firebase/firestore";
 import FancyMultipleSelect from "../global/FancyMultiSelect";
 import { EmployeeType } from "@/state/Employees/GetSlice";
-import Cookies from "universal-cookie";
 import { EventType } from "@/state/Events/GetSlice";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const formSchema = z.object({
@@ -73,7 +70,7 @@ const formSchema = z.object({
 
 
 function Create() {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
   const isLoading = useSelector(
     (state: RootState) => state.createEvent.loading
@@ -142,17 +139,16 @@ function Create() {
       startedAt: startedAtTimestamp,
       guests: guests.map(guest => ({ email: guest.email, avatar: guest.avatar?.photoURL || "", firstName: guest.firstName, lastName: guest.lastName }))
     }
-    dispatch(createEvent({ docId, eventData: data, contribute: 'Create Event', email: user.email }))
+    dispatch(createEvent({ docId, eventData: data, contribute: 'Create Event', email: user?.email }))
   };
 
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger asChild>
           <Button>
-            <ListPlusIcon size={20} className="mr-2" />
+            <CalendarPlusIcon size={20} className="mr-2" />
             <span>Add Event</span>
           </Button>
         </DialogTrigger>
