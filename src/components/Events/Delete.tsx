@@ -16,10 +16,8 @@ import { CheckCircle2, CircleX, Loader2, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
-import Cookies from "universal-cookie";
 import { clearMessageAndError, deleteEvent } from "@/state/Events/DeleteSlice";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 interface DeleteProps {
   mode: "ghost" | "outline";
@@ -27,7 +25,7 @@ interface DeleteProps {
 }
 
 function Delete({ mode, docId }: DeleteProps) {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const isLoading = useSelector(
     (state: RootState) => state.deleteEvent.loading
   );
@@ -62,12 +60,11 @@ function Delete({ mode, docId }: DeleteProps) {
   }, [message, error]);
 
   const deleteAction = (docId: string) => {
-    dispatch(deleteEvent({ docId, contribute: "Delete Event", email: user.email }));
+    dispatch(deleteEvent({ docId, contribute: "Delete Event", email: user?.email }));
   };
 
   return (
     <>
-      <Toaster />
       <AlertDialog>
         {/* <Button
             className="h-8 w-8 hover:text-yellow-500"
