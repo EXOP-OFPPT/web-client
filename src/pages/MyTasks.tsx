@@ -1,19 +1,17 @@
 import DisplayTasksTable from "@/components/Tasks/Table";
 
 import { Card } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearMessageAndError, getEmployeeTasks } from "@/state/Tasks/GetSlice";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const MyTasks: React.FC = () => {
-    const user = cookies.get("user");
+    const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
     const isloading = useSelector((state: RootState) => state.getTasks.loading);
     const message = useSelector((state: RootState) => state.getTasks.message);
     const error = useSelector((state: RootState) => state.getTasks.error);
@@ -21,7 +19,7 @@ const MyTasks: React.FC = () => {
     const { toast } = useToast();
 
     useEffect(() => {
-        dispatch(getEmployeeTasks(user.email));
+        dispatch(getEmployeeTasks(user?.email));
     }, [dispatch]);
 
     useEffect(() => {
@@ -48,7 +46,6 @@ const MyTasks: React.FC = () => {
 
     return (
         <>
-            <Toaster />
             <div className="h-[calc(100vh-4rem)] flex flex-col gap-2 items-center py-5">
                 {/* Header */}
                 <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">
