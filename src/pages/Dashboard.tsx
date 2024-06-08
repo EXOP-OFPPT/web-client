@@ -19,6 +19,8 @@ import {
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { UserInterface } from '@/state/Auth/AuthSlice';
+import { getEmployees } from '@/state/Employees/GetSlice';
 import { getEvents } from '@/state/Events/GetSlice';
 import { getKpis } from '@/state/Kpis/GetSlice';
 import { AppDispatch, RootState } from '@/state/store';
@@ -26,13 +28,11 @@ import { getTasks } from '@/state/Tasks/GetSlice';
 import { Loader2Icon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Cookies from 'universal-cookie';
-const cookies = new Cookies(null, { path: "/" });
 
 type Theme = "dark" | "light" | "system"
 
 export default function Dashboard() {
-  const user = cookies.get("user")
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const employeesLoading = useSelector((state: RootState) => state.getEmployees.loading)
   const employees = useSelector((state: RootState) => state.getEmployees.employees)
   const tasksLoading = useSelector((state: RootState) => state.getTasks.loading)
@@ -47,6 +47,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const getData = async () => {
+      await dispatch(getEmployees())
       await dispatch(getTasks())
       await dispatch(getKpis())
       await dispatch(getEvents())
