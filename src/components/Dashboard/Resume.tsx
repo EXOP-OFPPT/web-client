@@ -46,7 +46,6 @@ export function Resume() {
     }, [])
 
 
-
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <ResumeCard
@@ -87,8 +86,7 @@ export function Resume() {
             />
             <ResumeCard
                 title="Last Meeting"
-                contentTitle={events[0]?.startedAt?.toString().split('T')[0]}
-                // contentTitle={new Date(events[0].startedAt.toString()).toLocaleDateString()}
+                contentTitle={events[1]?.startedAt?.toString().split('T')[0]}
                 contentDescription={contentDescription}
                 icon={
                     <svg
@@ -108,8 +106,7 @@ export function Resume() {
             />
             <ResumeCard
                 title="Next Meeting"
-                contentTitle={events[1]?.startedAt?.toString().split('T')[0]}
-                // contentTitle={new Date(events[1].startedAt.toString()).toLocaleDateString()}
+                contentTitle={events[0]?.startedAt?.toString().split('T')[0]}
                 contentDescription={contentDescription}
                 icon={
                     <svg
