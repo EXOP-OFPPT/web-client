@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from '../store';
 import { collection, DocumentData, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
+import { format } from "date-fns";
 
 
 // Interface for error
@@ -110,8 +111,8 @@ export const getEvents = (): AppThunk => async dispatch => {
             const data = doc.data();
             events.push({
                 ...data,
-                createdAt: data.createdAt.toDate().toISOString(),
-                startedAt: data.startedAt.toDate().toISOString(),
+                createdAt: format(data.createdAt.toDate(), 'yyyy-MM-dd'),
+                startedAt: format(data.startedAt.toDate(), 'yyyy-MM-dd'),
             });
         });
         dispatch(actionSuccess(events));
