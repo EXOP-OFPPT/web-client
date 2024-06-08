@@ -4,10 +4,9 @@ import { ChevronsUpDown } from "lucide-react";
 import { EmployeeType } from "@/state/Employees/GetSlice";
 import Delete from "./Delete";
 import Update from "./Update";
-import Cookies from "universal-cookie";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-const cookie = new Cookies(null, { path: "/" });
-
+import { store } from "@/state/store";
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 export const columns: ColumnDef<EmployeeType>[] = [
 
@@ -122,7 +121,8 @@ export const columns: ColumnDef<EmployeeType>[] = [
     accessorKey: "action",
     header: "Action",
     cell: ({ row }) => {
-      if (cookie.get("user").role == "admin") {
+      const user = store.getState().auth.user as UserInterface;
+      if (user.role == "admin") {
         return (
           <div className="flex justify-center items-center gap-2">
             <Update mode="outline" info={row.original} />
