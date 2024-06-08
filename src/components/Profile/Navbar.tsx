@@ -3,14 +3,16 @@ import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
 import { ModeToggle } from "../global/mode-toggle";
-const cookies = new Cookies(null, { path: "/" });
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
+import { UserInterface } from "@/state/Auth/AuthSlice";
+
 
 type NavBarProps = {};
 
 const Navbar: React.FC<NavBarProps> = () => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const navigate = useNavigate();
 
   return (
@@ -25,7 +27,7 @@ const Navbar: React.FC<NavBarProps> = () => {
           <h6>Dashboard</h6>
         </Badge>
         <h3 className="text-4xl font-bold text-primary">
-          {user.firstName} {user.lastName}
+          {user?.firstName} {user?.lastName}
         </h3>
       </div>
       <section className="relative right-30 bottom-10 z-50">
