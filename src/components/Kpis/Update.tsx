@@ -36,13 +36,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import {
   clearMessageAndError,
   updateKpi
 } from "@/state/Kpis/UpdateSlice";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const formSchema = z.object({
@@ -76,7 +74,7 @@ type UpdateProps = {
 };
 
 const Update = ({ mode, info }: UpdateProps) => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const isLoading = useSelector(
     (state: RootState) => state.updateKpi.loading
   );
@@ -136,7 +134,6 @@ const Update = ({ mode, info }: UpdateProps) => {
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger className="w-full cursor-pointer" asChild>
           <Button
