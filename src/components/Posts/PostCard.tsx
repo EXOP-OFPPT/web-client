@@ -1,6 +1,5 @@
 // import Update from "./Update";
 import Delete from "./Delete";
-import Cookies from "universal-cookie";
 import { useState } from "react";
 import { PostType } from "@/state/Posts/GetSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -12,7 +11,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import HoverCardProfile from "./HoverCardProfile";
 import Comments from "./Comments";
 import Likes from "./Likes";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
 
 
 type PostCardProps = {
@@ -20,11 +21,9 @@ type PostCardProps = {
 };
 
 const PostCard: React.FC<PostCardProps> = ({ data }) => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const [isTextShown, setIsTextShown] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(true);
-
-  console.log(data)
 
 
   return (
@@ -55,7 +54,7 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
               </div>
               <span className="mx-4">
                 {
-                  user.role === "admin" &&
+                  user?.role === "admin" &&
                   <>
                     <Popover>
                       <PopoverTrigger>
