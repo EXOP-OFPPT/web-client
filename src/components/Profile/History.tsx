@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Card } from "../ui/card";
-import Cookies from "universal-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { getEmployeeTasks } from "@/state/Tasks/GetSlice";
@@ -13,17 +12,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 type HistoryProps = {};
 
 const History: React.FC<HistoryProps> = () => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const userTasks = useSelector((state: RootState) => state.getTasks.tasks);
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
-    dispatch(getEmployeeTasks(user.email));
+    dispatch(getEmployeeTasks(user?.email));
   }, [dispatch]);
 
   return (
