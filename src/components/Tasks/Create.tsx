@@ -52,15 +52,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import { createTask, clearMessageAndError } from "@/state/Tasks/CreateSlice";
 import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { db } from "@/firebase/firebase";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 
@@ -96,7 +94,7 @@ type CreateProps = {
 };
 
 function AddTask({ from, mode, kpiCode }: CreateProps) {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
   const isLoading = useSelector(
     (state: RootState) => state.createTask.loading
@@ -193,12 +191,11 @@ function AddTask({ from, mode, kpiCode }: CreateProps) {
     // Get current Component url
     const url = window.location.pathname;
     const from = url.substring(url.lastIndexOf('/') + 1);
-    dispatch(createTask({ docId: docId, contribute: "Create Task", taskData: data, from: from, email: user.email }));
+    dispatch(createTask({ docId: docId, contribute: "Create Task", taskData: data, from: from, email: user?.email }));
   }
   if (kpiData)
     return (
       <div className={kpiData.availableBonus == 0 || kpiData.currentTaux == 100 ? "bg-secondary pointer-events-none opacity-50" : ""}>
-        <Toaster />
         <Dialog>
           <DialogTrigger asChild>
             {from == "kpi" ?
