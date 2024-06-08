@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 
 // ------------- CSS/UI import --------------
@@ -10,8 +10,8 @@ import "./style/index.css";
 // cookies.set("isLoggedIn", "true", { path: "/" });
 
 // ------------- Redux import --------------
-import { Provider } from "react-redux";
-import { store } from "./state/store";
+import { Provider, useDispatch } from "react-redux";
+import { AppDispatch, store } from "./state/store";
 
 // ------------- Router import --------------
 import {
@@ -42,6 +42,7 @@ import Dashboard from "./pages/Dashboard";
 // import ThemeSwitcher from "./components/global/ThemeSwitcher";
 import Events from "./pages/Events";
 import LandingPage from "./pages/LandingPage";
+import { observeAuthState } from "./state/Auth/AuthSlice";
 
 // ------------- Router --------------
 const router = createBrowserRouter([
@@ -69,7 +70,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-        <LandingPage />
+      <LandingPage />
     ),
   },
   {
@@ -99,6 +100,11 @@ const router = createBrowserRouter([
 // ------------- Router Provider --------------
 const AppRouter = () => {
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(observeAuthState());
+  }, [dispatch]);
 
   return (
     <>
