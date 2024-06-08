@@ -6,19 +6,17 @@ import {
   // Inbox,
   LogOut,
 } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/state/store";
 import { setMenu } from "@/state/NavBar/NavBarSlice";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "@/state/Auth/AuthSlice";
+import { logoutUser, UserInterface } from "@/state/Auth/AuthSlice";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
 
 const UserProfile: React.FC = () => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -64,7 +62,7 @@ const UserProfile: React.FC = () => {
 
 
   return (
-    <Card className="nav-item absolute right-1 top-16 bgg-white darkk:bg-[#42464D] p-8 rounded-lg w-96">
+    <Card onMouseLeave={() => dispatch(setMenu(""))} className="nav-item absolute right-1 top-16 bgg-white darkk:bg-[#42464D] p-8 rounded-lg w-96">
       <div className="flex justify-between items-center">
         <p className="font-semibold text-lg dark:text-gray-200">User Profile</p>
         <CustomButton
@@ -78,7 +76,7 @@ const UserProfile: React.FC = () => {
       </div>
       <div className="flex gap-5 items-center mt-6 border-color border-b-1 pb-6">
         <Avatar className="h-24 w-24 flex items-center justify-center">
-          <AvatarImage loading="lazy" src={user?.photoURL} className="object-cover" />
+          <AvatarImage loading="lazy" src={user?.avatar.photoURL} className="object-cover" />
           <AvatarFallback className="text-4xl">
             {user?.firstName?.charAt(0).toUpperCase()}
             {user?.lastName?.charAt(0).toUpperCase()}
