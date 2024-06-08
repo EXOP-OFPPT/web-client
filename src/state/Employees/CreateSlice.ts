@@ -1,13 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, store } from "../store";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { auth, db } from "@/firebase/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db } from "@/firebase/firebase";
 import { getEmployees } from "./GetSlice";
-import { sendEmail } from "@/lib/SendEmail";
-import { login } from "../Auth/AuthSlice";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+// import { sendEmail } from "@/lib/SendEmail";
 
 // Interface for error
 interface Error {
@@ -28,7 +24,6 @@ export type EmployeeType = {
 // Interface for User action payload
 interface UserPayload {
   email: string;
-  password: string;
   userData: EmployeeType;
 }
 
@@ -113,7 +108,7 @@ export const checkUserExist =
     };
 
 export const createEmployee =
-  ({ email, password, userData }: UserPayload): AppThunk =>
+  ({ email, userData }: UserPayload): AppThunk =>
     async (dispatch) => {
       // Reset message and error
       dispatch(setLoading(true));
@@ -127,25 +122,8 @@ export const createEmployee =
           await setDoc(doc(db, "employees", email), {
             ...userData,
           });
-          //! Create user with email and password
-          createUserWithEmailAndPassword(auth, email, password)
-            .then(async () => {
-              // Send the email
-              await sendEmail({ from: "exop.ofppt@gmail.com", to: email, password, subject: 'Welcome to EXOP App' });
-              dispatch(actionSuccess("Employee created successfully, Email send to user"));
-              const user = cookies.get("user");
-              const EHP = cookies.get("EHP");
-              dispatch(login({ email: user.email, password: EHP, type: 'already' }))
-            })
-            .catch(() => {
-              dispatch(setLoading(false));
-              dispatch(
-                actionSuccess(
-                  "Employee data saved, but the user account already exists"
-                )
-              );
-            });
-          console.log(auth.currentUser)
+          // await sendEmail({ from: "exop.ofppt@gmail.com", to: email, password, subject: 'Welcome to EXOP App' });
+          dispatch(setLoading(false));
           dispatch(getEmployees());
         } catch (error) {
           dispatch(setLoading(false));
