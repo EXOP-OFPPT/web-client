@@ -15,8 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "../ui/badge";
-import Cookies from "universal-cookie";
-const cookie = new Cookies(null, { path: "/" });
+import { store } from "@/state/store";
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 export const columns: ColumnDef<EventType>[] = [
@@ -211,7 +211,8 @@ export const columns: ColumnDef<EventType>[] = [
     accessorKey: "action",
     header: "Action",
     cell: ({ row }) => {
-      if (cookie.get("user").role == "admin") {
+      const user = store.getState().auth.user as UserInterface;
+      if (user?.role == "admin") {
         return (
           <div onClick={(e) => e.stopPropagation()} className="flex justify-center items-center gap-2">
             <Update mode="outline" info={row.original} />
