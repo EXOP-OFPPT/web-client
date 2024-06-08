@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
-import { collection, deleteDoc, doc, getDocs, query, where, writeBatch } from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { getKpis } from "./GetSlice";
 import { updateContribution } from "../Employees/UpdateSlice";
@@ -79,16 +79,8 @@ export const deleteKpi =
       // Reset message and error
       dispatch(setLoading(true));
       dispatch(clearMessageAndError());
+
       try {
-        // Delete tasks with kpiCode == docId
-        const tasksRef = collection(db, "tasks");
-        const q = query(tasksRef, where("kpiCode", "==", docId));
-        const querySnapshot = await getDocs(q);
-        const batch = writeBatch(db);
-        querySnapshot.docs.forEach((doc) => {
-          batch.delete(doc.ref);
-        });
-        await batch.commit();
         // Delete KPI document
         deleteDoc(doc(db, "kpis", docId)).then(() => {
           dispatch(updateContribution({ email, contribute }));
