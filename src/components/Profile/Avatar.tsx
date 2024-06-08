@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Camera, CheckCircle2, CircleX, Loader2, UploadCloud } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "../ui/card";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/state/store";
+import { Camera, Loader2, UploadCloud } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/state/store";
 
 import {
   getDownloadURL,
@@ -11,13 +11,12 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { updatePhotoProfile } from "@/state/Auth/AuthSlice";
+import { updatePhotoProfile, UserInterface } from "@/state/Auth/AuthSlice";
 import { useToast } from "../ui/use-toast";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+import { Toaster } from "../ui/toaster";
 
 const AvatarComponent: React.FC = () => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const [loading, setLoading] = useState<boolean>(false);
   const storage = getStorage();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -29,13 +28,12 @@ const AvatarComponent: React.FC = () => {
     const imageSize = Number((imageUpload.size / (1024 * 1024)).toFixed(2));
     console.log(imageSize);
     if (!imageUpload) return;
-    if (imageSize > 1.1) {
+    if (imageSize > 2) {
       return toast({
-        variant: "default",
+        variant: "destructive",
         title: `Image size is ${imageSize}MB`,
-        description: "Image size must be less than 1.5MB",
+        description: "Image size must be less than 2MB",
         className: "text-error border-2 border-error text-start",
-        icon: <CircleX size={40} className="mr-2" />,
       });
     }
     const photoName = crypto.randomUUID() + imageUpload.name;
@@ -68,11 +66,10 @@ const AvatarComponent: React.FC = () => {
       () => {
         // Error
         toast({
-          variant: "default",
+          variant: "destructive",
           title: "Upload Failed",
           description: "Upload failed! Please try again.",
           className: "text-error border-2 border-error text-start",
-          icon: <CircleX size={40} className="mr-2" />,
         });
       },
       () => {
@@ -85,7 +82,6 @@ const AvatarComponent: React.FC = () => {
             title: "Update Profile",
             description: "Profile updated successfully!",
             className: "text-primary border-2 border-primary text-start",
-            icon: <CheckCircle2 size={40} className="mr-2" />,
           });
           setLoading(false)
         });
@@ -97,12 +93,13 @@ const AvatarComponent: React.FC = () => {
 
   return (
     <Card className="rounded-lg shadow-lg p-10">
+      <Toaster />
       <div className="font-bold pb-7 uppercase">Image de profile</div>
       <div className="flex flex-col items-center px-7  mt-7 mb-8">
         {loading ?
           <Loader2 className="h-40 w-40 text-primary animate-spin" />
           : <Avatar className="w-60 h-60 flex items-center justify-center">
-            <AvatarImage loading="lazy" src={user?.photoURL} className="object-cover" />
+            <AvatarImage loading="lazy" src={user?.avatar.photoURL} className="object-cover" />
             <AvatarFallback className="text-6xl">
               {user?.firstName?.charAt(0).toUpperCase()}
               {user?.lastName?.charAt(0).toUpperCase()}

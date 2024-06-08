@@ -3,24 +3,19 @@ import DisplayEmployeesCards from "@/components/Employees/Display";
 import DisplayEmployeesTable from "@/components/Employees/Table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
+import { UserInterface } from "@/state/Auth/AuthSlice";
 import { clearMessageAndError, getEmployees } from "@/state/Employees/GetSlice";
 import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
 
 type ViewType = "table" | "cards";
 
 const Employees: React.FC = () => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const [view, setView] = useState<ViewType>("table");
-  const employees = useSelector(
-    (state: RootState) => state.getEmployees.employees
-  );
   const isloading = useSelector(
     (state: RootState) => state.getEmployees.loading
   );
@@ -31,9 +26,7 @@ const Employees: React.FC = () => {
 
 
   useEffect(() => {
-    if (employees.length === 0) {
-      dispatch(getEmployees());
-    }
+    dispatch(getEmployees());
   }, [dispatch]);
 
   useEffect(() => {
@@ -60,7 +53,6 @@ const Employees: React.FC = () => {
 
   return (
     <>
-      <Toaster />
       <div className="h-[calc(100vh-4rem)] flex flex-col gap-2 items-center py-5">
         {/* Header */}
         <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">
@@ -93,7 +85,7 @@ const Employees: React.FC = () => {
               </svg>
               View
             </Button>
-            {user.role === "admin" && <AddEmployee />}
+            {user?.role === "admin" && <AddEmployee />}
           </div>
         </Card>
 

@@ -16,7 +16,6 @@ interface DeletePyload {
   fileName: string
 }
 
-
 // Interface for DeleteState
 interface DeleteState {
   loading: boolean;

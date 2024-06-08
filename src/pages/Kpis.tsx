@@ -2,19 +2,17 @@ import DisplayKpisTable from "@/components/Kpis/Table";
 import AddKpi from "@/components/Kpis/Create";
 
 import { Card } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Cookies from "universal-cookie";
 import { clearMessageAndError, getKpis } from "@/state/Kpis/GetSlice";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const Kpis: React.FC = () => {
-    const user = cookies.get("user");
+    const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
     const isloading = useSelector(
         (state: RootState) => state.getKpis.loading
     );
@@ -51,7 +49,6 @@ const Kpis: React.FC = () => {
 
     return (
         <>
-            <Toaster />
             <div className="h-[calc(100vh-4rem)] flex flex-col gap-2 items-center py-5">
                 {/* Header */}
                 <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">
@@ -61,7 +58,7 @@ const Kpis: React.FC = () => {
                     </div>
                     <div className="h-full flex flex-col justify-center gap-2">
                         {/* Add Employee */}
-                        {user.role === "admin" && <AddKpi />}
+                        {user?.role === "admin" && <AddKpi />}
                     </div>
                 </Card>
 

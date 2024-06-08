@@ -1,16 +1,17 @@
 import DisplayTasksTable from "@/components/Tasks/Table";
 
 import { Card } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearMessageAndError, getTasks } from "@/state/Tasks/GetSlice";
+import { Badge } from "@/components/ui/badge";
 
 
 const Tasks: React.FC = () => {
+    const tasks = useSelector((state: RootState) => state.getTasks.tasks);
     const isloading = useSelector((state: RootState) => state.getTasks.loading);
     const message = useSelector((state: RootState) => state.getTasks.message);
     const error = useSelector((state: RootState) => state.getTasks.error);
@@ -45,7 +46,6 @@ const Tasks: React.FC = () => {
 
     return (
         <>
-            <Toaster />
             <div className="h-[calc(100vh-4rem)] flex flex-col gap-2 items-center py-5">
                 {/* Header */}
                 <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">
@@ -54,7 +54,9 @@ const Tasks: React.FC = () => {
                         <h3 className="text-4xl font-bold text-primary">Tasks</h3>
                     </div>
                     <div className="h-full flex flex-col justify-center gap-2">
-                        {/* Add Task */}
+                        <Badge color="primary" className="px-5 py-2 text-sm">
+                            Total tasks: {tasks.length}
+                        </Badge>
                     </div>
                 </Card>
 

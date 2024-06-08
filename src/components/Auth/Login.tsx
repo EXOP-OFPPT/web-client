@@ -1,5 +1,5 @@
 "use client";
-import { clearMessageAndError, login } from "@/state/Auth/AuthSlice";
+import { login } from "@/state/Auth/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { useNavigate } from "react-router-dom";
@@ -18,18 +18,15 @@ import {
 import "@/style/LoginStyle.css"
 import { Input } from "@/components/ui/input";
 import { useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
 import { Card } from "../ui/card";
 import { ModeToggle } from "../global/mode-toggle";
 import { Button } from "../ui/button";
 import EXOP from "../../../public/EXOP-Make-crop.png";
 // import icon from "@/assets/fingerprint.svg";
 import arrow from "@/assets/arrow.svg";
-import Cookies from "universal-cookie";
-import { CircleX, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { auth } from "@/firebase/firebase";
-const cookies = new Cookies(null, { path: "/" });
+import { Toaster } from "../ui/toaster";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -42,14 +39,10 @@ const formSchema = z.object({
 
 function Login() {
   const authUser = auth.currentUser;
-  const error = useSelector((state: RootState) => state.auth.error);
-  const cookieIsLogin = cookies.get("user");
-  const EHP = cookies.get("EHP");
-  const reduxIsLogin = useSelector((state: RootState) => state.auth.isLogin);
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isLoading = useSelector((state: RootState) => state.auth.loading);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { toast } = useToast();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -60,41 +53,16 @@ function Login() {
     },
   });
 
-  useEffect(() => {
-    // if (!reduxIsLogin) {
-    //   toast({
-    //     variant: "default",
-    //     title: "Action dispatched",
-    //     description: "User logged out successfully!",
-    //     style: {
-    //       backgroundColor: "#666",
-    //     },
-    //   });
-    // }
-    if (error) {
-      toast({
-        variant: "default",
-        title: "Connection error",
-        description: error?.message,
-        className: "text-error border-2 border-error text-start",
-        icon: <CircleX size={40} className="mr-2" />,
-      });
-      dispatch(clearMessageAndError());
-    }
-  }, [error, reduxIsLogin]);
 
   useEffect(() => {
-    if ((cookieIsLogin && EHP && authUser) || reduxIsLogin) {
+    if (user && authUser) {
       navigate("/app", { replace: true });
     }
-    else if (cookieIsLogin && EHP && !authUser && !reduxIsLogin) {
-      dispatch(login({ email: cookieIsLogin.email, password: EHP, type: 'already' }))
-    }
-  }, [navigate, authUser, cookieIsLogin, EHP, reduxIsLogin]);
+  }, [navigate, user]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    dispatch(login({ ...values, type: 'first' }));
+    dispatch(login(values));
   }
 
   return (

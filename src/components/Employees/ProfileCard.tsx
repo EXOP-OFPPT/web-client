@@ -6,12 +6,11 @@ import { Separator } from "@/components/ui/separator";
 import Update from "./Update";
 import Delete from "./Delete";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { getTasks } from "@/state/Tasks/GetSlice";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 type ProfileCardProps = {
   data: EmployeeType;
@@ -19,7 +18,7 @@ type ProfileCardProps = {
 
 
 const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const tasks = useSelector((state: RootState) => state.getTasks.tasks);
   const verified = tasks.filter((task) => task.status === "verified" && task.assignedTo === data.email);
   const done = tasks.filter((task) => task.status === "done" && task.assignedTo === data.email);
@@ -47,7 +46,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
   return (
     <Card className="flex flex-col gap-1 justify-between sm:min-w-36 py-2">
       <div className="flex justify-end items-center gap-1 px-3">
-        {user.role === "admin" &&
+        {user?.role === "admin" &&
           <>
             {/*//! I coment the TooltipComponent beacause it due an instead button error */}
             {/* <TooltipComponent title="Edit"> */}

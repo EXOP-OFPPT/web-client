@@ -35,12 +35,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import { useEffect, useState } from "react";
-import { Toaster } from "../ui/toaster";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
-import Cookies from "universal-cookie";
 import { clearMessageAndError, createPost } from "@/state/Posts/CreateSlice";
 import { getPosts } from "@/state/Posts/GetSlice";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const formSchema = z.object({
@@ -54,7 +52,7 @@ const formSchema = z.object({
 
 
 const Create = () => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const [loading, setLoading] = useState(false)
   const message = useSelector(
     (state: RootState) => state.createPost.message
@@ -163,7 +161,7 @@ const Create = () => {
               id: docId,
               title: values.title,
               description: values.description,
-              sender: user.email,
+              sender: user?.email,
               likes: 0,
               attachement: attachement,
             };
@@ -193,7 +191,6 @@ const Create = () => {
 
   return (
     <div className="pointer-events-auto">
-      <Toaster />
       <Dialog>
         <DialogTrigger asChild>
           <Button>

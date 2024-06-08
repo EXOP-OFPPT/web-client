@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Profile/Navbar";
 import AvatarComponent from "@/components/Profile/Avatar";
 import Details from "@/components/Profile/Details";
@@ -11,7 +10,6 @@ import Actions from "@/components/Profile/Actions";
 const Profile = () => {
   return (
     <>
-      <Toaster />
       <ScrollArea className="h-screen w-full rounded-md border p-4 flex">
         <div className="w-full flex flex-col justify-center items-center gap-5 text-center py-5">
           <Navbar />

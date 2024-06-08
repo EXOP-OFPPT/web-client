@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
-import { Toaster } from "../ui/toaster";
 import { useToast } from "../ui/use-toast";
 import { addLike, clearMessageAndError } from "@/state/Posts/UpdateSlice";
 import '@/style/PostStyle.css'
@@ -86,7 +85,6 @@ const Likes: React.FC<LikesProps> = ({ postId }) => {
 
     return (
         <>
-            <Toaster />
             <div onClick={() => handleLike(postId)} className="flex gap-1 justify-center items-center text-muted-foreground hover:text-rose-500 cursor-pointer">
                 {
                     hasLiked ?

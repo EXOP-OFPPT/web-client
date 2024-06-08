@@ -4,19 +4,17 @@ import { Card } from "../ui/card";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { getTasks } from "@/state/Tasks/GetSlice";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 type StatesProps = {};
 
 const States: React.FC<StatesProps> = () => {
-  const user = cookies.get("user");
-
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const tasks = useSelector((state: RootState) => state.getTasks.tasks);
-  const verified = tasks.filter((task) => task.status === "verified" && task.assignedTo === user.email);
-  const done = tasks.filter((task) => task.status === "done" && task.assignedTo === user.email);
-  const inProgress = tasks.filter((task) => task.status === "inprogress" && task.assignedTo === user.email);
-  const todo = tasks.filter((task) => task.status === "todo" && task.assignedTo === user.email);
+  const verified = tasks.filter((task) => task.status === "verified" && task.assignedTo === user?.email);
+  const done = tasks.filter((task) => task.status === "done" && task.assignedTo === user?.email);
+  const inProgress = tasks.filter((task) => task.status === "inprogress" && task.assignedTo === user?.email);
+  const todo = tasks.filter((task) => task.status === "todo" && task.assignedTo === user?.email);
   const [productivity, setProductivity] = useState<number>(0);
   const dispatch = useDispatch<AppDispatch>()
 

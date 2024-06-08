@@ -41,10 +41,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import { createKpi, clearMessageAndError } from "@/state/Kpis/CreateSlice";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const formSchema = z.object({
@@ -65,7 +63,7 @@ const formSchema = z.object({
 
 
 function Create() {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const isLoading = useSelector(
     (state: RootState) => state.createKpi.loading
   );
@@ -125,12 +123,11 @@ function Create() {
       availableBonus: 100 - parseInt(values.currentTaux),
       type: values.type,
     };
-    dispatch(createKpi({ docId: docId, contribute: "Create Kpi", email: user.email, kpiData: data }));
+    dispatch(createKpi({ docId: docId, contribute: "Create Kpi", email: user?.email, kpiData: data }));
   }
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger asChild>
           <Button>

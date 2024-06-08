@@ -12,25 +12,25 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "../ui/input";
-import { Toaster } from "../ui/toaster";
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from "../ui/button";
-import { clearMessageAndError, deleteAccountAndDocument, updateAccountPassword } from "@/state/Auth/AuthSlice";
+import { clearMessageAndError, deleteAccountAndDocument, logout, updateAccountPassword } from "@/state/Auth/AuthSlice";
 import { Badge } from "../ui/badge";
 import { AppDispatch, RootState } from "@/state/store";
 import { useToast } from "../ui/use-toast";
-import { CheckCircle2, CircleX } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { CheckCircle2, CircleX, Loader2Icon } from "lucide-react";
 
 type DetailsProps = {};
 
 const Actions: React.FC<DetailsProps> = () => {
+    const loading = useSelector(
+        (state: RootState) => state.auth.loading
+    );
     const message = useSelector(
         (state: RootState) => state.auth.message
     );
     const error = useSelector((state: RootState) => state.auth.error);
     const [password, setPassword] = useState<string>("")
-    const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>();
     const { toast } = useToast();
 
@@ -70,15 +70,21 @@ const Actions: React.FC<DetailsProps> = () => {
     const deleteAction = () => {
         dispatch(deleteAccountAndDocument())
         setTimeout(() => {
-            navigate("/login");
+            dispatch(logout())
         }, 2000);
     }
 
 
+    if (loading) {
+        return (
+            <div className='h-screen w-full flex justify-center items-center'>
+                <Loader2Icon className="h-20 w-20 mt-10 text-primary animate-spin" />
+            </div>
+        )
+    }
     return (
         <>
             <Card className="rounded-lg shadow-lg py-10 border-error-foreground">
-                <Toaster />
                 <div className="font-bold pb-7 px-7 uppercase text-error-foreground">Danger Zone</div>
 
                 <div className="flex flex-col items-start px-7">

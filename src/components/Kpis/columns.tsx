@@ -3,11 +3,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ChevronsUpDown } from "lucide-react";
 import Delete from "./Delete";
 import Update from "./Update";
-import Cookies from "universal-cookie";
 import { KpiType } from "@/state/Kpis/GetSlice";
 import AddTask from "../Tasks/Create";
 import { Card } from "../ui/card";
-const cookie = new Cookies(null, { path: "/" });
+import { store } from "@/state/store";
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 export const columns: ColumnDef<KpiType>[] = [
@@ -199,7 +199,8 @@ export const columns: ColumnDef<KpiType>[] = [
     accessorKey: "action",
     header: "Action",
     cell: ({ row }) => {
-      if (cookie.get("user").role == "admin") {
+      const user = store.getState().auth.user as UserInterface;
+      if (user.role == "admin") {
         return (
           <div onClick={(e) => e.stopPropagation()} className="flex justify-center items-center gap-2">
             <AddTask from="global" mode="outline" kpiCode={row.original.code} />

@@ -4,10 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { AppDispatch, RootState } from "@/state/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { CheckCircle2 } from "lucide-react";
-import { clearMessageAndError } from "@/state/Auth/AuthSlice";
 import { getEmployees } from "@/state/Employees/GetSlice";
 
 interface RootLayoutProps {
@@ -16,29 +13,13 @@ interface RootLayoutProps {
 
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
-  const isLogin = useSelector((state: RootState) => state.auth.isLogin);
-  const message = useSelector((state: RootState) => state.auth.message);
   const dispatch = useDispatch<AppDispatch>();
-  const { toast } = useToast();
 
   useEffect(() => {
     if (employees.length === 0) {
       dispatch(getEmployees());
     }
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isLogin && message) {
-      toast({
-        variant: "default",
-        title: "Action dispatched",
-        description: message,
-        className: "text-primary border-2 border-primary text-start",
-        icon: <CheckCircle2 size={40} className="mr-2" />,
-      });
-      dispatch(clearMessageAndError());
-    }
-  }, [isLogin, message]);
 
   return (
     <>

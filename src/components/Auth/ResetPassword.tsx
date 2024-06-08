@@ -14,12 +14,10 @@ import {
 } from "@/components/ui/form";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
-import { useToast } from "../ui/use-toast";
-import { clearMessageAndError, resetPassword } from "@/state/Auth/AuthSlice";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { resetPassword } from "@/state/Auth/AuthSlice";
+import { Loader2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Toaster } from "../ui/toaster";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { ModeToggle } from "../global/mode-toggle";
@@ -32,12 +30,10 @@ const formSchema = z.object({
 });
 
 const ResetPassword: React.FC = () => {
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
-  const message = useSelector((state: RootState) => state.auth.message);
+  const loading = useSelector((state: RootState) => state.auth.loading);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { toast } = useToast();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,18 +50,6 @@ const ResetPassword: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (message) {
-      toast({
-        variant: "default",
-        title: "Plesae check your email!",
-        description: message,
-        className: "text-primary border-2 border-primary text-start",
-        icon: <CheckCircle2 size={40} className="mr-2" />,
-      });
-      dispatch(clearMessageAndError());
-    }
-  }, [message]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -76,7 +60,6 @@ const ResetPassword: React.FC = () => {
   return (
     <>
       <div style={{ position: "relative", zIndex: 9999 }}>
-        <Toaster />
       </div>
       <div className="h-[100vh] flex flex-col items-center justify-center">
         <section className="absolute right-8 top-4">
@@ -114,7 +97,7 @@ const ResetPassword: React.FC = () => {
                   </FormItem>
                 )}
               />
-              {isLoading ? (
+              {loading ? (
                 <Button className="w-full" disabled>
                   <Loader2 className="mr-2 h-6 w- animate-spin" />
                   Please wait

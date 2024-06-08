@@ -36,7 +36,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import {
   clearMessageAndError,
   updateEmployee,
@@ -143,7 +142,6 @@ const Update = ({ mode, info }: UpdateProps) => {
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger className="w-full cursor-pointer" asChild>
           <Button

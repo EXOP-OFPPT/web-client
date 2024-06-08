@@ -1,6 +1,5 @@
 import DisplayTasksTable from "@/components/Tasks/Table";
 import { Card } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, Loader2 } from "lucide-react";
@@ -49,7 +48,6 @@ const KpiTasks: React.FC = () => {
 
     return (
         <>
-            <Toaster />
             <div className="h-[calc(100vh-4rem)] flex flex-col gap-2 items-center py-5">
                 {/* Header */}
                 <Card className="w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5 bg-transparent">

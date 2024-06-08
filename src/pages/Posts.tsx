@@ -1,20 +1,17 @@
 import DisplayPostsCards from "@/components/Posts/Display";
 import AddPost from "@/components/Posts/Create";
 import { Card } from "@/components/ui/card";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { AppDispatch, RootState } from "@/state/store";
 import { CheckCircle2, CircleX, ImageOffIcon, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Cookies from "universal-cookie";
 import { clearMessageAndError, getPosts } from "@/state/Posts/GetSlice";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-const cookies = new Cookies(null, { path: "/" });
 
 
 const Posts: React.FC = () => {
-    const user = cookies.get("user");
+    const user = useSelector((state: RootState) => state.auth.user);
     const posts = useSelector((state: RootState) => state.getPosts.posts);
     const isloading = useSelector((state: RootState) => state.getPosts.loading);
     const message = useSelector((state: RootState) => state.getPosts.message);
@@ -52,7 +49,6 @@ const Posts: React.FC = () => {
 
     return (
         <>
-            <Toaster />
             <div className="h-[calc(100vh-4rem)] flex flex-col items-center">
                 {/* Header */}
                 <Card className="pointer-events-none fixed bg-transparent shadow-none border-none z-10 w-full xlg:w-4/5 md:w-11/12 flex justify-between items-end px-4 py-5">
@@ -61,7 +57,7 @@ const Posts: React.FC = () => {
                         <h3 className="text-4xl font-bold text-primary">Posts</h3>
                     </div>
                     <div className="h-full flex flex-col justify-center gap-2">
-                        {user.role === "admin" && <AddPost />}
+                        {user?.role === "admin" && <AddPost />}
                     </div>
                 </Card>
 

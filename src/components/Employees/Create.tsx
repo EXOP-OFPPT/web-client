@@ -45,7 +45,6 @@ import {
 } from "@/state/Employees/CreateSlice";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 
 const formSchema = z.object({
   matricule: z.string().min(2, {
@@ -53,9 +52,6 @@ const formSchema = z.object({
   }),
   email: z.string().email({
     message: "Invalid email address.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
   }),
   role: z.string().min(2, {
     message: "Role must be at least 2 characters.",
@@ -111,7 +107,6 @@ function Create() {
     defaultValues: {
       matricule: "1542",
       email: "abdonsila222@gmail.com",
-      password: "123456",
       role: "admin",
       phone: "0606443022",
       firstName: "Abdellah",
@@ -123,14 +118,13 @@ function Create() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     console.log(values);
-    const { email, password, matricule, ...rest } = values;
+    const { email, matricule, ...rest } = values;
     const userData = { email, matricule: Number(matricule), ...rest };
-    dispatch(createEmployee({ email, password, userData }));
+    dispatch(createEmployee({ email, userData }));
   }
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger asChild>
           <Button>
@@ -176,23 +170,6 @@ function Create() {
                       <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input placeholder="Email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Password"
-                          type="password"
-                          {...field}
-                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

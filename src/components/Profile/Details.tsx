@@ -3,14 +3,15 @@ import { Card } from "../ui/card";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import { Input } from "../ui/input";
 import { useToast } from "../ui/use-toast";
-import { Toaster } from "../ui/toaster";
-import Cookies from "universal-cookie";
-const cookies = new Cookies(null, { path: "/" });
+import { useSelector } from "react-redux";
+import { RootState } from "@/state/store";
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 type DetailsProps = {};
 
 const Details: React.FC<DetailsProps> = () => {
-  const { firstName, lastName, email, phone, role } = cookies.get("user");
+  const { firstName, lastName, email, phone, role } = useSelector((state: RootState) => state.auth.user) as UserInterface;
+  ;
   const fields = [
     { value: firstName, editable: true },
     { value: lastName, editable: true },
@@ -41,7 +42,6 @@ const Details: React.FC<DetailsProps> = () => {
   return (
     <>
       <Card className="rounded-lg shadow-lg py-10">
-        <Toaster />
         <div className="font-bold pb-7 px-7 uppercase">Detail de Profil</div>
 
         <div className="flex flex-col items-start px-7">

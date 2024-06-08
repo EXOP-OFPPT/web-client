@@ -46,12 +46,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
 import { clearMessageAndError, updateTask } from "@/state/Tasks/UpdateSlice";
 import { Timestamp } from "firebase/firestore";
-import Cookies from "universal-cookie";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-const cookie = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const formSchema = z.object({
@@ -92,7 +90,7 @@ type UpdateProps = {
 };
 
 const Update = ({ mode, info }: UpdateProps) => {
-  const user = cookie.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const isLoading = useSelector((state: RootState) => state.updateTask.loading);
   const message = useSelector((state: RootState) => state.updateTask.message);
   const error = useSelector((state: RootState) => state.updateTask.error);
@@ -176,14 +174,13 @@ const Update = ({ mode, info }: UpdateProps) => {
       contribute: "Task update",
       updatedData: data,
       from: from,
-      email: user.email,
+      email: user?.email,
       kpiCode: info.kpiCode,
     }));
   }
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger className="w-full cursor-pointer" asChild>
           <Button
