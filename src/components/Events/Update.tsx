@@ -38,8 +38,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollArea } from "../ui/scroll-area";
 import { useToast } from "../ui/use-toast";
 import React, { useEffect } from "react";
-import { Toaster } from "../ui/toaster";
-import Cookies from "universal-cookie";
 import { GuestType, LocationType } from "@/state/Events/GetSlice";
 import { clearMessageAndError, updateEvent } from "@/state/Events/UpdateSlice";
 import FancyMultipleSelect from "../global/FancyMultiSelect";
@@ -48,7 +46,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { Timestamp } from "firebase/firestore";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
 
 
 const formSchema = z.object({
@@ -83,7 +81,7 @@ type UpdateProps = {
 };
 
 const Update = ({ mode, info }: UpdateProps) => {
-  const user = cookies.get("user");
+  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const employees = useSelector((state: RootState) => state.getEmployees.employees);
   const isLoading = useSelector(
     (state: RootState) => state.updateEvent.loading
@@ -164,12 +162,11 @@ const Update = ({ mode, info }: UpdateProps) => {
       startedAt: startedAtTimestamp,
       guests: guests.map(guest => ({ email: guest.email, avatar: guest.avatar?.photoURL || "", firstName: guest.firstName, lastName: guest.lastName }))
     };
-    dispatch(updateEvent({ id: info.id, contribute: "Update Event", email: user.email, updatedData: data }));
+    dispatch(updateEvent({ id: info.id, contribute: "Update Event", email: user?.email, updatedData: data }));
   }
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger className="w-full cursor-pointer" asChild>
           <Button
