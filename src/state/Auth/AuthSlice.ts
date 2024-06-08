@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, store } from '../store';
 import { auth, db } from '@/firebase/firebase';
-import { sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updatePassword, updateProfile } from "firebase/auth";
+import { onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updatePassword, updateProfile } from "firebase/auth";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 import { toast } from "@/components/ui/use-toast";
@@ -92,64 +92,28 @@ export const { actionSuccess, actionFailed, setUser, setLoading, setMessage, cle
 
 export default Auth.reducer;
 
-//! Async action creator
-// export const observeAuthState = (): AppThunk => dispatch => {
-//   onAuthStateChanged(auth, user => {
-//     if (user) {
-//       dispatch(actionSuccess(user.providerData[0]));
-//     } else {
-//       dispatch(logout());
-//     }
-//   });
-// };
 
 
-
-
-const deleteFile = (fileName: string): AppThunk =>
-  async () => {
-    const storage = getStorage();
-    // Create a reference to the file to delete
-    const desertRef = ref(storage, `Avatars/${fileName}`);
-    deleteObject(desertRef).then(() => {
-    })
-  };
-
-
-export const updatePhotoProfile = (photoURL: string, photoName: string, currentEmail: string): AppThunk => async dispatch => {
-  try {
-    const user = auth.currentUser;
-    if (user !== null) {
-      await updateProfile(user, {
-        photoURL
-      }).then(async () => {
-        const ref = doc(db, "employees", currentEmail);
-        await getDoc(ref).then(async (docSnapshot) => {
-          if (docSnapshot.exists()) {
-            const data = docSnapshot.data();
-            if (data && data.avatar) {
-              // Delete the existing image
-              dispatch(deleteFile(data.avatar.photoName))
-            }
-          }
-        });
-        await updateDoc(ref, { avatar: { photoURL, photoName }, }).then(async () => {
-          // get the updated user profile
-          GetUserAccountInfo().then((user: UserInterface | undefined) => {
-            dispatch(setUser(user as UserInterface));
-            dispatch(actionSuccess("Profile Photo updated successfully!"));
-          });
-        })
-      }).catch((error) => {
+// Async action creator
+export const observeAuthState = (): AppThunk => dispatch => {
+  onAuthStateChanged(auth, user => {
+    console.log("User: ", user)
+    dispatch(setLoading(true));
+    if (user) {
+      GetUserAccountInfo().then((user: UserInterface | undefined) => {
+        dispatch(setLoading(false));
+        dispatch(setUser(user as UserInterface));
+        dispatch(actionSuccess("User logged in successfully!"));
+      }).catch((error: any) => {
+        dispatch(setLoading(false));
         dispatch(actionFailed(error.message));
       });
+    } else {
+      dispatch(setLoading(false));
+      dispatch(logout());
     }
-  } catch (error: any) {
-    dispatch(actionFailed(error.message));
-  }
+  });
 };
-
-
 
 const GetUserAccountInfo = async () => {
   if (auth.currentUser) {
@@ -237,6 +201,50 @@ export const updateAccountPassword = (newPassword: string): AppThunk => async di
   }
 };
 
+
+const deleteFile = (fileName: string): AppThunk =>
+  async () => {
+    const storage = getStorage();
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, `Avatars/${fileName}`);
+    deleteObject(desertRef).then(() => {
+    })
+  };
+
+
+export const updatePhotoProfile = (photoURL: string, photoName: string, currentEmail: string): AppThunk => async dispatch => {
+  try {
+    const user = auth.currentUser;
+    if (user !== null) {
+      await updateProfile(user, {
+        photoURL
+      }).then(async () => {
+        const ref = doc(db, "employees", currentEmail);
+        await getDoc(ref).then(async (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            if (data && data.avatar) {
+              // Delete the existing image
+              dispatch(deleteFile(data.avatar.photoName))
+            }
+          }
+        });
+        await updateDoc(ref, { avatar: { photoURL, photoName }, }).then(async () => {
+          // get the updated user profile
+          GetUserAccountInfo().then((user: UserInterface | undefined) => {
+            dispatch(setUser(user as UserInterface));
+            dispatch(actionSuccess("Profile Photo updated successfully!"));
+          });
+        })
+      }).catch((error) => {
+        dispatch(actionFailed(error.message));
+      });
+    }
+  } catch (error: any) {
+    dispatch(actionFailed(error.message));
+  }
+};
+
 // Function to employee document (The trigger function will delete other info in the database (firebase cloud functions))
 export const deleteAccountAndDocument = (): AppThunk => async dispatch => {
   try {
@@ -248,14 +256,8 @@ export const deleteAccountAndDocument = (): AppThunk => async dispatch => {
       // Delete the employee document
       deleteDoc(docRef).then(async () => {
         // Delete the profile image from storage
-        const storage = getStorage();
         const userInfo = store.getState().auth.user as UserInterface;
-        const imageRef = ref(storage, `Avatars/${userInfo.avatar.photoName}`);
-        deleteObject(imageRef).then(() => {
-          dispatch(actionSuccess("Employee and profile image deleted successfully"));
-        }).catch((error) => {
-          dispatch(actionFailed(error.message));
-        });
+        dispatch(deleteFile(userInfo.avatar.photoName));
       }).catch((error) => {
         dispatch(actionFailed(error.message));
       });
