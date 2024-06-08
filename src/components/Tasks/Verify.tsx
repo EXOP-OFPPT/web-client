@@ -1,18 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod"; import { AppDispatch } from "@/state/store";
-import { useDispatch } from "react-redux";
-import Cookies from "universal-cookie";
+import { z } from "zod"; import { AppDispatch, RootState } from "@/state/store";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
 import { updateTask } from "@/state/Tasks/UpdateSlice";
-import { Timestamp } from "firebase/firestore";
+import { doc, getDoc, Timestamp } from "firebase/firestore";
 import { BadgeAlertIcon, BadgeCheckIcon, BadgePlusIcon, ClockIcon } from "lucide-react";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { updateKpi } from "@/state/Kpis/UpdateSlice";
-const cookies = new Cookies(null, { path: "/" });
+import { UserInterface } from "@/state/Auth/AuthSlice";
+import { useEffect, useState } from "react";
+import { KpiType } from "@/state/Kpis/GetSlice";
+import { db } from "@/firebase/firebase";
 
 type infoProps = {
     id: string;
@@ -35,9 +37,25 @@ const formSchema = z.object({
 
 
 const Verify = ({ info }: VerifyProps) => {
-    const user = cookies.get("user");
+    const [kpiTaskInfo, setKpiTaskInfo] = useState<KpiType | null>(null);
+    const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
     const dispatch = useDispatch<AppDispatch>();
 
+
+    useEffect(() => {
+        const fetchKpiTaskInfo = async () => {
+            const docRef = doc(db, "kpis", info.kpiCode);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data() as KpiType;
+                setKpiTaskInfo(data);
+            } else {
+                console.log("No such document!");
+            }
+        };
+
+        fetchKpiTaskInfo();
+    }, [info.kpiCode]);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -51,15 +69,15 @@ const Verify = ({ info }: VerifyProps) => {
         // Get current Component url
         const url = window.location.pathname;
         const from = url.substring(url.lastIndexOf('/') + 1);
-        await dispatch(updateTask({ id: info.id, contribute: "Verify Task", kpiCode: info.kpiCode, updatedData: { status: "verified", currentTaux: newTaux, updatedAt: Timestamp.fromDate(new Date()), completedAt: Timestamp.fromDate(new Date()) }, from: from, email: user.email }));
-        await dispatch(updateKpi({ code: info.kpiCode, contribute: "Update Score", email: user.email, updatedData: { currentTaux: newTaux } }));
+        await dispatch(updateTask({ id: info.id, contribute: "Verify Task", kpiCode: info.kpiCode, updatedData: { status: "verified", currentTaux: newTaux, updatedAt: Timestamp.fromDate(new Date()), completedAt: Timestamp.fromDate(new Date()) }, from: from, email: user?.email }));
+        await dispatch(updateKpi({ code: info.kpiCode, contribute: "Update Score", email: user?.email, updatedData: { currentTaux: newTaux } }));
     }
 
     if (user.role === "user" && info.status === "done") {
         return (
             <Button variant={"outline"} className="w-22 cursor-default !no-underline"
                 onClick={() => {
-                    console.log("Send to verify: from: ", user.email, "to: ", "admin");
+                    console.log("Send to verify: from: ", user?.email, "to: ", "admin");
                     // dispatch(updateTask({ id: id, updatedData, user }));
                 }}>
                 <ClockIcon size={20} className="mr-2" />
@@ -96,6 +114,7 @@ const Verify = ({ info }: VerifyProps) => {
                                         <FormControl>
                                             <Input min={1} max={100} type="number" placeholder="Enter new score" {...field} />
                                         </FormControl>
+                                        <FormDescription>The current Score is {kpiTaskInfo?.currentTaux}</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
