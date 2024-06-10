@@ -56,7 +56,11 @@ const UserProfile: React.FC = () => {
   };
 
   const handleNavigateButton = (path: string) => {
-    navigate(path);
+    if (path === "/profile") {
+      navigate(path, { state: { email: user?.email } });
+    } else {
+      navigate(path);
+    }
     dispatch(setMenu(""));
   };
 

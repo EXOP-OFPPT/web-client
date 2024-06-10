@@ -30,6 +30,7 @@ import { AppDispatch, RootState } from "@/state/store";
 import { clearMessageAndError, createComment } from "@/state/Comments/CreateSlice";
 import { useToast } from "../ui/use-toast";
 import { UserInterface } from "@/state/Auth/AuthSlice";
+import { useNavigate } from "react-router-dom";
 
 
 interface CommentsProps {
@@ -51,6 +52,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
     const message = useSelector((state: RootState) => state.createComment.message);
     const error = useSelector((state: RootState) => state.createComment.error);
     const dispatch = useDispatch<AppDispatch>()
+    const navigate = useNavigate()
     const { toast } = useToast();
 
 
@@ -150,7 +152,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
                                 onSubmit={form.handleSubmit(onSubmit)}
                                 className="flex gap-5 p-2"
                             >
-                                <Avatar className="w-10 h-10 flex items-center justify-center">
+                                <Avatar onClick={() => navigate("/profile", { state: { email: user?.email } })} className="w-10 h-10 flex items-center justify-center cursor-pointer">
                                     <AvatarImage loading="lazy" src={user.avatar.photoURL} className="object-cover" />
                                     <AvatarFallback className="text-base">
                                         {user.firstName?.charAt(0).toUpperCase()}
@@ -202,7 +204,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, commentsCount }) => {
                                             <div key={index} className="flex flex-col px-6 py-2">
                                                 <div className="flex gap-6 items-center">
                                                     <HoverCardProfile user={item.commenter}>
-                                                        <Avatar className="w-10 h-10 flex items-center justify-center">
+                                                        <Avatar onClick={() => navigate("/profile", { state: { email: item.commenter?.email } })} className="w-10 h-10 flex items-center justify-center cursor-pointer">
                                                             <AvatarImage loading="lazy" src={item.commenter?.avatar.photoURL} className="object-cover" />
                                                             <AvatarFallback className="text-base">
                                                                 {item.commenter?.firstName?.charAt(0).toUpperCase()}

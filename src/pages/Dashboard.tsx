@@ -97,7 +97,7 @@ export default function Dashboard() {
                 Note: The verified tasks are also considered as done tasks.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                <Card className="col-span-1 md:col-span-2 lg:col-span-1">
+                <Card className="col-span-1 md:col-span-2 lg:col-span-2">
                   <CardHeader>
                     <CardTitle>Tasks Timeline</CardTitle>
                   </CardHeader>

@@ -18,22 +18,29 @@ const AreaChartComponent = ({ employee, theme }: IProps) => {
     const [series, setSeries] = useState<{ name: string; data: number[] }[]>([]);
     const [employeeContributions, setEmployeeContributions] = useState<ContributionType[]>([]);
 
-    useEffect(() => {
-        const fetchEmployeeContributions = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, "employees", employee.email, "contributions"));
-                const contributions: ContributionType[] = [];
-                querySnapshot.forEach((doc) => {
-                    contributions.push(doc.data() as ContributionType);
-                });
-                setEmployeeContributions(contributions);
-            } catch (error: any) {
-                console.log({ code: error.code, message: error.message });
-            }
-        };
+useEffect(() => {
+  const fetchEmployeeContributions = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "employees", employee.email, "contributions"));
+      const contributions: ContributionType[] = [];
+      const firstDayOfMonth = new Date();
+      firstDayOfMonth.setDate(1);
+      firstDayOfMonth.setHours(0, 0, 0, 0); // Reset time to 00:00:00
+      querySnapshot.forEach((doc) => {
+        const contribution = doc.data() as ContributionType;
+        const contributedAt = new Date(contribution.contributedAt);
+        if (contributedAt >= firstDayOfMonth) {
+          contributions.push(contribution);
+        }
+      });
+      setEmployeeContributions(contributions);
+    } catch (error: any) {
+      console.log({ code: error.code, message: error.message });
+    }
+  };
 
-        fetchEmployeeContributions();
-    }, [employee.email]);
+  fetchEmployeeContributions();
+}, [employee.email]);
 
     useEffect(() => {
         updateChartData(employeeContributions);

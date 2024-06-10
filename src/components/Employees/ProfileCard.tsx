@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/state/store";
 import { getTasks } from "@/state/Tasks/GetSlice";
 import { UserInterface } from "@/state/Auth/AuthSlice";
+import { useNavigate } from "react-router-dom";
 
 type ProfileCardProps = {
   data: EmployeeType;
@@ -26,6 +27,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
   const todo = tasks.filter((task) => task.status === "todo" && task.assignedTo === data.email);
   const [productivity, setProductivity] = useState<number>(0);
   const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(getTasks())
@@ -44,7 +46,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ data }) => {
 
 
   return (
-    <Card className="flex flex-col gap-1 justify-between sm:min-w-36 py-2">
+    <Card onClick={() => navigate("/profile", { state: { email: data?.email } })} className="flex flex-col gap-1 justify-between sm:min-w-36 py-2 cursor-pointer">
       <div className="flex justify-end items-center gap-1 px-3">
         {user?.role === "admin" &&
           <>

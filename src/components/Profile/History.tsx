@@ -12,17 +12,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { UserInterface } from "@/state/Auth/AuthSlice";
+import { EmployeeType } from "@/state/Employees/GetSlice";
 
 type HistoryProps = {};
 
 const History: React.FC<HistoryProps> = () => {
-  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
+  const employee = useSelector((state: RootState) => state.getEmployees.employee) as EmployeeType;
   const userTasks = useSelector((state: RootState) => state.getTasks.tasks);
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
-    dispatch(getEmployeeTasks(user?.email));
+    dispatch(getEmployeeTasks(employee?.email));
   }, [dispatch]);
 
   return (
@@ -47,12 +47,15 @@ const History: React.FC<HistoryProps> = () => {
                   <Alert key={index}>
                     <ListTodoIcon className="h-4 w-4" />
                     <AlertTitle>{task.title}</AlertTitle>
-                    <AlertDescription className="flex gap-4">
-                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">{task.probleme}</span>
-                      <Badge variant="outline" className={`w-fit flex justify-center items-center ${bgColor} hover:${bgColor}`}>
-                        {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-                      </Badge>
-                    </AlertDescription>
+                    <div className="flex justify-between items-center">
+                      <AlertDescription className="flex gap-4">
+                        <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">{task.probleme}</span>
+                        <Badge variant="outline" className={`w-fit flex justify-center items-center ${bgColor} hover:${bgColor}`}>
+                          {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
+                        </Badge>
+                      </AlertDescription>
+                      <Badge variant="secondary">Last update: {task.updatedAt.toString().split("T")[0]}</Badge>
+                    </div>
                   </Alert>
                   // <div key={task.id} className="p-1 mb-3 flex gap-4 items-center">
                   //   <span className="font-black text-blue-500">{task.title}</span>

@@ -14,6 +14,7 @@ import Likes from "./Likes";
 import { UserInterface } from "@/state/Auth/AuthSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
+import { useNavigate } from "react-router-dom";
 
 
 type PostCardProps = {
@@ -24,6 +25,7 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
   const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
   const [isTextShown, setIsTextShown] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(true);
+  const navigate = useNavigate();
 
 
   return (
@@ -32,7 +34,7 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
         {/* //! Avatar Sender Post Section */}
         <section className="w-16 flex justify-center">
           <HoverCardProfile user={data.poster}>
-            <Avatar className="w-11 h-11 my-2 flex items-center justify-center cursor-pointer">
+            <Avatar onClick={() => navigate("/profile", { state: { email: data.poster?.email } })} className="w-11 h-11 my-2 flex items-center justify-center cursor-pointer">
               <AvatarImage loading="lazy" src={data.poster?.avatar.photoURL} className="object-cover" />
               <AvatarFallback className="text-base">
                 {data.poster?.firstName?.charAt(0).toUpperCase()}
@@ -48,7 +50,7 @@ const PostCard: React.FC<PostCardProps> = ({ data }) => {
             <div className="flex justify-between items-center gap-4">
               <div className="flex gap-4 items-center">
                 <HoverCardProfile user={data.poster}>
-                  <b className="text-sm font-bold cursor-pointer">{data.poster?.firstName} {data.poster?.lastName}</b>
+                  <b onClick={() => navigate("/profile", { state: { email: data.poster?.email } })} className="text-sm font-bold cursor-pointer">{data.poster?.firstName} {data.poster?.lastName}</b>
                 </HoverCardProfile>
                 <small className="text-muted-foreground"><i>{data.timeAgo}</i></small>
               </div>

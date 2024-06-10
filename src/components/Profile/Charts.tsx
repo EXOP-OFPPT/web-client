@@ -5,14 +5,13 @@ import { EmployeeType } from "@/state/Employees/GetSlice";
 import AreaChartComponent from "../Charts/AreaChartComponent";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import { UserInterface } from "@/state/Auth/AuthSlice";
 
 type ChartsProps = {};
 type Theme = "dark" | "light" | "system"
 
 
 const Charts: React.FC<ChartsProps> = () => {
-  const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
+  const employee = useSelector((state: RootState) => state.getEmployees.employee) as EmployeeType;
   const { theme } = React.useContext(ThemeProviderContext);
   const [stateTheme, setStateTheme] = React.useState<"dark" | "light">("light");
 
@@ -34,7 +33,7 @@ const Charts: React.FC<ChartsProps> = () => {
         <CardTitle> Your statistique</CardTitle>
       </CardHeader>
       <CardContent className="!p-0">
-        <AreaChartComponent employee={user as EmployeeType} theme={stateTheme} />
+        <AreaChartComponent employee={employee} theme={stateTheme} />
       </CardContent>
     </Card>
   );
