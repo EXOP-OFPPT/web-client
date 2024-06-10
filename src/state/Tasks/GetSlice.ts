@@ -157,7 +157,7 @@ export const getRecentEmployeeTasks = (email: string): AppThunk => async dispatc
     dispatch(clearMessageAndError());
     try {
         // Get all tasks assigned to the user
-        const q = query(collection(db, "tasks"),where("assignedTo", "==", email));
+        const q = query(collection(db, "tasks"), where("assignedTo", "==", email));
         const querySnapshot = await getDocs(q);
         const tasks: DocumentData = [];
         querySnapshot.forEach((doc) => {
@@ -187,9 +187,15 @@ export const getEmployeeTasks = (email: string): AppThunk => async dispatch => {
     try {
         // Get the current year
         const currentYear = new Date().getFullYear();
-        // Get all tasks assigned to the user
-        const q = query(collection(db, "tasks"), where("updatedAt", ">=", new Date(currentYear, 0, 1)), where("updatedAt", "<", new Date(currentYear + 1, 0, 1)), where("assignedTo", "==", email));
-        const querySnapshot = await getDocs(q);
+        const startOfYear = Timestamp.fromDate(new Date(currentYear, 0, 1));
+        const endOfYear = Timestamp.fromDate(new Date(currentYear + 1, 0, 1));
+
+        const q = query(
+            collection(db, "tasks"),
+            where("updatedAt", ">=", startOfYear),
+            where("updatedAt", "<", endOfYear),
+            where("assignedTo", "==", email)
+        ); const querySnapshot = await getDocs(q);
         const tasks: DocumentData = [];
         querySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
