@@ -5,13 +5,12 @@ import { Input } from "../ui/input";
 import { useToast } from "../ui/use-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "@/state/store";
-import { UserInterface } from "@/state/Auth/AuthSlice";
+import { EmployeeType } from "@/state/Employees/GetSlice";
 
 type DetailsProps = {};
 
 const Details: React.FC<DetailsProps> = () => {
-  const { firstName, lastName, email, phone, role } = useSelector((state: RootState) => state.auth.user) as UserInterface;
-  ;
+  const { firstName, lastName, email, phone, role } = useSelector((state: RootState) => state.getEmployees.employee) as EmployeeType;
   const fields = [
     { value: firstName, editable: true },
     { value: lastName, editable: true },
