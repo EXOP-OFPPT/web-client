@@ -17,6 +17,7 @@ import {
 import { Badge } from "../ui/badge";
 import { store } from "@/state/store";
 import { UserInterface } from "@/state/Auth/AuthSlice";
+import { useNavigate } from "react-router-dom";
 
 
 export const columns: ColumnDef<EventType>[] = [
@@ -173,6 +174,7 @@ export const columns: ColumnDef<EventType>[] = [
       );
     },
     cell: ({ row }) => {
+      const navigate = useNavigate()
       return (
         <>
           <DropdownMenu>
@@ -186,8 +188,8 @@ export const columns: ColumnDef<EventType>[] = [
               {
                 row.original.guests.map((guest, index) =>
                   <DropdownMenuItem key={index}>
-                    <div className="w-full h-full flex justify-start items-center gap-2">
-                      <Avatar className="w-6 h-6 my-2 flex items-center justify-center cursor-pointer">
+                    <div onClick={() => navigate("/profile", { state: { email: guest.email } })} className="w-full h-full flex justify-start items-center gap-2 cursor-pointer">
+                      <Avatar className="w-6 h-6 my-2 flex items-center justify-center">
                         <AvatarImage loading="lazy" src={guest.avatar} className="object-cover" />
                         <AvatarFallback className="text-[9px]">
                           {guest.firstName?.charAt(0).toUpperCase()}
