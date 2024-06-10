@@ -14,9 +14,11 @@ import {
 import { updatePhotoProfile, UserInterface } from "@/state/Auth/AuthSlice";
 import { useToast } from "../ui/use-toast";
 import { Toaster } from "../ui/toaster";
+import { EmployeeType } from "@/state/Employees/GetSlice";
 
 const AvatarComponent: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user) as UserInterface;
+  const employee = useSelector((state: RootState) => state.getEmployees.employee) as EmployeeType;
   const [loading, setLoading] = useState<boolean>(false);
   const storage = getStorage();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -76,7 +78,7 @@ const AvatarComponent: React.FC = () => {
         // Complete
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           console.log("File available at", downloadURL);
-          await dispatch(updatePhotoProfile(downloadURL, photoName, user?.email));
+          await dispatch(updatePhotoProfile(downloadURL, photoName, employee?.email));
           toast({
             variant: "default",
             title: "Update Profile",
@@ -99,31 +101,34 @@ const AvatarComponent: React.FC = () => {
         {loading ?
           <Loader2 className="h-40 w-40 text-primary animate-spin" />
           : <Avatar className="w-60 h-60 flex items-center justify-center">
-            <AvatarImage loading="lazy" src={user?.avatar.photoURL} className="object-cover" />
+            <AvatarImage loading="lazy" src={employee?.avatar?.photoURL} className="object-cover" />
             <AvatarFallback className="text-6xl">
-              {user?.firstName?.charAt(0).toUpperCase()}
-              {user?.lastName?.charAt(0).toUpperCase()}
+              {employee?.firstName?.charAt(0).toUpperCase()}
+              {employee?.lastName?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>}
       </div>
-      <div className="flex justify-center">
-        <input
-          ref={fileInput}
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={(e: any) => {
-            uploadImage(e.target.files[0]);
-          }}
-        />
-        <button
-          onClick={() => fileInput.current?.click()}
-          className="flex font-semibold capitalize text-blue-500 text-center"
-        >
-          <Camera className="h-6 w-6" />
-          changer l'image de profile
-        </button>
-      </div>
+      {
+        user.email === employee.email &&
+        <div className="flex justify-center">
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={(e: any) => {
+              uploadImage(e.target.files[0]);
+            }}
+          />
+          <button
+            onClick={() => fileInput.current?.click()}
+            className="flex font-semibold capitalize text-blue-500 text-center"
+          >
+            <Camera className="h-6 w-6" />
+            changer l'image de profile
+          </button>
+        </div>
+      }
     </Card>
   );
 };
