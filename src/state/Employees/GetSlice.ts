@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from '../store';
-import { collection, DocumentData, getDocs } from "firebase/firestore";
+import { collection, doc, DocumentData, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
 
@@ -35,6 +35,7 @@ export type EmployeeType = {
 // Interface for AuthState
 interface EmployeesState {
     employees: EmployeeType[] | [];
+    employee: EmployeeType | {};
     employeeContributions: ContributionType[] | [];
     loading: boolean;
     error: Error | null;
@@ -46,6 +47,7 @@ interface EmployeesState {
 // Initial state
 const initialState: EmployeesState = {
     employees: [],
+    employee: {},
     employeeContributions: [],
     loading: false,
     error: null,
@@ -83,13 +85,16 @@ const getEmployeesSlice = createSlice({
         setEmployeeContributions: (state, action: PayloadAction<ContributionType[] | []>) => {
             state.employeeContributions = action.payload;
         },
+        setEmployee: (state, action: PayloadAction<EmployeeType>) => {
+            state.employee = action.payload;
+        },
         setEmployeeExist: (state, action: PayloadAction<any>) => {
             state.employeeExist = action.payload;
         }
     },
 });
 
-export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError, setEmployeeContributions, setEmployeeExist } = getEmployeesSlice.actions;
+export const { actionSuccess, actionFailed, setLoading, setMessage, clearMessageAndError, setEmployeeContributions, setEmployee, setEmployeeExist } = getEmployeesSlice.actions;
 
 export default getEmployeesSlice.reducer;
 
@@ -113,6 +118,27 @@ export const getEmployees = (): AppThunk => async dispatch => {
         dispatch(setLoading(false));
     }
 };
+
+// get employee with email
+export const getEmployeeByEmail = (email: string): AppThunk => async dispatch => {
+    dispatch(setLoading(true));
+    dispatch(clearMessageAndError());
+    try {
+        // Get employee with email
+        const docRef = doc(db, "employees", email);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const employee = docSnap.data() as EmployeeType;
+            dispatch(setEmployee(employee));
+        } else {
+            dispatch(setMessage("Employee not found"));
+        }
+    } catch (error: any) {
+        dispatch(actionFailed({ code: error.code, message: error.message }));
+    } finally {
+        dispatch(setLoading(false));
+    }
+}
 
 // Async action creator
 export const getEmployeeContributions = (email: string): AppThunk => async dispatch => {
