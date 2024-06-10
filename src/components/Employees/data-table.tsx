@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { EmployeeType } from "@/state/Employees/GetSlice";
+import { useNavigate } from "react-router-dom";
 
 interface DataTableProps {
   columns: ColumnDef<EmployeeType>[];
@@ -44,6 +45,7 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const navigate = useNavigate()
 
   const table = useReactTable({
     data,
@@ -150,6 +152,8 @@ export const DataTable: React.FC<DataTableProps> = ({ columns, data }) => {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="cursor-pointer"
+                  onClick={() => navigate("/profile", { state: { email: row.original.email } })}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
