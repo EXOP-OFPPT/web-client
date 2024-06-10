@@ -34,10 +34,6 @@ const Actions: React.FC<DetailsProps> = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { toast } = useToast();
 
-
-
-
-
     // Then, in your component
     useEffect(() => {
         if (message) {
