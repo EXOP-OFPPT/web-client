@@ -30,9 +30,8 @@ const HeroScetion = () => {
                     <p className="mt-6 text-lg leading-8 text-gray-600">
                         Enable everyone to reveal their full potential and acquire a profession to aspire to a better future.
                     </p>
-                    <div className="hidden sm:mb-8 sm:flex sm:justify-center mt-12">
+                    <div className="sm:mb-8 sm:flex sm:justify-center mt-12">
                         <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-
                             <div variant={"secondary"} onClick={() => navigate('/app')} className="font-semibold text-green-600 text-lg bg-transparent cursor-pointer">
                                 <span className="absolute inset-0" aria-hidden="true"></span>
                                 Get Started
