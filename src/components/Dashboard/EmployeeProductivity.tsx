@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Card } from "../ui/card";
 
@@ -22,9 +23,11 @@ type EmployeeProductivityProps = {
 
 
 export const EmployeeProductivity = ({ employee }: EmployeeProductivityProps) => {
+    const navigate = useNavigate()
 
     return (
-        <div className="flex justify-between items-center">
+        <div onClick={() => navigate("/profile", { state: { email: employee.email } })}
+            className="flex justify-between items-center cursor-pointer">
             <Avatar className="h-9 w-9">
                 <AvatarImage src={employee.avatar?.photoURL} loading="lazy" className="object-cover" alt="Avatar" />
                 <AvatarFallback>
