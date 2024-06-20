@@ -12,11 +12,11 @@ type DetailsProps = {};
 const Details: React.FC<DetailsProps> = () => {
   const { firstName, lastName, email, phone, role } = useSelector((state: RootState) => state.getEmployees.employee) as EmployeeType;
   const fields = [
-    { value: firstName, editable: true },
-    { value: lastName, editable: true },
+    { value: firstName, editable: false },
+    { value: lastName, editable: false },
     { value: email, editable: false },
-    { value: phone, editable: true },
-    { value: role, editable: true },
+    { value: phone, editable: false },
+    { value: role, editable: false },
   ];
   const inputRefs = Object.keys(fields).map(() =>
     useRef<HTMLInputElement>(null)
@@ -53,7 +53,7 @@ const Details: React.FC<DetailsProps> = () => {
                 id={`voice-search-${index}`}
                 className="text-sm rounded-lg  block w-full p-3 outline-none"
                 placeholder="Not available"
-                defaultValue={field.value}
+                value={field.value}
               />
               <button
                 onClick={() => copyToClipboard(index)}
