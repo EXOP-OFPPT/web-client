@@ -124,7 +124,7 @@ export const columns: ColumnDef<EmployeeType>[] = [
       const user = store.getState().auth.user as UserInterface;
       if (user.role == "admin") {
         return (
-          <div className="flex justify-center items-center gap-2">
+          <div onClick={(e) => e.stopPropagation()} className="flex justify-center items-center gap-2">
             <Update mode="outline" info={row.original} />
             <Delete mode="outline" docId={row.original.email} />
           </div>
